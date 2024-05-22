@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KFHRBackEnd", "KFHRBackEnd\KFHRBackEnd.csproj", "{EE732A6E-9FEF-4DD5-A732-53066A9AF5F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KFHRBackEnd", "KFHRBackEnd\KFHRBackEnd.csproj", "{EE732A6E-9FEF-4DD5-A732-53066A9AF5F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KFHRFrontEnd", "KFHRFrontEnd\KFHRFrontEnd.csproj", "{9E7F88C9-6C59-491C-ABAD-CB811CCEAA94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KFHRFrontEnd", "KFHRFrontEnd\KFHRFrontEnd.csproj", "{9E7F88C9-6C59-491C-ABAD-CB811CCEAA94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
