@@ -49,7 +49,30 @@ namespace KFHRBackEnd.Controllers
             }
         }
 
+        [HttpDelete("delete-employee/{id}")]
+        [ProducesResponseType(typeof(IActionResult), 200)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult DeleteUser(int id)
+        {
+            try
+            {
+                var userdelete = _context.Employees.Find(id);
+                if (userdelete == null)
+                {
+                    return NotFound();
+                }
 
+                _context.Employees.Remove(userdelete);
+                _context.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
 
 
     }
