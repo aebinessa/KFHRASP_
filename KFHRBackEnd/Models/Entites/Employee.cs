@@ -43,7 +43,7 @@ namespace KFHRBackEnd.Models.Entites
         public int PointEarned { get; set; }
 
         public bool IsAdmin { get; set; }
-        private Employee() { }
+        public Employee() { }
         public static Employee Create(int Id, string password, bool isAdmin = false)
         {
             return new Employee
