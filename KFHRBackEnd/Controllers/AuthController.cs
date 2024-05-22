@@ -22,19 +22,25 @@ public class AuthenticationController : ControllerBase
         _configuration = configuration;
     }
 
-    [HttpPost("Register")]
-    public async Task<ActionResult<Employee>> Register(LoginRequest request)
+  [HttpPost("Register")]
+public async Task<ActionResult<Employee>> Register(RegisterRequest request)
+{
+    var employee = new Employee
     {
-        var employee = new Employee()
-        {
-            // Add other fields as necessary and ensure they are validated or have default values
-            Email = request.EmployeeID, // Assuming EmployeeID is the email for simplicity
-            Password = BCrypt.Net.BCrypt.HashPassword(request.Password)
-        };
-        _context.Employees.Add(employee);
-        await _context.SaveChangesAsync();
-        return StatusCode(201); // Created
-    }
+        Email = request.Email,
+        Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
+        Name = request.Name,
+        DOB = request.DOB,
+        Gender = request.Gender,
+        ProfilePicURL = request.ProfilePicURL,
+        IsAdmin = request.IsAdmin
+    };
+
+    _context.Employees.Add(employee);
+    await _context.SaveChangesAsync();
+    return StatusCode(201); // Created
+}
+
 
     [HttpPost("Login")]
     public async Task<ActionResult<string>> Login(LoginRequest login)

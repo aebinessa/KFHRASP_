@@ -32,18 +32,18 @@ namespace KFHRBackEnd.Models.Entites
         [Required]
         public NFC NFCId { get; set; }
 
-        [Required]
+
        
         public Position  PositionId { get; set; }
 
-        [Required]
+
         public Department DepartmentId { get; set; }
 
         [Required]
         public int PointEarned { get; set; }
 
         public bool IsAdmin { get; set; }
-        public Employee() { }
+   
         public static Employee Create(int Id, string password, bool isAdmin = false)
         {
             return new Employee
@@ -65,11 +65,6 @@ namespace KFHRBackEnd.Models.Entites
     {
         Male, Female
     }
-
-
-
-
-
 
 
 }
