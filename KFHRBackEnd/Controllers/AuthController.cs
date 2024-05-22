@@ -23,10 +23,10 @@ public class AuthenticationController : ControllerBase
     {
         var user = new ApplicationUser()
         {
-            Email = request.Email,
+            EmployeeID = request.EmployeeID,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
         };
-        _context.Users.Add(user);
+        _context.Employees.Add(user);
         await _context.SaveChangesAsync();
         return StatusCode(201); // Created
     }
