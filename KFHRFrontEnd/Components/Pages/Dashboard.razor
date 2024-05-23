@@ -1,0 +1,260 @@
+﻿@page "/dashboard"
+
+@using KFHRFrontEnd.Components
+
+
+
+<div class="header">
+    <div class="greeting">
+        <h1>Hello Robert</h1>
+        <p>Good Morning!</p>
+    </div>
+    <div class="user-info">
+            <NavLink href="/counter" class="center">
+                <img src="notification.png" />
+            </NavLink>
+        <img src="leasie-watson.jpg" alt="Profile Picture" class="center" />
+        <div>
+            <h2>Robert Allen</h2>
+            <p>HR Manager</p>
+        </div>
+    </div>
+</div>
+
+<div class="stats-cards">
+    <div class="stats-card">
+        <i class="bi bi-people-fill"></i>
+        <div class="stats-info">
+            <p>Total Employees: <span>560</span></p>
+        </div>
+    </div>
+    <div class="stats-card">
+        <i class="bi bi-calendar-check"></i>
+        <div class="stats-info">
+            <p>Today Attendance: <span>512</span></p>
+        </div>
+    </div>
+    <div class="stats-card">
+        <i class="bi bi-briefcase"></i>
+        <div class="stats-info">
+            <p>Total Departments: <span>27</span></p>
+        </div>
+    </div>
+</div>
+
+
+<div class="update-info">
+    Date: @DateTime.Now.ToString("MMMM dd, yyyy")
+</div>
+
+<div class="attendance-overview">
+    <h2>Attendance Overview</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Employee Name</th>
+                <th>Position</th>
+                <th>Check In Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><img src="leasie-watson.jpg"/> Leasie Watson</td>
+                <td>Team Lead - Design</td>
+                <td>07:09 AM</td>
+            </tr>
+            <tr>
+                <td><img src="leasie-watson.jpg" /> Darlene Robertson</td>
+                <td>Web Designer</td>
+                <td>07:10 AM</td>
+            </tr>
+            <tr>
+                <td><img src="leasie-watson.jpg" /> Jacob Jones</td>
+                <td>Medical Assistant</td>
+                <td>07:12 AM</td>
+            </tr>
+            <tr>
+                <td><img src="leasie-watson.jpg" /> Kathryn Murphy</td>
+                <td>Marketing Coordinator</td>
+                <td>07:15 AM</td>
+            </tr>
+            <tr>
+                <td><img src="leasie-watson.jpg" /> Leslie Alexander</td>
+                <td>Data Analyst</td>
+                <td>07:15 AM</td>
+            </tr>
+            <tr>
+                <td><img src="leasie-watson.jpg" /> Ronald Richards</td>
+                <td>Phyton Developer</td>
+                <td>07:19 AM</td>
+            </tr>
+            <tr>
+                <td><img src="leasie-watson.jpg" /> Jenny Wilson</td>
+                <td>React JS Developer</td>
+                <td>07:24 AM</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<style>
+    p {
+        color: dimgrey;
+    }
+
+    .dashboard-container {
+        display: flex;
+    }
+
+    .center {
+        top: 400px;
+    }
+    .main-content {
+        flex: 1;
+        padding: 20px;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+        .header .greeting h1 {
+            margin: 0;
+            font-size: 44px;
+        }
+
+        .header .greeting p {
+            font-size: 24px;
+        }
+        .header .user-info {
+            display: flex; 
+            align-items: center;
+            margin: 1px;
+            border: 1px solid #4B995C; /* Add border */
+            border-radius: 10px; /* Optional: Add rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow */
+            padding: 10px; /* Add padding to keep content away from borders */
+            font-size: 24px;
+            background-color: #e9f2eb;
+            
+            
+        }
+
+            .header .user-info h2 {
+                font-size: 24px;
+                margin-bottom: -3px;
+                 
+            }
+
+            .header .user-info p {
+                font-size: 14px;
+                margin-bottom: -3px;
+            }
+
+            .header .user-info img {
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                margin-right: 10px;
+            }
+
+
+    .attendance-overview {
+        background-color: #e9f2eb;
+        padding: 20px;
+        border: 1px solid #4B995C;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+
+        .attendance-overview h2 {
+            margin-bottom: 20px;
+        }
+
+        .attendance-overview table {
+            width: 100%;
+            border-collapse: collapse;
+            
+        }
+
+            .attendance-overview table th,
+            .attendance-overview table td {
+                padding: 10px;
+                text-align: left;
+                border-bottom: 1px solid #eee;
+                border-color: #4B995C;
+            }
+
+            .attendance-overview table img {
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                margin-right: 10px;
+            }
+
+    .stats-cards {
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-start; /* Align items at the top */
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+    }
+
+    .stats-card {
+        display: flex;
+        align-items: center;
+        background-color: #fff;
+        padding: 20px;
+        border: 1px solid #4B995C;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 30%;
+        text-align: left; /* Align text to the left */
+        background-color: #e9f2eb;
+    }
+
+        .stats-card i {
+            font-size: 40px; /* Increase font size for better visibility */
+            color: #4B995C;
+            margin-right: 20px;
+            align-self: flex-start; /* Align icon to the start of the flex container */
+            margin-bottom: -20px;
+            
+        }
+
+    .stats-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* Align text to the start */
+       
+    }
+
+        .stats-info p {
+            margin: 0;
+            font-size: 16px;
+            color: #4B995C;
+            margin-right: -20px;
+        }
+
+        .stats-info span {
+            font-size: 36px;
+            color: #333;
+            margin-left: 10px; /* Remove left margin */
+        }
+
+
+    .update-info {
+        text-align: right;
+        font-size: 14px;
+        color: #999;
+        margin-top: -20px;
+        margin-bottom: 20px;
+    }
+            
+</style>
