@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KFHRBackEnd.Migrations
 {
     /// <inheritdoc />
-    public partial class AhmadMigration2 : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -161,9 +161,9 @@ namespace KFHRBackEnd.Migrations
                     Gender = table.Column<int>(type: "int", nullable: false),
                     ProfilePicURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NFCIdNumber = table.Column<int>(type: "int", nullable: false),
-                    PositionIdID = table.Column<int>(type: "int", nullable: false),
-                    DepartmentIdID = table.Column<int>(type: "int", nullable: false),
-                    PointEarned = table.Column<int>(type: "int", nullable: false),
+                    PositionIdID = table.Column<int>(type: "int", nullable: true),
+                    DepartmentIdID = table.Column<int>(type: "int", nullable: true),
+                    PointEarned = table.Column<int>(type: "int", nullable: true),
                     IsAdmin = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -173,14 +173,12 @@ namespace KFHRBackEnd.Migrations
                         name: "FK_Employees_Departments_DepartmentIdID",
                         column: x => x.DepartmentIdID,
                         principalTable: "Departments",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ID");
                     table.ForeignKey(
                         name: "FK_Employees_Positions_PositionIdID",
                         column: x => x.PositionIdID,
                         principalTable: "Positions",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateIndex(

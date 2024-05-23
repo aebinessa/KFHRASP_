@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KFHRBackEnd.Migrations
 {
     [DbContext(typeof(DBContextApp))]
-    [Migration("20240523085052_AhmadMigration2")]
-    partial class AhmadMigration2
+    [Migration("20240523120432_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -127,7 +127,7 @@ namespace KFHRBackEnd.Migrations
                     b.Property<DateTime>("DOB")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DepartmentIdID")
+                    b.Property<int?>("DepartmentIdID")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -140,7 +140,8 @@ namespace KFHRBackEnd.Migrations
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("bit");
 
-                    b.Property<int>("NFCIdNumber")
+                    b.Property<int?>("NFCIdNumber")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -151,10 +152,10 @@ namespace KFHRBackEnd.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PointEarned")
+                    b.Property<int?>("PointEarned")
                         .HasColumnType("int");
 
-                    b.Property<int>("PositionIdID")
+                    b.Property<int?>("PositionIdID")
                         .HasColumnType("int");
 
                     b.Property<string>("ProfilePicURL")
@@ -300,15 +301,11 @@ namespace KFHRBackEnd.Migrations
                 {
                     b.HasOne("KFHRBackEnd.Models.Entites.Department", "DepartmentId")
                         .WithMany()
-                        .HasForeignKey("DepartmentIdID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DepartmentIdID");
 
                     b.HasOne("KFHRBackEnd.Models.Entites.Position", "PositionId")
                         .WithMany()
-                        .HasForeignKey("PositionIdID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PositionIdID");
 
                     b.Navigation("DepartmentId");
 
