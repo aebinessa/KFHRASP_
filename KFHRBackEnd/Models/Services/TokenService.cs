@@ -10,9 +10,9 @@ namespace KFHRBackEnd.Models.Services
         public class TokenService
         {
             private readonly IConfiguration _configuration;
-            private readonly DBContext context;
+            private readonly DBContextApp context;
 
-            public TokenService(IConfiguration configuration, DBContext context)
+            public TokenService(IConfiguration configuration, DBContextApp context)
             {
                 _configuration = configuration;
                 this.context = context;

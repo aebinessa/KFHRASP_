@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KFHRBackEnd.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class AhmadMigration2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -105,18 +105,6 @@ namespace KFHRBackEnd.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "NFC",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_NFC", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Positions",
                 columns: table => new
                 {
@@ -168,12 +156,11 @@ namespace KFHRBackEnd.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DOB = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Gender = table.Column<int>(type: "int", nullable: false),
                     ProfilePicURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NFCIdID = table.Column<int>(type: "int", nullable: false),
+                    NFCIdNumber = table.Column<int>(type: "int", nullable: false),
                     PositionIdID = table.Column<int>(type: "int", nullable: false),
                     DepartmentIdID = table.Column<int>(type: "int", nullable: false),
                     PointEarned = table.Column<int>(type: "int", nullable: false),
@@ -189,12 +176,6 @@ namespace KFHRBackEnd.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Employees_NFC_NFCIdID",
-                        column: x => x.NFCIdID,
-                        principalTable: "NFC",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Employees_Positions_PositionIdID",
                         column: x => x.PositionIdID,
                         principalTable: "Positions",
@@ -206,11 +187,6 @@ namespace KFHRBackEnd.Migrations
                 name: "IX_Employees_DepartmentIdID",
                 table: "Employees",
                 column: "DepartmentIdID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Employees_NFCIdID",
-                table: "Employees",
-                column: "NFCIdID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_PositionIdID",
@@ -247,9 +223,6 @@ namespace KFHRBackEnd.Migrations
 
             migrationBuilder.DropTable(
                 name: "Departments");
-
-            migrationBuilder.DropTable(
-                name: "NFC");
 
             migrationBuilder.DropTable(
                 name: "Positions");

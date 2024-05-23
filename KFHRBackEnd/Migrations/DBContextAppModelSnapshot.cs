@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace KFHRBackEnd.Migrations
 {
-    [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(DBContextApp))]
+    partial class DBContextAppModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -124,7 +124,7 @@ namespace KFHRBackEnd.Migrations
                     b.Property<DateTime>("DOB")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DepartmentIdID")
+                    b.Property<int?>("DepartmentIdID")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -137,7 +137,7 @@ namespace KFHRBackEnd.Migrations
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("bit");
 
-                    b.Property<int>("NFCIdID")
+                    b.Property<int>("NFCIdNumber")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -148,24 +148,19 @@ namespace KFHRBackEnd.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PointEarned")
+                    b.Property<int?>("PointEarned")
                         .HasColumnType("int");
 
-                    b.Property<int>("PositionIdID")
+                    b.Property<int?>("PositionIdID")
                         .HasColumnType("int");
 
                     b.Property<string>("ProfilePicURL")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("DepartmentIdID");
-
-                    b.HasIndex("NFCIdID");
 
                     b.HasIndex("PositionIdID");
 
@@ -226,19 +221,6 @@ namespace KFHRBackEnd.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Leaves");
-                });
-
-            modelBuilder.Entity("KFHRBackEnd.Models.Entites.NFC", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.HasKey("ID");
-
-                    b.ToTable("NFC");
                 });
 
             modelBuilder.Entity("KFHRBackEnd.Models.Entites.Position", b =>
@@ -315,25 +297,13 @@ namespace KFHRBackEnd.Migrations
                 {
                     b.HasOne("KFHRBackEnd.Models.Entites.Department", "DepartmentId")
                         .WithMany()
-                        .HasForeignKey("DepartmentIdID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KFHRBackEnd.Models.Entites.NFC", "NFCId")
-                        .WithMany()
-                        .HasForeignKey("NFCIdID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DepartmentIdID");
 
                     b.HasOne("KFHRBackEnd.Models.Entites.Position", "PositionId")
                         .WithMany()
-                        .HasForeignKey("PositionIdID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PositionIdID");
 
                     b.Navigation("DepartmentId");
-
-                    b.Navigation("NFCId");
 
                     b.Navigation("PositionId");
                 });

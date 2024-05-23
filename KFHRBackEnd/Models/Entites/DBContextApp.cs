@@ -3,9 +3,9 @@ using System;
 
 namespace KFHRBackEnd.Models.Entites
 {
-    public class DBContext : DbContext
+    public class DBContextApp : DbContext
     {
-        public DBContext(DbContextOptions<DBContext> options) : base(options)
+        public DBContextApp(DbContextOptions<DBContextApp> options) : base(options)
         {
         }
 
