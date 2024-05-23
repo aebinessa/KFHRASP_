@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KFHRBackEnd.Migrations
 {
     [DbContext(typeof(DBContextApp))]
-    [Migration("20240523085606_AhmadMigration3")]
-    partial class AhmadMigration3
+    [Migration("20240523123822_InitialCreate1")]
+    partial class InitialCreate1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -140,7 +140,8 @@ namespace KFHRBackEnd.Migrations
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("bit");
 
-                    b.Property<int>("NFCIdNumber")
+                    b.Property<int?>("NFCIdNumber")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
