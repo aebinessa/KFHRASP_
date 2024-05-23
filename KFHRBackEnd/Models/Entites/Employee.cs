@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 namespace KFHRBackEnd.Models.Entites
 {
     public class Employee
@@ -11,9 +12,6 @@ namespace KFHRBackEnd.Models.Entites
 
         [Required]
         public string Password { get; set; }
-
-        [Required]
-        public Role Role { get; set; }
 
         [Required]
         [EmailAddress]
@@ -30,37 +28,37 @@ namespace KFHRBackEnd.Models.Entites
         public string ProfilePicURL { get; set; }
 
         [Required]
-        public NFC NFCId { get; set; }
+        public int NFCIdNumber { get; set; }
 
 
-       
-        public Position  PositionId { get; set; }
+        [AllowNull]
+        public Position?  PositionId { get; set; }
 
+        [AllowNull]
+        public Department? DepartmentId { get; set; }
 
-        public Department DepartmentId { get; set; }
+      
+        [AllowNull]
+        public int? PointEarned { get; set; }
 
         [Required]
-        public int PointEarned { get; set; }
-
         public bool IsAdmin { get; set; }
-   
-        public static Employee Create(int Id, string password, bool isAdmin = false)
-        {
-            return new Employee
-            {
-                Id = Id,
-                Password = BCrypt.Net.BCrypt.EnhancedHashPassword(password),
-                IsAdmin = isAdmin
-            };
-        }
+
+        //private Employee() { }
+        //public static Employee Create(int Id, string password, bool isAdmin = false)
+        //{
+        //    return new Employee
+        //    {
+        //        Id = Id,
+        //        Password = BCrypt.Net.BCrypt.EnhancedHashPassword(password),
+        //        IsAdmin = isAdmin
+        //    };
+        //}
         public bool VerifyPassword(string pwd) => BCrypt.Net.BCrypt.EnhancedVerify(pwd, this.Password);
 
     }
 
-    public enum Role
-    {
-        Admin,User
-    }
+   
     public enum Gender
     {
         Male, Female
