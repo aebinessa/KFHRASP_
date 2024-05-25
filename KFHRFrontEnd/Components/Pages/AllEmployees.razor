@@ -1,0 +1,305 @@
+﻿@page "/allemployees"
+
+@using KFHRFrontEnd.Components
+
+@code {
+    private List<AllEmployee> Employees = new List<AllEmployee>
+{
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Greg Robinson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Frank Gibson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
+};
+
+
+    private int currentPage = 1;
+    private int pageSize = 10;
+    private int totalPages => (int)Math.Ceiling((double)Employees.Count / pageSize);
+
+    private IEnumerable<AllEmployee> PaginatedEmployees => Employees.Skip((currentPage - 1) * pageSize).Take(pageSize);
+
+    private string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            "Sick Leave" => "badge badge-danger",
+            "Vacation" => "badge badge-success",
+            "Requested Permission" => "badge badge-warning",
+            "Emergency Leave" => "badge badge-danger",
+            _ => ""
+        };
+    }
+
+    private void NavigateToPage(int pageNumber)
+    {
+        if (pageNumber > 0 && pageNumber <= totalPages)
+        {
+            currentPage = pageNumber;
+
+        }
+    }
+}
+
+<div class="header">
+    <div class="info">
+        <h1>All Employees</h1>
+        <p>All Employees Info</p>
+    </div>
+    <div class="user-info">
+        <NavLink href="/counter" class="center">
+            <img src="notification.png" />
+        </NavLink>
+        <img src="leasie-watson.jpg" alt="Profile Picture" class="center" />
+        <div>
+            <h2>Robert Allen</h2>
+            <p>HR Manager</p>
+        </div>
+    </div>
+</div>
+
+<section class="performance">
+    <h2>Overall Performance</h2>
+    <div class="performance-list">
+        <ol>
+            <li><img src="leasie-watson.jpg" alt="Profile Picture" class="center"/>Cody Fisher</li>
+            <li><img src="leasie-watson.jpg" alt="Profile Picture" class="center" />Savannah Nguyen</li>
+            <li><img src="leasie-watson.jpg" alt="Profile Picture" class="center" />Marvin McKinney</li>
+        </ol>
+    </div>
+</section>
+
+<section class="employee-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Employee Name</th>
+                <th>Employee ID</th>
+                <th>Department</th>
+                <th>Position</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var employee in PaginatedEmployees)
+            {
+                <tr>
+                    <td><img src="leasie-watson.jpg" alt="Profile Picture" class="center" />@employee.EmployeeName</td>
+                    <td>@employee.EmployeeID</td>
+                    <td>@employee.Position</td>
+                    <td>@employee.Department</td>
+                    <td>
+                        <button class="view-btn">👁️</button>
+                        <button class="edit-btn">✏️</button>
+                        <button class="delete-btn">🗑️</button>
+                    </td>
+                </tr>
+                
+            }
+           
+        </tbody>
+    </table>
+</section>
+
+                <div>
+                    Showing @((currentPage - 1) * pageSize + 1) to @(Math.Min(currentPage * pageSize, Employees.Count)) out of @Employees.Count records
+                </div>
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                            <button class="page-link" @onclick="() => NavigateToPage(currentPage - 1)">Previous</button>
+                        </li>
+
+
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            var pageIndex = i;
+                            <li class="page-item @(currentPage == pageIndex ? "active" : "")">
+                                <button class="page-link" @onclick="@(() => NavigateToPage(pageIndex))">@pageIndex</button>
+                            </li>
+                        }
+
+
+
+
+                        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                            <button class="page-link" @onclick="() => NavigateToPage(currentPage + 1)">Next</button>
+                        </li>
+                    </ul>
+                </nav>
+            
+
+<style>
+ .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+        .header .info h1 {
+            margin: 0;
+            font-size: 34px;
+        }
+
+        .header .info p {
+            font-size: 14px;
+            color: dimgrey
+        }
+
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            margin: 1px;
+            border: 1px solid #4B995C; /* Add border */
+            border-radius: 10px; /* Optional: Add rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow */
+            padding: 10px; /* Add padding to keep content away from borders */
+            font-size: 24px;
+            background-color: #e9f2eb;
+
+
+        }
+
+            .header .user-info h2 {
+                font-size: 24px;
+                margin-bottom: -3px;
+
+            }
+
+            .header .user-info p {
+                font-size: 14px;
+                margin-bottom: -3px;
+            }
+
+            .header .user-info img {
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                margin-right: 10px;
+            }
+
+    .performance {
+        margin-top: 20px;
+    }
+
+        .performance h2 {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+    /* Updated styles for the ordered list container */
+    .performance-list {
+        width: 300px; /* Set a specific width */
+    }
+
+        .performance-list ol {
+            list-style: decimal inside; /* List style */
+            padding: 0;
+            margin: 0;
+            border: 1px solid #ddd; /* Border around the list */
+            border-radius: 8px; /* Rounded corners */
+            overflow: hidden; /* Ensures children do not overflow */
+        }
+
+            .performance-list ol li {
+                padding: 10px;
+                border-bottom: 1px solid #ddd; /* Border between items */
+            }
+
+                .performance-list ol li:last-child {
+                    border-bottom: none; /* Remove bottom border from the last item */
+                }
+    .center{
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+    }
+
+    .employee-table {
+        margin-top: 20px;
+    }
+
+        .employee-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .employee-table th, .employee-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eaeaea;
+            border: 1px solid #eaeaea;
+        }
+
+        .employee-table th {
+            background-color: #f2f2f2;
+        }
+
+    .view-btn, .edit-btn, .delete-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0; /* Remove padding if there's any */
+    }
+
+    .pagination {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .page-item {
+        margin: 0 5px;
+    }
+
+        .page-item .page-link {
+            text-decoration: none;
+            color: dimgray;
+            cursor: pointer;
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .page-item.active .page-link {
+            background-color: gray; /* Change this to your desired color */
+            color: white; /* Change the text color to your desired color */
+            border-color: gray; /* Match the border color if needed */
+        }
+
+        .page-item.disabled .page-link {
+            color: #ccc;
+            pointer-events: none;
+        }
+
+        .page-item .page-link:hover {
+            background-color: #f2f2f2;
+            border-color: #ddd;
+        }
+
+</style>
