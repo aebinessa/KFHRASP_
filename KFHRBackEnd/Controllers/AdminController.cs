@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using KFHRBackEnd.Models.Entites;
+using KFHRBackEnd.Models.Entites.Request.Employee;
 
 namespace KFHRBackEnd.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles ="Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -33,8 +34,7 @@ namespace KFHRBackEnd.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-
-        // POST: api/Admin/AddEmployee
+        // post 
         [HttpPost("AddEmployee")]
         [ProducesResponseType(typeof(Employee), 200)]
         [ProducesResponseType(400)]
@@ -48,10 +48,14 @@ namespace KFHRBackEnd.Controllers
 
             try
             {
+                var defaultPassword = "123";
+                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(defaultPassword);
+
                 var employee = new Employee
                 {
                     Name = employeeDto.Name,
                     Email = employeeDto.Email,
+                    Password = hashedPassword, // Set the hashed default password
                     DOB = employeeDto.DOB,
                     Gender = employeeDto.Gender,
                     ProfilePicURL = employeeDto.ProfilePicURL,
@@ -72,39 +76,35 @@ namespace KFHRBackEnd.Controllers
             }
         }
 
-        // PUT: api/Admin/EditEmployee/5
-        [HttpPut("EditEmployee/{id}")]
+
+        // edit (Put)
+        [HttpPut("EditEmployee")]
         [ProducesResponseType(typeof(Employee), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> EditEmployee(int id, [FromBody] Employee employee)
+        public async Task<IActionResult> EditEmployee([FromBody] EditEmployee employeeDto)
         {
-            if (employee == null || employee.Id != id)
+            if (employeeDto == null)
             {
-                return BadRequest("Employee data is invalid.");
+                return BadRequest("Employee data is null.");
             }
 
             try
             {
-                var existingEmployee = await _context.Employees.FindAsync(id);
+                var existingEmployee = await _context.Employees.FindAsync(employeeDto.Id);
                 if (existingEmployee == null)
                 {
                     return NotFound("Employee not found.");
                 }
 
-                existingEmployee.Name = employee.Name;
-                existingEmployee.Email = employee.Email;
-                existingEmployee.DOB = employee.DOB;
-                existingEmployee.Gender = employee.Gender;
-                existingEmployee.ProfilePicURL = employee.ProfilePicURL;
-                existingEmployee.NFCIdNumber = employee.NFCIdNumber;
-                existingEmployee.PositionId = employee.PositionId;
-                existingEmployee.DepartmentId = employee.DepartmentId;
-                existingEmployee.PointEarned = employee.PointEarned;
-
-                // Ensure IsAdmin is not set during edit operation
-                existingEmployee.IsAdmin = existingEmployee.IsAdmin;
+                existingEmployee.Name = employeeDto.Name;
+                existingEmployee.Email = employeeDto.Email;
+                existingEmployee.DOB = employeeDto.DOB;
+                existingEmployee.Gender = employeeDto.Gender;
+                existingEmployee.ProfilePicURL = employeeDto.ProfilePicURL;
+                existingEmployee.NFCIdNumber = employeeDto.NFCIdNumber;
+                existingEmployee.PointEarned = employeeDto.PointEarned;
 
                 _context.Employees.Update(existingEmployee);
                 await _context.SaveChangesAsync();
@@ -115,6 +115,7 @@ namespace KFHRBackEnd.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
 
         // DELETE: api/Admin/DeleteEmployee/5
         [HttpDelete("DeleteEmployee/{id}")]

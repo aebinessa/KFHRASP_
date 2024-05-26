@@ -1,24 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 
 using KFHRBackEnd.Models.Entites;
 using KFHRBackEnd.Models.Entites.Request;
+using KFHRBackEnd.Models.Services;
+using KFHRBackEnd.Models.Entites.Request.Employee;
 
 [ApiController]
 [Route("[controller]")]
 public class AuthenticationController : ControllerBase
 {
     private readonly DBContextApp _context;
-    private readonly IConfiguration _configuration;
+    private readonly TokenService _tokenService;
 
-    public AuthenticationController(DBContextApp context, IConfiguration configuration)
+    public AuthenticationController(DBContextApp context, TokenService tokenService)
     {
         _context = context;
-        _configuration = configuration;
+        _tokenService = tokenService;
     }
 
     [HttpPost("Register")]
@@ -29,7 +27,7 @@ public class AuthenticationController : ControllerBase
             return BadRequest("Email already exists.");
         }
 
-        var employee = new Employee()
+        var employee = new Employee
         {
             Name = request.Name,
             Email = request.Email,
@@ -42,40 +40,32 @@ public class AuthenticationController : ControllerBase
 
         _context.Employees.Add(employee);
         await _context.SaveChangesAsync();
-        return StatusCode(201); // Alternatively, return CreatedAtAction(...)
+        return StatusCode(201); 
     }
+
 
     [HttpPost("Login")]
     public async Task<ActionResult<string>> Login(LoginRequest login)
     {
         var employee = await _context.Employees.FirstOrDefaultAsync(u => u.Email == login.Email);
-        if (employee == null || !BCrypt.Net.BCrypt.Verify(login.Password, employee.Password))
+        if (employee == null)
         {
-            return BadRequest("Invalid credentials.");
+            return BadRequest("Invalid email.");
         }
 
-        var token = GenerateJwtToken(employee);
-        return Ok(token);
-    }
-
-    private string GenerateJwtToken(Employee employee)
-    {
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-        var claims = new[]
+        var isPasswordValid = BCrypt.Net.BCrypt.Verify(login.Password, employee.Password);
+        if (!isPasswordValid)
         {
-            new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()),
-            new Claim(ClaimTypes.Email, employee.Email),
-        };
+            return BadRequest("Invalid password.");
+        }
 
-        var token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.Now.AddHours(3),
-            signingCredentials: credentials
-        );
+        var (isValid, token) = _tokenService.GenerateToken(employee.Email, login.Password);
+        if (!isValid)
+        {
+            return Unauthorized("Invalid credentials.");
+        }
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return Ok(new { Token = token });
     }
+
 }

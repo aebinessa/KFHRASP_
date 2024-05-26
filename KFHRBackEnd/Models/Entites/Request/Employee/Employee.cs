@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-namespace KFHRBackEnd.Models.Entites
+namespace KFHRBackEnd.Models.Entites.Request.Employee
 {
     public class Employee
     {
@@ -32,24 +32,24 @@ namespace KFHRBackEnd.Models.Entites
 
 
         [AllowNull]
-        public Position?  PositionId { get; set; }
+        public Position? PositionId { get; set; }
 
         [AllowNull]
         public Department? DepartmentId { get; set; }
 
-      
+
         [AllowNull]
         public int? PointEarned { get; set; }
 
         [Required]
         public bool IsAdmin { get; set; }
 
-     
-        public bool VerifyPassword(string pwd) => BCrypt.Net.BCrypt.EnhancedVerify(pwd, this.Password);
+
+        public bool VerifyPassword(string pwd) => BCrypt.Net.BCrypt.EnhancedVerify(pwd, Password);
 
     }
 
-   
+
     public enum Gender
     {
         Male, Female

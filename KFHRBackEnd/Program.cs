@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using KFHRBackEnd.Models.Entites; 
+using KFHRBackEnd.Models.Entites;
+using KFHRBackEnd.Models.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DBContextApp>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<TokenService>();
 
 var secretKey = builder.Configuration["Jwt:Key"]; // Strong secret key
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
