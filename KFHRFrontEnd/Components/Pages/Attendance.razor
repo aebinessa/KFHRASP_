@@ -1,0 +1,275 @@
+﻿@page "/Attendance"
+
+@code {
+    private List<EmployeeAttendance> Attendances = new List<EmployeeAttendance>
+{
+    new EmployeeAttendance { AttendanceEmployeeName = "Alice Johnson", Designation = "Graphic Designer", Type = "Office", TimeDate = new DateTime(2024, 6, 10, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Bob Smith", Designation = "Software Engineer", Type = "Remote", TimeDate = new DateTime(2024, 7, 5, 9, 0, 0), AttendanceStatus = "Late" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Charlie Brown", Designation = "Marketing Manager", Type = "Office", TimeDate = new DateTime(2024, 6, 20, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "David Lee", Designation = "Data Analyst", Type = "Remote", TimeDate = new DateTime(2024, 8, 8, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Eva Martinez", Designation = "HR Coordinator", Type = "Office", TimeDate = new DateTime(2024, 7, 25, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Frank White", Designation = "Customer Support", Type = "Remote", TimeDate = new DateTime(2024, 9, 12, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Grace Davis", Designation = "Accountant", Type = "Office", TimeDate = new DateTime(2024, 10, 3, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Henry Adams", Designation = "Project Manager", Type = "Remote", TimeDate = new DateTime(2024, 11, 20, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Ivy Taylor", Designation = "Sales Representative", Type = "Office", TimeDate = new DateTime(2024, 12, 15, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Jackie Robinson", Designation = "Operations Manager", Type = "Remote", TimeDate = new DateTime(2025, 1, 2, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Karen Scott", Designation = "Legal Counsel", Type = "Office", TimeDate = new DateTime(2025, 2, 8, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Larry Thompson", Designation = "UI/UX Designer", Type = "Remote", TimeDate = new DateTime(2025, 3, 17, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Mia Clark", Designation = "Quality Assurance", Type = "Office", TimeDate = new DateTime(2025, 4, 22, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Nathan Evans", Designation = "Financial Analyst", Type = "Remote", TimeDate = new DateTime(2025, 5, 7, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Olivia Harris", Designation = "Content Writer", Type = "Office", TimeDate = new DateTime(2025, 6, 19, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Peter Wilson", Designation = "Customer Success Manager", Type = "Remote", TimeDate = new DateTime(2025, 7, 24, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Quinn Murphy", Designation = "Product Manager", Type = "Office", TimeDate = new DateTime(2025, 8, 8, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Rachel Turner", Designation = "HR Manager", Type = "Remote", TimeDate = new DateTime(2025, 9, 19, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Samuel Baker", Designation = "IT Administrator", Type = "Office", TimeDate = new DateTime(2025, 10, 3, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Tina Reed", Designation = "Marketing Coordinator", Type = "Remote", TimeDate = new DateTime(2025, 11, 22, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Ursula King", Designation = "Software Developer", Type = "Office", TimeDate = new DateTime(2025, 12, 17, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Victor Scott", Designation = "Business Analyst", Type = "Remote", TimeDate = new DateTime(2026, 1, 7, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Wendy Hall", Designation = "Project Coordinator", Type = "Office", TimeDate = new DateTime(2026, 2, 16, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Xavier Patel", Designation = "Technical Support", Type = "Remote", TimeDate = new DateTime(2026, 3, 8, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Yvonne Rivera", Designation = "Operations Analyst", Type = "Office", TimeDate = new DateTime(2026, 4, 27, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Zack Thomas", Designation = "Customer Service Representative", Type = "Remote", TimeDate = new DateTime(2026, 5, 14, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Alexa Williams", Designation = "Digital Marketing Specialist", Type = "Office", TimeDate = new DateTime(2026, 6, 26, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Brian Martinez", Designation = "Finance Manager", Type = "Remote", TimeDate = new DateTime(2026, 7, 18, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Catherine Scott", Designation = "Content Strategist", Type = "Office", TimeDate = new DateTime(2026, 8, 15, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Daniel Rodriguez", Designation = "Sales Manager", Type = "Remote", TimeDate = new DateTime(2026, 9, 21, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Emily White", Designation = "UI/UX Designer", Type = "Office", TimeDate = new DateTime(2026, 10, 12, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Fernando Garcia", Designation = "Technical Writer", Type = "Remote", TimeDate = new DateTime(2026, 11, 6, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Gina Hernandez", Designation = "HR Generalist", Type = "Office", TimeDate = new DateTime(2026, 12, 25, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Henry Adams", Designation = "Data Scientist", Type = "Remote", TimeDate = new DateTime(2027, 1, 21, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Isabel Martinez", Designation = "Marketing Specialist", Type = "Office", TimeDate = new DateTime(2027, 2, 15, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "James Taylor", Designation = "Product Owner", Type = "Remote", TimeDate = new DateTime(2027, 3, 21, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Katherine Lewis", Designation = "Business Development Manager", Type = "Office", TimeDate = new DateTime(2027, 4, 11, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Luis Rodriguez", Designation = "Technical Lead", Type = "Remote", TimeDate = new DateTime(2027, 5, 23, 9, 0, 0), AttendanceStatus = "On Time" },
+    new EmployeeAttendance { AttendanceEmployeeName = "Megan Cooper", Designation = "Operations Coordinator", Type = "Office", TimeDate = new DateTime(2027, 6, 15, 9, 0, 0), AttendanceStatus = "On Time" }
+};
+
+
+
+    private int currentPage = 1;
+    private int pageSize = 10;
+    private int totalPages => (int)Math.Ceiling((double)Attendances.Count / pageSize);
+
+    private IEnumerable<EmployeeAttendance> PaginatedAttendences => Attendances.Skip((currentPage - 1) * pageSize).Take(pageSize);
+
+    private string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            "Late" => "badge badge-danger",
+            "On Time" => "badge badge-success",
+            _ => ""
+        };
+    }
+
+    private void NavigateToPage(int pageNumber)
+    {
+        if (pageNumber > 0 && pageNumber <= totalPages)
+        {
+            currentPage = pageNumber;
+
+        }
+    }
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <main class="col-12 p-3">
+            <header class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1>Attendance</h1>
+                   
+                </div>
+                <div class="user-info">
+                    <NavLink href="/counter" class="center">
+                        <img src="notification.png" />
+                    </NavLink>
+                    <img src="leasie-watson.jpg" alt="Profile Picture" class="center" />
+                    <div>
+                        <h2>Robert Allen</h2>
+                        <p>HR Manager</p>
+                    </div>
+                </div>
+            </header>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Employee Name</th>
+                            <th>Designation </th>
+                            <th>Type</th>
+                            <th>Date    ⬇</th>
+                            <th>Status    ⬇</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var attendance in PaginatedAttendences)
+                        {
+                            <tr>
+                                <td>@attendance.AttendanceEmployeeName</td>
+                                <td>@attendance.Designation</td>
+                                <td>@attendance.Type</td>
+                                <td>@attendance.TimeDate</td>
+                                <td><span class="@GetStatusClass(attendance.AttendanceStatus)">@attendance.AttendanceStatus</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div>
+                    Showing @((currentPage - 1) * pageSize + 1) to @(Math.Min(currentPage * pageSize, Attendances.Count)) out of @Attendances.Count records
+                </div>
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                            <button class="page-link" @onclick="() => NavigateToPage(currentPage - 1)">Previous</button>
+                        </li>
+
+
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            var pageIndex = i;
+                            <li class="page-item @(currentPage == pageIndex ? "active" : "")">
+                                <button class="page-link" @onclick="@(() => NavigateToPage(pageIndex))">@pageIndex</button>
+                            </li>
+                        }
+
+
+
+
+                        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                            <button class="page-link" @onclick="() => NavigateToPage(currentPage + 1)">Next</button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </main>
+    </div>
+</div>
+
+<style>
+    /* wwwroot/css/site.css */
+    .container-fluid {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        margin: 1px;
+        border: 1px solid #4B995C; /* Add border */
+        border-radius: 10px; /* Optional: Add rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow */
+        padding: 10px; /* Add padding to keep content away from borders */
+        font-size: 24px;
+        background-color: #e9f2eb;
+    }
+
+        .user-info h2 {
+            font-size: 24px;
+            margin-bottom: -3px;
+        }
+
+        .user-info p {
+            font-size: 14px;
+            margin-bottom: -3px;
+        }
+
+        .user-info img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+    }
+
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .table td, .table th {
+        padding: .75rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: .35em .65em;
+        font-size: 75%;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: .25rem;
+    }
+
+    .badge-danger {
+        color: #fff;
+        background-color: #dc3545;
+    }
+
+    .badge-success {
+        color: #fff;
+        background-color: #28a745;
+    }
+
+    .badge-warning {
+        color: #212529;
+        background-color: #ffc107;
+    }
+
+    .pagination {
+        list-style: none;
+        padding: 0;
+        display: flex;
+    }
+
+    .page-item {
+        margin: 0 5px;
+    }
+
+        .page-item .page-link {
+            text-decoration: none;
+            color: dimgray;
+            cursor: pointer;
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .page-item.active .page-link {
+            background-color: gray; /* Change this to your desired color */
+            color: white; /* Change the text color to your desired color */
+            border-color: gray; /* Match the border color if needed */
+        }
+
+        .page-item.disabled .page-link {
+            color: #ccc;
+            pointer-events: none;
+        }
+
+        .page-item .page-link:hover {
+            background-color: #f2f2f2;
+            border-color: #ddd;
+        }
+</style>
