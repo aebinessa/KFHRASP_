@@ -9,6 +9,8 @@
   <ItemGroup>
     <PackageReference Include="Blazorise.Bootstrap" Version="1.5.2" />
     <PackageReference Include="BootstrapBlazor" Version="8.5.8" />
+    <PackageReference Include="DinkToPdf" Version="1.0.8" />
+    <PackageReference Include="itext7" Version="8.0.4" />
   </ItemGroup>
 
   <ItemGroup>
