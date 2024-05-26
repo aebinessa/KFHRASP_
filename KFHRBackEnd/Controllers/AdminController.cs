@@ -140,5 +140,26 @@ namespace KFHRBackEnd.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpPost("add-department")]
+        [ProducesResponseType(typeof(IActionResult), 201)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult AddDepartment(AddDepartmentRequest addDepartmentRequest)
+        {
+            try
+            {
+                var department = new Department()
+                {
+                    DepartmentName = addDepartmentRequest.DepartmentName
+                };
+                _context.Departments.Add(department);
+                _context.SaveChanges();
+                return Created(nameof(AddDepartment), new { Id = department.ID });
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
+        }
     }
 }
