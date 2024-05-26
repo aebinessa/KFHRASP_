@@ -161,5 +161,28 @@ namespace KFHRBackEnd.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, ex);
             }
         }
+        [HttpDelete("DeleteDepartment/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteDepartment(int id)
+        {
+            try
+            {
+                var department = await _context.Departments.FindAsync(id);
+                if (department == null)
+                {
+                    return NotFound("Department not found.");
+                }
+
+                _context.Departments.Remove(department);
+                await _context.SaveChangesAsync();
+                return Ok("Department deleted.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }
