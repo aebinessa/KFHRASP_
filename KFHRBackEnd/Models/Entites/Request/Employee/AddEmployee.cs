@@ -1,10 +1,12 @@
 ﻿using KFHRBackEnd.Models.Entites;
+using KFHRBackEnd.Models.Entites.Request.Employee;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 
 
-    public class AddEmployee
+public class AddEmployee
     {
         [Required]
         public string Name { get; set; }
@@ -19,9 +21,9 @@ using System.ComponentModel.DataAnnotations;
         [Required]
         public Gender Gender { get; set; }
 
-        [Required]
+        [AllowNull]
         [Url]
-        public string ProfilePicURL { get; set; }
+        public string? ProfilePicURL { get; set; }
 
         public int? NFCIdNumber { get; set; }
 
