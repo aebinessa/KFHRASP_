@@ -44,16 +44,7 @@ namespace KFHRBackEnd.Models.Entites
         [Required]
         public bool IsAdmin { get; set; }
 
-        //private Employee() { }
-        //public static Employee Create(int Id, string password, bool isAdmin = false)
-        //{
-        //    return new Employee
-        //    {
-        //        Id = Id,
-        //        Password = BCrypt.Net.BCrypt.EnhancedHashPassword(password),
-        //        IsAdmin = isAdmin
-        //    };
-        //}
+     
         public bool VerifyPassword(string pwd) => BCrypt.Net.BCrypt.EnhancedVerify(pwd, this.Password);
 
     }

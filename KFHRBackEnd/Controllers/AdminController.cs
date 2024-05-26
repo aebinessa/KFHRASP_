@@ -1,79 +1,144 @@
-﻿//using KFHRBackEnd.Models.Entites;
-//using Microsoft.AspNetCore.Authorization;
-//using Microsoft.AspNetCore.Mvc;
-//using System.Net;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using KFHRBackEnd.Models.Entites;
 
-//namespace KFHRBackEnd.Controllers
-//{
+namespace KFHRBackEnd.Controllers
+{
+    [Authorize(Roles = "Admin")]
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AdminController : ControllerBase
+    {
+        private readonly DBContextApp _context;
 
-//    [ApiController]
-//    [Route("[controller]")]
-//    [Authorize(Roles = "Admin")]
-//    public class AdminController : Controller
-//    {
-//        private readonly ILogger<AdminController> _logger;
-//        private readonly DBContext _context;
-      
-//        public AdminController(ILogger<AdminController> logger, DBContext dbContext)
-//        {
-//            _logger = logger;
-//            _context = dbContext;
-//        }
+        public AdminController(DBContextApp context)
+        {
+            _context = context;
+        }
 
+        // GET: api/Admin/Employees
+        [HttpGet("Employees")]
+        [ProducesResponseType(typeof(IEnumerable<Employee>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetEmployees()
+        {
+            try
+            {
+                var employees = await _context.Employees.ToListAsync();
+                return Ok(employees);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
-//        [HttpPost("add-employee")]
-//        [ProducesResponseType(typeof(IActionResult), 201)]
-//        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-//        public IActionResult AddEmployee(AddEmployees employee)
-//        {
-//            try
-//            {
-//                var employees = new Employee()
-//                { 
-//                    DepartmentId = employee.DepartmentId,
-//                    Name = employee.Name,
-//                    Password = employee.Password,
-//                    Email = employee.Email,
-//                    Role = employee.Role,
-//                    Gender = employee.Gender,
-//                    DOB = employee.DOB,
-//                    PointEarned = employee.PointEarned
-//                };
-//                _context.Employees.Add(employees);
-//                _context.SaveChanges();
-//                return Created(nameof(AddEmployee), new { Id = employees.Id });
-//            }
-//            catch (Exception ex)
-//            {
-//                return this.StatusCode(StatusCodes.Status500InternalServerError, ex);
-//            }
-//        }
+        // POST: api/Admin/AddEmployee
+        [HttpPost("AddEmployee")]
+        [ProducesResponseType(typeof(Employee), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> AddEmployee([FromBody] AddEmployee employeeDto)
+        {
+            if (employeeDto == null)
+            {
+                return BadRequest("Employee data is null.");
+            }
 
-//        [HttpDelete("delete-employee/{id}")]
-//        [ProducesResponseType(typeof(IActionResult), 200)]
-//        [ProducesResponseType(StatusCodes.Status404NotFound)]
-//        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-//        public IActionResult DeleteUser(int id)
-//        {
-//            try
-//            {
-//                var userdelete = _context.Employees.Find(id);
-//                if (userdelete == null)
-//                {
-//                    return NotFound();
-//                }
+            try
+            {
+                var employee = new Employee
+                {
+                    Name = employeeDto.Name,
+                    Email = employeeDto.Email,
+                    DOB = employeeDto.DOB,
+                    Gender = employeeDto.Gender,
+                    ProfilePicURL = employeeDto.ProfilePicURL,
+                    NFCIdNumber = employeeDto.NFCIdNumber,
+                    PositionId = employeeDto.PositionId,
+                    DepartmentId = employeeDto.DepartmentId,
+                    PointEarned = employeeDto.PointEarned,
+                    IsAdmin = false // Ensure IsAdmin is not set during add operation
+                };
 
-//                _context.Employees.Remove(userdelete);
-//                _context.SaveChanges();
+                await _context.Employees.AddAsync(employee);
+                await _context.SaveChangesAsync();
+                return Ok(employee);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
-//                return Ok();
-//            }
-//            catch (Exception ex)
-//            {
-//                return this.StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-//            }
-//        }
+        // PUT: api/Admin/EditEmployee/5
+        [HttpPut("EditEmployee/{id}")]
+        [ProducesResponseType(typeof(Employee), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> EditEmployee(int id, [FromBody] Employee employee)
+        {
+            if (employee == null || employee.Id != id)
+            {
+                return BadRequest("Employee data is invalid.");
+            }
 
+            try
+            {
+                var existingEmployee = await _context.Employees.FindAsync(id);
+                if (existingEmployee == null)
+                {
+                    return NotFound("Employee not found.");
+                }
 
-//    }
-//}
+                existingEmployee.Name = employee.Name;
+                existingEmployee.Email = employee.Email;
+                existingEmployee.DOB = employee.DOB;
+                existingEmployee.Gender = employee.Gender;
+                existingEmployee.ProfilePicURL = employee.ProfilePicURL;
+                existingEmployee.NFCIdNumber = employee.NFCIdNumber;
+                existingEmployee.PositionId = employee.PositionId;
+                existingEmployee.DepartmentId = employee.DepartmentId;
+                existingEmployee.PointEarned = employee.PointEarned;
+
+                // Ensure IsAdmin is not set during edit operation
+                existingEmployee.IsAdmin = existingEmployee.IsAdmin;
+
+                _context.Employees.Update(existingEmployee);
+                await _context.SaveChangesAsync();
+                return Ok(existingEmployee);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        // DELETE: api/Admin/DeleteEmployee/5
+        [HttpDelete("DeleteEmployee/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteEmployee(int id)
+        {
+            try
+            {
+                var employee = await _context.Employees.FindAsync(id);
+                if (employee == null)
+                {
+                    return NotFound("Employee not found.");
+                }
+
+                _context.Employees.Remove(employee);
+                await _context.SaveChangesAsync();
+                return Ok("Employee deleted.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+    }
+}
