@@ -1,0 +1,572 @@
+﻿@page "/employeedetails"
+@inject NavigationManager Navigation
+
+<body>
+    <div class="container">
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div class="breadcrumb">
+                    <a href="allemployees" class="breadcrumb-link">All Employees</a> &gt; <span class="breadcrumb-current">Brooklyn Simmons</span>
+                </div>
+                <div class="user-info">
+                    <NavLink href="/counter" class="center">
+                        <img src="notification.png" />
+                    </NavLink>
+                    <img src="leasie-watson.jpg" alt="Profile Picture" class="center" />
+                    <div>
+                        <h2>Robert Allen</h2>
+                        <p>HR Manager</p>
+                    </div>
+                </div>
+            </header>
+
+            <section class="profile-section">
+                <div class="profile-header">
+                    <div class="profile-picture">
+                        <img src="profile-picture.jpg" alt="Brooklyn Simmons">
+                    </div>
+                    <div class="profile-details">
+                        <h1>
+                            Brooklyn Simmons
+                            <img src="edit-icon.png" alt="Edit" class="edit-icon" @onclick="EditEmployee">
+                        </h1>
+                        <p>Project Manager</p>
+                        <p>brooklyns@example.com</p>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <button class="profile-button" onclick="showSection('profile')">Profile</button>
+                    <button class="profile-button" onclick="showSection('attendance')">Attendance</button>
+                    <button class="profile-button" onclick="showSection('certificates')">Certificates</button>
+                    <button class="profile-button active" onclick="showSection('leave')">Leave</button>
+                </div>
+                <div id="profile" class="profile-info section">
+                    <div class="table-container">
+                        <table class="styled-table profile-table">
+                            <tr>
+                                <th>First Name</th>
+                                <td>Brooklyn</td>
+                                <th>Last Name</th>
+                                <td>Simmons</td>
+                            </tr>
+                            <tr>
+                                <th>Mobile Number</th>
+                                <td>(702) 555-0122</td>
+                                <th>Email Address</th>
+                                <td>brooklyn.s@example.com</td>
+                            </tr>
+                            <tr>
+                                <th>Date of Birth</th>
+                                <td>July 14, 1995</td>
+                                <th>Marital Status</th>
+                                <td>Married</td>
+                            </tr>
+                            <tr>
+                                <th>Gender</th>
+                                <td>Female</td>
+                                <th>Nationality</th>
+                                <td>American</td>
+                            </tr>
+                            <tr>
+                                <th>Position</th>
+                                <td>Team Lead</td>
+                                <th>Department</th>
+                                <td>IT</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div id="attendance" class="profile-info section" style="display:none;">
+                    <table class="styled-table no-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Check In</th>
+                                <th>Check Out</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>July 01, 2023</td>
+                                <td>07:08 AM</td>
+                                <td>03:00 PM</td>
+                            </tr>
+                            <tr>
+                                <td>July 02, 2023</td>
+                                <td>07:10 AM</td>
+                                <td>03:05 PM</td>
+                            </tr>
+                            <!-- More records -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="certificates" class="profile-info section" style="display:none;">
+                    <h2>Certificates</h2>
+                    <div class="table-container">
+                        <table class="styled-table no-hover">
+                            <thead>
+                                <tr>
+                                    <th>Certificate Name</th>
+                                    <th>Date Completed</th>
+                                    <th>Verification URL</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Certificate #1</td>
+                                    <td>12/4/2023</td>
+                                    <td>URL HERE</td>
+                                    <td><button class="delete-button">🗑️</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Certificate #2</td>
+                                    <td>22/4/2023</td>
+                                    <td>URL HERE</td>
+                                    <td><button class="delete-button">🗑️</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Certificate #3</td>
+                                    <td>12/7/2023</td>
+                                    <td>URL HERE</td>
+                                    <td><button class="delete-button">🗑️</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Certificate #4</td>
+                                    <td>02/9/2023</td>
+                                    <td>URL HERE</td>
+                                    <td><button class="delete-button">🗑️</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Certificate #5</td>
+                                    <td>4/10/2023</td>
+                                    <td>URL HERE</td>
+                                    <td><button class="delete-button">🗑️</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Certificate #6</td>
+                                    <td>10/12/2023</td>
+                                    <td>URL HERE</td>
+                                    <td><button class="delete-button">🗑️</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Certificate #7</td>
+                                    <td>15/6/2023</td>
+                                    <td>URL HERE</td>
+                                    <td><button class="delete-button">🗑️</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Certificate #8</td>
+                                    <td>25/5/2023</td>
+                                    <td>URL HERE</td>
+                                    <td><button class="delete-button">🗑️</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="certificate-inputs">
+                        <input type="text" placeholder="Certificate Name" />
+                        <input type="text" placeholder="Date Completed" />
+                        <input type="text" placeholder="Verification URL" />
+                        <button class="save-button">Save</button>
+                    </div>
+                </div>
+                <div id="leave" class="profile-info section">
+                    <h2>Leave Records</h2>
+                    <div class="table-container">
+                        <table class="styled-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Duration</th>
+                                    <th>Days</th>
+                                    <th>Reporting Manager</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>July 01, 2023</td>
+                                    <td>July 05 - July 08</td>
+                                    <td>3 Days</td>
+                                    <td>Mark Williams</td>
+                                    <td>
+                                        <select class="status-dropdown" onchange="updateStatus(this)">
+                                            <option value="pending" class="status pending">Pending</option>
+                                            <option value="approved" class="status approved">Approved</option>
+                                            <option value="rejected" class="status rejected">Rejected</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Apr 05, 2023</td>
+                                    <td>Apr 06 - Apr 10</td>
+                                    <td>4 Days</td>
+                                    <td>Mark Williams</td>
+                                    <td>
+                                        <select class="status-dropdown" onchange="updateStatus(this)">
+                                            <option value="pending" class="status pending">Pending</option>
+                                            <option value="approved" class="status approved" selected>Approved</option>
+                                            <option value="rejected" class="status rejected">Rejected</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Mar 12, 2023</td>
+                                    <td>Mar 14 - Mar 16</td>
+                                    <td>2 Days</td>
+                                    <td>Mark Williams</td>
+                                    <td>
+                                        <select class="status-dropdown" onchange="updateStatus(this)">
+                                            <option value="pending" class="status pending">Pending</option>
+                                            <option value="approved" class="status approved" >Approved</option>
+                                            <option value="rejected" class="status rejected">Rejected</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Feb 01, 2023</td>
+                                    <td>Feb 02 - Feb 10</td>
+                                    <td>8 Days</td>
+                                    <td>Mark Williams</td>
+                                    <td>
+                                        <select class="status-dropdown" onchange="updateStatus(this)">
+                                            <option value="pending" class="status pending">Pending</option>
+                                            <option value="approved" class="status approved" selected>Approved</option>
+                                            <option value="rejected" class="status rejected">Rejected</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Jan 01, 2023</td>
+                                    <td>Jan 16 - Jan 19</td>
+                                    <td>3 Days</td>
+                                    <td>Mark Williams</td>
+                                    <td>
+                                        <select class="status-dropdown" onchange="updateStatus(this)">
+                                            <option value="pending" class="status pending">Pending</option>
+                                            <option value="approved" class="status approved">Approved</option>
+                                            <option value="rejected" class="status rejected" selected>Rejected</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            var sections = document.querySelectorAll('.section');
+            sections.forEach(function (section) {
+                section.style.display = 'none';
+            });
+
+            // Remove active class from all buttons
+            var buttons = document.querySelectorAll('.profile-button');
+            buttons.forEach(function (button) {
+                button.classList.remove('active');
+            });
+
+            // Show the selected section
+            document.getElementById(sectionId).style.display = 'block';
+
+            // Add active class to the clicked button
+            event.target.classList.add('active');
+        }
+
+        function updateStatus(selectElement) {
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            const statusClass = selectedOption.className.split(' ')[1];
+            selectElement.className = 'status-dropdown ' + statusClass;
+        }
+
+        function editName() {
+            alert('Edit name functionality goes here');
+        }
+
+        // Initialize status dropdowns on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            const statusDropdowns = document.querySelectorAll('.status-dropdown');
+            statusDropdowns.forEach(function (dropdown) {
+                updateStatus(dropdown);
+            });
+        });
+    </script>
+</body>
+
+@code{
+    private void EditEmployee()
+    {
+        Navigation.NavigateTo("/counter");
+    }
+}
+
+<style>
+    .container {
+        display: flex;
+        width: 100%; /* Ensure full width */
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        border-radius: 10px;
+    }
+
+    .main-content {
+        flex-grow: 1;
+        padding: 20px;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .breadcrumb {
+        font-size: 14px;
+        color: #777;
+        display: flex;
+        align-items: center;
+    }
+
+    .breadcrumb-link {
+        color: #4B995C;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+        .breadcrumb-link:hover {
+            color: #006400;
+        }
+
+    .breadcrumb-current {
+        color: #333;
+        margin-left: 5px;
+    }
+
+    .header .user-info {
+        display: flex;
+        align-items: center;
+        margin: 1px;
+        border: 1px solid #4B995C;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        font-size: 24px;
+        background-color: #e9f2eb;
+    }
+
+        .header .user-info h2 {
+            font-size: 24px;
+            margin-bottom: -3px;
+        }
+
+        .header .user-info p {
+            font-size: 14px;
+            margin-bottom: -3px;
+        }
+
+        .header .user-info img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+    .profile-section {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 20px;
+    }
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .profile-picture img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin-right: 20px;
+    }
+
+    .profile-details h1 {
+        margin: 0;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+    }
+
+    .profile-details p {
+        margin: 5px 0;
+        color: #777;
+    }
+
+    .profile-actions {
+        display: flex; /* Display as flexbox */
+        justify-content: center; /* Center the buttons */
+        margin-bottom: 20px;
+    }
+
+    .profile-button {
+        background-color: #f7f8fa;
+        border: none;
+        padding: 10px 20px;
+        margin: 0 5px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        color: #4B995C;
+    }
+
+        .profile-button.active {
+            background-color: #4B995C;
+            color: #fff;
+        }
+
+        .profile-button:hover {
+            background-color: #e6e6e6;
+        }
+
+    .profile-info {
+        margin-top: 20px;
+    }
+
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .styled-table th, .styled-table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .styled-table th {
+            background-color: #f7f8fa;
+            font-weight: bold;
+        }
+
+        .styled-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+    .no-hover tr:hover {
+        background-color: initial;
+    }
+
+    .profile-table td {
+        background-color: #fff; /* White background for info cells */
+    }
+
+    .table-container {
+        width: 100%; /* Full width for the table container */
+        margin: 20px 0;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        border-radius: 10px;
+        overflow-x: auto;
+    }
+
+    .delete-button {
+        background: none;
+        border: none;
+        color: #ff0000;
+        cursor: pointer;
+    }
+
+    .certificate-inputs {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+
+        .certificate-inputs input {
+            width: 30%; /* Adjust width to accommodate the save button */
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+    .save-button {
+        background-color: #4B995C; /* Green background */
+        color: #fff; /* White font */
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .save-button:hover {
+            background-color: #218838;
+        }
+
+    .edit-icon {
+        width: 20px;
+        height: 20px;
+        margin-left: 10px;
+        cursor: pointer;
+    }
+
+    /* Styles for Leave Status */
+    .status {
+        padding: 5px 10px;
+        border-radius: 5px;
+        text-align: center;
+        display: inline-block;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+        .status.pending {
+            background-color: #ffeb3b;
+            color: #fff;
+        }
+
+        .status.approved {
+            background-color: #4caf50;
+            color: #fff;
+        }
+
+        .status.rejected {
+            background-color: #f44336;
+            color: #fff;
+        }
+
+    .status-dropdown {
+        border: none;
+        background: none;
+        font-size: 12px;
+        padding: 5px;
+        cursor: pointer;
+        background-color: transparent; /* Default background */
+    }
+
+        .status-dropdown.pending {
+            background-color: #ffeb3b;
+            color: #fff;
+        }
+
+        .status-dropdown.approved {
+            background-color: #4caf50;
+            color: #fff;
+        }
+
+        .status-dropdown.rejected {
+            background-color: #f44336;
+            color: #fff;
+        }
+
+        .status-dropdown:hover {
+            background-color: #dcdcdc; /* Hover color */
+        }
+</style>
