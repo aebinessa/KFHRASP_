@@ -1,6 +1,7 @@
 ﻿@page "/allemployees"
 
 @using KFHRFrontEnd.Components
+@inject NavigationManager Navigation
 
 @code {
     private List<AllEmployee> Employees = new List<AllEmployee>
@@ -41,18 +42,6 @@
 
     private IEnumerable<AllEmployee> PaginatedEmployees => Employees.Skip((currentPage - 1) * pageSize).Take(pageSize);
 
-    private string GetStatusClass(string status)
-    {
-        return status switch
-        {
-            "Sick Leave" => "badge badge-danger",
-            "Vacation" => "badge badge-success",
-            "Requested Permission" => "badge badge-warning",
-            "Emergency Leave" => "badge badge-danger",
-            _ => ""
-        };
-    }
-
     private void NavigateToPage(int pageNumber)
     {
         if (pageNumber > 0 && pageNumber <= totalPages)
@@ -66,7 +55,6 @@
 <div class="header">
     <div class="info">
         <h1>All Employees</h1>
-        <p>All Employees Info</p>
     </div>
     <div class="user-info">
         <NavLink href="/counter" class="center">
@@ -111,8 +99,8 @@
                     <td>@employee.Position</td>
                     <td>@employee.Department</td>
                     <td>
-                        <button class="view-btn">👁️</button>
-                        <button class="edit-btn">✏️</button>
+                        <button class="view-btn" @onclick="ViewEmployee">👁️</button>
+                        <button class="edit-btn" @onclick="EditEmployee">✏️</button>
                         <button class="delete-btn">🗑️</button>
                     </td>
                 </tr>
@@ -303,3 +291,15 @@
         }
 
 </style>
+
+@code{
+    private void ViewEmployee()
+    {
+        Navigation.NavigateTo("/employeedetails");
+    }
+
+    private void EditEmployee()
+    {
+        Navigation.NavigateTo("/counter");
+    }
+}
