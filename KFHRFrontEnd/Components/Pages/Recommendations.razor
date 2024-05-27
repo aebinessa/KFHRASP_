@@ -1,0 +1,230 @@
+﻿@page "/recommendations"
+
+<div class="header">
+    <div class="info">
+        <h1>Recommendations</h1>
+    </div>
+    <div class="user-info">
+        <NavLink href="/counter" class="center">
+            <img src="notification.png" />
+        </NavLink>
+        <img src="leasie-watson.jpg" alt="Profile Picture" class="center" />
+        <div>
+            <h2>Robert Allen</h2>
+            <p>HR Manager</p>
+        </div>
+    </div>
+</div>
+
+<div class="body">
+    <div class="form-container">
+        <form id="certificate-form">
+            <div class="form-section">
+                <label for="image-upload" class="image-upload">
+                    <input type="file" id="image-upload" accept="image/*">
+                    <span class="upload-icon">📷</span>
+                </label>
+            </div>
+            <div class="form-section horizontal-fields">
+                <input type="text" id="name-of-certificate" placeholder="Name of Certificate">
+                <input type="text" id="organization" placeholder="Organization">
+            </div>
+            <div class="form-section">
+                <input type="text" id="verification-url" placeholder="Verification URL">
+            </div>
+            <div class="form-section">
+                <textarea id="certification-detail" placeholder="Certification Detail"></textarea>
+            </div>
+            <div class="form-section">
+                <input type="date" id="date-completed" placeholder="Date Completed">
+            </div>
+            <div class="form-buttons">
+                <button type="button" id="cancel-button">Cancel</button>
+                <button type="submit" id="save-button">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+        .header .info h1 {
+            margin: 0;
+            font-size: 34px;
+        }
+
+        .header .info p {
+            font-size: 14px;
+            color: dimgrey;
+        }
+
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            margin: 1px;
+            border: 1px solid #4B995C; /* Add border */
+            border-radius: 10px; /* Optional: Add rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow */
+            padding: 10px; /* Add padding to keep content away from borders */
+            font-size: 24px;
+            background-color: #e9f2eb;
+        }
+
+            .header .user-info h2 {
+                font-size: 24px;
+                margin-bottom: -3px;
+            }
+
+            .header .user-info p {
+                font-size: 14px;
+                margin-bottom: -3px;
+            }
+
+            .header .user-info img {
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                margin-right: 10px;
+            }
+
+    .body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f8f8;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .form-container {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        width: 600px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-section {
+        margin-bottom: 15px;
+    }
+
+    .horizontal-fields {
+        display: flex;
+        gap: 10px;
+    }
+
+        .horizontal-fields input[type="text"] {
+            width: calc(50% - 5px); /* To ensure the gap is accounted for */
+        }
+
+    .form-section input[type="text"],
+    .form-section textarea,
+    .form-section input[type="date"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    .form-section textarea {
+        height: 100px;
+        resize: none;
+    }
+
+    .image-upload {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100px;
+        height: 100px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin: 0 auto 15px;
+        cursor: pointer;
+    }
+
+    .upload-icon {
+        font-size: 24px;
+        color: #666;
+    }
+
+    .form-buttons {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    #cancel-button,
+    #save-button {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    #cancel-button {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        color: #333;
+        margin-right: 10px;
+    }
+
+        #cancel-button:hover {
+            background-color: #f0f0f0;
+        }
+
+    #save-button {
+        background-color: #4CAF50;
+        color: #fff;
+    }
+
+        #save-button:hover {
+            background-color: #45a049;
+        }
+</style>
+
+<script>
+
+    document.getElementById('certificate-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        // Form validation
+        const nameOfCertificate = document.getElementById('name-of-certificate').value;
+        const organization = document.getElementById('organization').value;
+        const verificationUrl = document.getElementById('verification-url').value;
+        const certificationDetail = document.getElementById('certification-detail').value;
+        const dateCompleted = document.getElementById('date-completed').value;
+
+        if (!nameOfCertificate || !organization || !verificationUrl || !certificationDetail || !dateCompleted) {
+            alert('Please fill out all fields.');
+            return;
+        }
+
+        // Form submission logic
+        alert('Form submitted successfully!');
+
+        // Clear the form
+        document.getElementById('certificate-form').reset();
+    });
+
+</script>
+
+@code {
+
+}
