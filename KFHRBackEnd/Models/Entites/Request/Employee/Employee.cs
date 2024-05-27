@@ -1,7 +1,6 @@
-﻿using KFHRBackEnd.Models.Entites.Request.Department;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-namespace KFHRBackEnd.Models.Entites
+namespace KFHRBackEnd.Models.Entites.Request.Employee
 {
     public class Employee
     {

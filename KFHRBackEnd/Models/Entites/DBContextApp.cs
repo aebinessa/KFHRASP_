@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using KFHRBackEnd.Models.Entites.Request.Employee;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace KFHRBackEnd.Models.Entites

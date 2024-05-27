@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KFHRBackEnd", "KFHRBackEnd\KFHRBackEnd.csproj", "{EE732A6E-9FEF-4DD5-A732-53066A9AF5F4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KFHRFrontEnd", "KFHRFrontEnd\KFHRFrontEnd.csproj", "{9E7F88C9-6C59-491C-ABAD-CB811CCEAA94}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{EE732A6E-9FEF-4DD5-A732-53066A9AF5F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE732A6E-9FEF-4DD5-A732-53066A9AF5F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE732A6E-9FEF-4DD5-A732-53066A9AF5F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E7F88C9-6C59-491C-ABAD-CB811CCEAA94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E7F88C9-6C59-491C-ABAD-CB811CCEAA94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E7F88C9-6C59-491C-ABAD-CB811CCEAA94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E7F88C9-6C59-491C-ABAD-CB811CCEAA94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
