@@ -36,10 +36,10 @@
                     </div>
                 </div>
                 <div class="profile-actions">
-                    <button class="profile-button" onclick="showSection('profile')">Profile</button>
+                    <button class="profile-button active" onclick="showSection('profile')">Profile</button>
                     <button class="profile-button" onclick="showSection('attendance')">Attendance</button>
                     <button class="profile-button" onclick="showSection('certificates')">Certificates</button>
-                    <button class="profile-button active" onclick="showSection('leave')">Leave</button>
+                    <button class="profile-button" onclick="showSection('leave')">Leave</button>
                 </div>
                 <div id="profile" class="profile-info section">
                     <div class="table-container">
@@ -102,7 +102,6 @@
                     </table>
                 </div>
                 <div id="certificates" class="profile-info section" style="display:none;">
-                    <h2>Certificates</h2>
                     <div class="table-container">
                         <table class="styled-table no-hover">
                             <thead>
@@ -172,7 +171,7 @@
                         <button class="save-button">Save</button>
                     </div>
                 </div>
-                <div id="leave" class="profile-info section">
+                <div id="leave" class="profile-info section" style="display:none;">
                     <h2>Leave Records</h2>
                     <div class="table-container">
                         <table class="styled-table">
@@ -207,7 +206,7 @@
                                     <td>
                                         <select class="status-dropdown" onchange="updateStatus(this)">
                                             <option value="pending" class="status pending">Pending</option>
-                                            <option value="approved" class="status approved" selected>Approved</option>
+                                            <option value="approved" class="status approved">Approved</option>
                                             <option value="rejected" class="status rejected">Rejected</option>
                                         </select>
                                     </td>
@@ -220,7 +219,7 @@
                                     <td>
                                         <select class="status-dropdown" onchange="updateStatus(this)">
                                             <option value="pending" class="status pending">Pending</option>
-                                            <option value="approved" class="status approved" >Approved</option>
+                                            <option value="approved" class="status approved">Approved</option>
                                             <option value="rejected" class="status rejected">Rejected</option>
                                         </select>
                                     </td>
@@ -233,7 +232,7 @@
                                     <td>
                                         <select class="status-dropdown" onchange="updateStatus(this)">
                                             <option value="pending" class="status pending">Pending</option>
-                                            <option value="approved" class="status approved" selected>Approved</option>
+                                            <option value="approved" class="status approved">Approved</option>
                                             <option value="rejected" class="status rejected">Rejected</option>
                                         </select>
                                     </td>
@@ -247,7 +246,7 @@
                                         <select class="status-dropdown" onchange="updateStatus(this)">
                                             <option value="pending" class="status pending">Pending</option>
                                             <option value="approved" class="status approved">Approved</option>
-                                            <option value="rejected" class="status rejected" selected>Rejected</option>
+                                            <option value="rejected" class="status rejected">Rejected</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -295,11 +294,14 @@
             statusDropdowns.forEach(function (dropdown) {
                 updateStatus(dropdown);
             });
+
+            // Set Profile tab as active by default
+            showSection('profile');
         });
     </script>
 </body>
 
-@code{
+@code {
     private void EditEmployee()
     {
         Navigation.NavigateTo("/editemployee");
@@ -525,6 +527,7 @@
         display: inline-block;
         font-size: 12px;
         font-weight: bold;
+        width: 100px; /* Set a fixed width for status */
     }
 
         .status.pending {
@@ -549,6 +552,7 @@
         padding: 5px;
         cursor: pointer;
         background-color: transparent; /* Default background */
+        width: 100px; /* Set the same fixed width as status */
     }
 
         .status-dropdown.pending {
@@ -568,5 +572,9 @@
 
         .status-dropdown:hover {
             background-color: #dcdcdc; /* Hover color */
+        }
+
+        .status-dropdown option {
+            padding: 5px 10px;
         }
 </style>
