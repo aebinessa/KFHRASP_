@@ -22,6 +22,15 @@
 <body>
     <div class="container">
         <form action="#" method="post">
+            <!-- Form Row for Image Upload -->
+            <div class="form-row">
+                <div class="form-group file-input">
+                    <input type="file" id="profile-picture" name="profile-picture" accept="image/*">
+                    <label for="profile-picture" class="file-label">
+                        <img src="camera-icon.png" alt="Upload">
+                    </label>
+                </div>
+            </div>
             <!-- Form Row for First and Last Name -->
             <div class="form-row">
                 <div class="form-group">
@@ -107,7 +116,7 @@
 }
 
 <style>
-
+    /* Existing styles */
     .header {
         display: flex;
         justify-content: space-between;
@@ -129,10 +138,10 @@
             display: flex;
             align-items: center;
             margin: 1px;
-            border: 1px solid #4B995C; /* Add border */
-            border-radius: 10px; /* Optional: Add rounded corners */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow */
-            padding: 10px; /* Add padding to keep content away from borders */
+            border: 1px solid #4B995C;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
             font-size: 24px;
             background-color: #e9f2eb;
         }
@@ -204,19 +213,17 @@
         margin-bottom: 20px;
     }
 
-    /* Flexbox container for form rows */
     .form-row {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
     }
 
-    /* Styling for form groups */
     .form-group {
         display: flex;
         flex-direction: column;
         margin-bottom: 15px;
-        flex-basis: 48%; /* Adjusted to take up roughly half the container */
+        flex-basis: 48%;
     }
 
         .form-group label {
@@ -238,14 +245,49 @@
                 color: #aaa;
             }
 
-    /* Styling for form actions */
+    .file-input {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100px;
+        max-width: 100px;
+        max-height: 100px;
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        background-color: #f8f8f8;
+        cursor: pointer;
+        overflow: hidden;
+    }
+
+        .file-input input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-input .file-label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+            .file-input .file-label img {
+                width: 24px;
+                height: 24px;
+            }
+
     .form-actions {
         display: flex;
         justify-content: flex-end;
         margin-top: 20px;
     }
 
-    /* Styling for buttons */
     .cancel-button,
     .save-button {
         padding: 10px 20px;
@@ -268,9 +310,7 @@
 </style>
 
 <script>
-
     document.querySelector('.cancel-button').addEventListener('click', function () {
         document.querySelector('form').reset();
     });
-
 </script>
