@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using KFHRBackEnd.Models.Entites.Request.Employee;
 
 namespace KFHRBackEnd.Models.Entites.Request
 {
