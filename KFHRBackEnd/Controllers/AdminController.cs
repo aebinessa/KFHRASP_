@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using KFHRBackEnd.Models.Entites;
 using KFHRBackEnd.Models.Entites.Request.Employee;
 using KFHRBackEnd.Migrations;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace KFHRBackEnd.Controllers
 {
@@ -31,6 +32,18 @@ namespace KFHRBackEnd.Controllers
                     EmployeeId = employeeIdResponse.EmployeeId,
                     CheckInTime = DateTime.Now
                 };
+                if (checkInEmployee.CheckInTime == DateTime.Today.AddHours(8))
+                {
+                    checkInEmployee.CheckInTime = DateTime.Now;
+                }
+                if (checkInEmployee.CheckOutTime == DateTime.Today.AddHours(16))
+                {
+                    checkInEmployee.CheckOutTime = DateTime.Now;
+                }
+                //else
+                //{
+                //    return ;
+                //}
                 _context.Attendances.Add(checkInEmployee);
                 _context.SaveChanges();
                 return Created(nameof(CheckInEmployee), new { Id = employeeIdResponse.EmployeeId });
