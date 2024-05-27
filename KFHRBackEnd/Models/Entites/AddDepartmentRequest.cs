@@ -1,4 +1,4 @@
-﻿namespace KFHRBackEnd.Models.Entites.Request.Department
+﻿namespace KFHRBackEnd.Models.Entites
 {
     public class AddDepartmentRequest
     {

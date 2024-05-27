@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using KFHRBackEnd.Models.Entites;
-using KFHRBackEnd.Models.Entites.Request.Department;
+using KFHRBackEnd.Models.Entites.Request.Employee;
 
 namespace KFHRBackEnd.Controllers
 {

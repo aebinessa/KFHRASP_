@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using KFHRBackEnd.Models.Entites;
 using KFHRBackEnd.Models.Entites.Request;
 using KFHRBackEnd.Models.Services;
-
+using KFHRBackEnd.Models.Entites.Request.Employee;
 
 [ApiController]
 [Route("[controller]")]
