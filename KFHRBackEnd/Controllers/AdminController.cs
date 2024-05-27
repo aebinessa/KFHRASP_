@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using KFHRBackEnd.Models.Entites;
 using KFHRBackEnd.Models.Entites.Request.Employee;
+using KFHRBackEnd.Migrations;
 
 namespace KFHRBackEnd.Controllers
 {
@@ -16,6 +17,56 @@ namespace KFHRBackEnd.Controllers
         public AdminController(DBContextApp context)
         {
             _context = context;
+        }
+
+        [HttpPost("idResponse")]
+        [ProducesResponseType(typeof(IActionResult), 201)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult CheckInEmployee(EmployeeIdResponse employeeIdResponse)
+        {
+            try
+            {
+                var checkInEmployee = new Attendance()
+                {
+                    EmployeeId = employeeIdResponse.EmployeeId,
+                    CheckInTime = DateTime.Now
+                };
+                _context.Attendances.Add(checkInEmployee);
+                _context.SaveChanges();
+                return Created(nameof(CheckInEmployee), new { Id = employeeIdResponse.EmployeeId });
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
+        }
+
+
+        [HttpPost("leavesResponse")]
+        [ProducesResponseType(typeof(IActionResult), 201)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult LeavesResponse(Leave leavesResponse)
+        {
+            try
+            {
+                var leavesResponses = new Leave()
+                {
+                    ID = leavesResponse.ID,
+                   EmployeeId = leavesResponse.EmployeeId,
+                   LeaveType = leavesResponse.LeaveType,
+                   StartDate = leavesResponse.StartDate,
+                   EndDate = leavesResponse.EndDate,
+                   Notes = leavesResponse.Notes,
+                   Status = leavesResponse.Status
+                };
+                _context.Leaves.Add(leavesResponses);
+                _context.SaveChanges();
+                return Created(nameof(CheckInEmployee), new { Id = leavesResponse.EmployeeId });
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
         }
 
         // GET: api/Admin/Employees
