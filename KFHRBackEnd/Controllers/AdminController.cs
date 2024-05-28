@@ -82,6 +82,40 @@ namespace KFHRBackEnd.Controllers
             }
         }
 
+
+
+        [HttpGet("getAttendance")]
+        [ProducesResponseType(typeof(IEnumerable<Attendance>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetAttendance()
+        {
+            try
+            {
+                var attendances = await _context.Attendances.ToListAsync();
+                return Ok(attendances);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("getLeave")]
+        [ProducesResponseType(typeof(IEnumerable<Leave>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetLeave()
+        {
+            try
+            {
+                var leaves = await _context.Leaves.ToListAsync();
+                return Ok(leaves);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         // GET: api/Admin/Employees
         [HttpGet("Employees")]
         [ProducesResponseType(typeof(IEnumerable<Employee>), 200)]
