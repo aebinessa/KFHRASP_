@@ -117,6 +117,7 @@ namespace KFHRBackEnd.Controllers
         }
 
         // GET: api/Admin/Employees
+        [AllowAnonymous]
         [HttpGet("Employees")]
         [ProducesResponseType(typeof(IEnumerable<Employee>), 200)]
         [ProducesResponseType(500)]
@@ -241,11 +242,53 @@ namespace KFHRBackEnd.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [AllowAnonymous]
+        [HttpGet("GetDepartments")]
+        [ProducesResponseType(typeof(IEnumerable<Department>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetDepartments()
+        {
+            try
+            {
+                var departments = await _context.Departments.ToListAsync();
+                return Ok(departments);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut("EditDepartment/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> EditDepartment(int id, EditDepartmentRequest editDepartmentRequest)
+        {
+            try
+            {
+                var department = await _context.Departments.FindAsync(id);
+                if (department == null)
+                {
+                    return NotFound("Department not found.");
+                }
+
+                department.DepartmentName = editDepartmentRequest.DepartmentName;
+                _context.Departments.Update(department);
+                await _context.SaveChangesAsync();
+
+                return Ok("Department updated.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         [HttpPost("add-department")]
         [ProducesResponseType(typeof(IActionResult), 201)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult AddDepartment(AddDepartmentRequest addDepartmentRequest)
+        public IActionResult AddDepartment(DepartmentRequest addDepartmentRequest)
         {
             try
             {
