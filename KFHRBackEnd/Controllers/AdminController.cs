@@ -40,10 +40,10 @@ namespace KFHRBackEnd.Controllers
                 {
                     checkInEmployee.CheckOutTime = DateTime.Now;
                 }
-                //else
-                //{
-                //    return ;
-                //}
+                else
+                {
+                    return BadRequest("The Employee Didn't Attend");
+                }
                 _context.Attendances.Add(checkInEmployee);
                 _context.SaveChanges();
                 return Created(nameof(CheckInEmployee), new { Id = employeeIdResponse.EmployeeId });
