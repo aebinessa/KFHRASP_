@@ -15,6 +15,7 @@ namespace KFHRBackEnd.Models.Entites.Request
         public string Password { get; set; }
 
         
+
         public string Name { get; set; }
 
         
