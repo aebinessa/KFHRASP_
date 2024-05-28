@@ -116,6 +116,82 @@ namespace KFHRBackEnd.Controllers
             }
         }
 
+
+
+        // edit (Put)
+        [HttpPut("EditAttendance")]
+        [ProducesResponseType(typeof(Attendance), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> EditAttendance([FromBody] Attendance attendanceEdit)
+        {
+            if (attendanceEdit == null)
+            {
+                return BadRequest("nothing to edit");
+            }
+
+            try
+            {
+                var existingAttendance = await _context.Attendances.FindAsync(attendanceEdit.ID);
+                if (existingAttendance == null)
+                {
+                    return NotFound("Attenadnce not found.");
+                }
+
+                existingAttendance.EmployeeId = attendanceEdit.EmployeeId;
+                existingAttendance.CheckInTime = attendanceEdit.CheckInTime;
+                existingAttendance.CheckOutTime = attendanceEdit.CheckOutTime;
+
+                _context.Attendances.Update(existingAttendance);
+                await _context.SaveChangesAsync();
+                return Ok(existingAttendance);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        // edit (Put)
+        [HttpPut("EditLeave")]
+        [ProducesResponseType(typeof(Leave), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> EditLeave([FromBody] Leave leaveEdit)
+        {
+            if (leaveEdit == null)
+            {
+                return BadRequest("nothing to edit");
+            }
+
+            try
+            {
+                var existingLeave = await _context.Leaves.FindAsync(leaveEdit.ID);
+                if (existingLeave == null)
+                {
+                    return NotFound("Leave not found.");
+                }
+
+                existingLeave.StartDate = leaveEdit.StartDate;
+                existingLeave.EndDate = leaveEdit.EndDate;
+                existingLeave.LeaveType = leaveEdit.LeaveType;
+                existingLeave.Status = leaveEdit.Status;
+                existingLeave.EmployeeId = leaveEdit.EmployeeId;
+
+                _context.Leaves.Update(existingLeave);
+                await _context.SaveChangesAsync();
+                return Ok(existingLeave);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
         // GET: api/Admin/Employees
         [AllowAnonymous]
         [HttpGet("Employees")]
