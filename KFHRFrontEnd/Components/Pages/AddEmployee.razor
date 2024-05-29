@@ -1,5 +1,5 @@
 ﻿@page "/addemployee"
-
+@inject NavigationManager Navigation
 <div class="header">
     <div class="info">
         <h1>All Employees</h1>
@@ -103,7 +103,7 @@
             </div>
             <!-- Form Actions for Cancel and Save Buttons -->
             <div class="form-actions">
-                <button type="button" class="cancel-button">Cancel</button>
+                <button type="button" @onclick="NavEmp" class="cancel-button">Cancel</button>
                 <button type="submit" class="save-button">Save</button>
             </div>
         </form>
@@ -314,3 +314,9 @@
         document.querySelector('form').reset();
     });
 </script>
+@code {
+    public void NavEmp()
+    {
+        Navigation.NavigateTo("/allemployees");
+    }
+}

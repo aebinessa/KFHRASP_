@@ -1,8 +1,15 @@
 ﻿@page "/"
 
 @using KFHRFrontEnd.Components.Layout
+@using KFHRBackEnd.Models.Entites.Request
+@using KFHRBackEnd.Models.Services
+@using System.IdentityModel.Tokens.Jwt
+@using System.Security.Claims
+@using KFHRFrontEnd.Models.Responses
+@inject HttpClient Http
 @layout NoNavbarLayout
 @inject NavigationManager Navigation
+@inject GlobalAppState AppState
 
 @if (!string.IsNullOrEmpty(errorMessage))
 {
@@ -11,133 +18,150 @@
 
 <body>
     <div class="container">
-        
         <div class="login-box">
             <img src="login.png" alt="Logo" class="logo">
             <h1>Welcome To KFHR Website</h1>
             <form>
                 <div class="textbox">
-                    <input type="text" id="username" @bind="employeeId" placeholder="Employee ID">
+                    <input type="text" id="employeeEmail" @bind="loginModel.Email" placeholder="Employee ID">
                 </div>
                 <div class="textbox">
-                    <input type="password" id="password" @bind="password" placeholder="Password">
+                    <input type="password" id="password" @bind="loginModel.Password" placeholder="Password">
                 </div>
-                <button type="button" class="btn" @onclick="HandleLogin">Login</button>
+                <button type="button" class="btn" @onclick="LoginUserSubmit">Login</button>
             </form>
         </div>
     </div>
 </body>
 
 @code {
-    private string employeeId;
-    private string password;
-    private string errorMessage;
+    private LoginRequest loginModel = new LoginRequest();
+    private string errorMessage = string.Empty;
 
-    private void HandleLogin()
+    private async Task LoginUserSubmit()
     {
-        // Basic validation
-        if (string.IsNullOrEmpty(employeeId) || string.IsNullOrEmpty(password))
+        try
         {
-            errorMessage = "Please enter both username and password.";
-            return;
-        }
+            var response = await Http.PostAsJsonAsync("/api/Authentication/Login", loginModel);
+            if (response.IsSuccessStatusCode)
+            {
+                var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
+                if (tokenResponse != null && !string.IsNullOrWhiteSpace(tokenResponse.Token))
+                {
+                    var handler = new JwtSecurityTokenHandler();
+                    var jwtSecurityToken = handler.ReadJwtToken(tokenResponse.Token);
 
-        // Perform authentication (dummy check here for illustration)
-        if (employeeId == "admin" && password == "password")
-        {
-            // Navigate to the home page
-            Navigation.NavigateTo("/dashboard");
+                    var username = jwtSecurityToken.Claims.FirstOrDefault(c => c.Type == TokenClaimsConstant.Username)?.Value ?? string.Empty;
+                    var userId = jwtSecurityToken.Claims.FirstOrDefault(c => c.Type == TokenClaimsConstant.UserId)?.Value ?? string.Empty;
+                    var userRole = jwtSecurityToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value == "Admin";
+
+                    if (AppState != null)
+                    {
+                        AppState.SetAuthData(tokenResponse.Token, username, userId, userRole);
+                    }
+
+                    Navigation.NavigateTo("/dashboard");
+                }
+                else
+                {
+                    errorMessage = "Failed to retrieve a valid authentication token. Please try again.";
+                }
+            }
+            else
+            {
+                errorMessage = "Invalid login credentials. Please try again.";
+            }
         }
-        else
+        catch (Exception ex)
         {
-            errorMessage = "Invalid username or password.";
+            errorMessage = $"An error occurred: {ex.Message}";
         }
     }
 }
 
 <style>
-body {
-    font-family: Angkor, serif;
-    background-color: #f5f5f5;
-}
-
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-}
-
-.header {
-    width: 100%;
-    background-color: #333;
-    color: #fff;
-    padding: 10px 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-}
-
-.header span {
-    font-size: 18px;
-}
-
-.login-box {
-    background-color: #fff;
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    margin-top: 60px;
-}
-
-.logo {
-    width: 100px;
-    height: 100px;
-}
-
-h1 {
-    margin: 20px 0;
-    font-size: 24px;
-    color: #000000;
-    font-weight: bold;
-}
-
-.textbox {
-    margin: 15px 0;
-    border-color: #4B995C;
+    .body {
+        font-family: Angkor, serif;
+        background-color: #f5f5f5;
     }
 
-.textbox label {
-    display: block;
-    margin-bottom: 5px;
-    color: #777;
-    border-color: #4B995C;
-}
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+    }
 
-.textbox input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box;
-    border-color: #4B995C;
-}
+    .header {
+        width: 100%;
+        background-color: #333;
+        color: #fff;
+        padding: 10px 20px;
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
 
-.btn {
-    background-color: #4B995C;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    width: 100%;
-}
+        .header span {
+            font-size: 18px;
+        }
 
-.btn:hover {
-    background-color: #4B995C;
-}
+    .login-box {
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        margin-top: 60px;
+    }
+
+    .logo {
+        width: 100px;
+        height: 100px;
+    }
+
+    .h1 {
+        margin: 20px 0;
+        font-size: 24px;
+        color: #000000;
+        font-weight: bold;
+    }
+
+    .textbox {
+        margin: 15px 0;
+        border-color: #4B995C;
+    }
+
+        .textbox label {
+            display: block;
+            margin-bottom: 5px;
+            color: #777;
+            border-color: #4B995C;
+        }
+
+        .textbox input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            border-color: #4B995C;
+        }
+
+    .btn {
+        background-color: #4B995C;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        width: 100%;
+    }
+
+        .btn:hover {
+            background-color: #4B995C;
+        }
 </style>
