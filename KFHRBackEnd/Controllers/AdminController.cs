@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using KFHRBackEnd.Models.Entites;
-using KFHRBackEnd.Models.Entites.Request.Employee;
 using KFHRBackEnd.Migrations;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using KFHRBackEnd.Models.Entites.Request.Department;
 
 namespace KFHRBackEnd.Controllers
 {
