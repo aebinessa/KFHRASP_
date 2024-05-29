@@ -30,7 +30,7 @@ public class EditEmployee
 
     public int? NFCIdNumber { get; set; }
 
-    public int? PositionId { get; set; }
+    public Position? PositionId { get; set; }
 
     public Department? DepartmentId { get; set; }
 
