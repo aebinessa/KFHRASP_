@@ -1,6 +1,5 @@
 ﻿using KFHRBackEnd.Models.Entites;
-using KFHRBackEnd.Models.Entites.Request.Employee;
-using System;
+
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
