@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using KFHRBackEnd.Models.Entites;
-using KFHRBackEnd.Models.Entites.Request.Employee;
 using KFHRBackEnd.Migrations;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using KFHRBackEnd.Models.Entites.Request.Department;
 
 namespace KFHRBackEnd.Controllers
 {
@@ -40,10 +40,10 @@ namespace KFHRBackEnd.Controllers
                 {
                     checkInEmployee.CheckOutTime = DateTime.Now;
                 }
-                //else
-                //{
-                //    return ;
-                //}
+                else
+                {
+                    return BadRequest("The Employee Didn't Attend");
+                }
                 _context.Attendances.Add(checkInEmployee);
                 _context.SaveChanges();
                 return Created(nameof(CheckInEmployee), new { Id = employeeIdResponse.EmployeeId });
@@ -82,7 +82,118 @@ namespace KFHRBackEnd.Controllers
             }
         }
 
+
+
+        [HttpGet("getAttendance")]
+        [ProducesResponseType(typeof(IEnumerable<Attendance>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetAttendance()
+        {
+            try
+            {
+                var attendances = await _context.Attendances.ToListAsync();
+                return Ok(attendances);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("getLeave")]
+        [ProducesResponseType(typeof(IEnumerable<Leave>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetLeave()
+        {
+            try
+            {
+                var leaves = await _context.Leaves.ToListAsync();
+                return Ok(leaves);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+
+        // edit (Put)
+        [HttpPut("EditAttendance")]
+        [ProducesResponseType(typeof(Attendance), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> EditAttendance([FromBody] Attendance attendanceEdit)
+        {
+            if (attendanceEdit == null)
+            {
+                return BadRequest("nothing to edit");
+            }
+
+            try
+            {
+                var existingAttendance = await _context.Attendances.FindAsync(attendanceEdit.ID);
+                if (existingAttendance == null)
+                {
+                    return NotFound("Attenadnce not found.");
+                }
+
+                existingAttendance.EmployeeId = attendanceEdit.EmployeeId;
+                existingAttendance.CheckInTime = attendanceEdit.CheckInTime;
+                existingAttendance.CheckOutTime = attendanceEdit.CheckOutTime;
+
+                _context.Attendances.Update(existingAttendance);
+                await _context.SaveChangesAsync();
+                return Ok(existingAttendance);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        // edit (Put)
+        [HttpPut("EditLeave")]
+        [ProducesResponseType(typeof(Leave), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> EditLeave([FromBody] Leave leaveEdit)
+        {
+            if (leaveEdit == null)
+            {
+                return BadRequest("nothing to edit");
+            }
+
+            try
+            {
+                var existingLeave = await _context.Leaves.FindAsync(leaveEdit.ID);
+                if (existingLeave == null)
+                {
+                    return NotFound("Leave not found.");
+                }
+
+                existingLeave.StartDate = leaveEdit.StartDate;
+                existingLeave.EndDate = leaveEdit.EndDate;
+                existingLeave.LeaveType = leaveEdit.LeaveType;
+                existingLeave.Status = leaveEdit.Status;
+                existingLeave.EmployeeId = leaveEdit.EmployeeId;
+
+                _context.Leaves.Update(existingLeave);
+                await _context.SaveChangesAsync();
+                return Ok(existingLeave);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
         // GET: api/Admin/Employees
+        [AllowAnonymous]
         [HttpGet("Employees")]
         [ProducesResponseType(typeof(IEnumerable<Employee>), 200)]
         [ProducesResponseType(500)]
@@ -205,11 +316,53 @@ namespace KFHRBackEnd.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [AllowAnonymous]
+        [HttpGet("GetDepartments")]
+        [ProducesResponseType(typeof(IEnumerable<Department>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetDepartments()
+        {
+            try
+            {
+                var departments = await _context.Departments.ToListAsync();
+                return Ok(departments);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut("EditDepartment/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> EditDepartment(int id, EditDepartmentRequest editDepartmentRequest)
+        {
+            try
+            {
+                var department = await _context.Departments.FindAsync(id);
+                if (department == null)
+                {
+                    return NotFound("Department not found.");
+                }
+
+                department.DepartmentName = editDepartmentRequest.DepartmentName;
+                _context.Departments.Update(department);
+                await _context.SaveChangesAsync();
+
+                return Ok("Department updated.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         [HttpPost("add-department")]
         [ProducesResponseType(typeof(IActionResult), 201)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult AddDepartment(AddDepartmentRequest addDepartmentRequest)
+        public IActionResult AddDepartment(DepartmentRequest addDepartmentRequest)
         {
             try
             {

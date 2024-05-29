@@ -1,6 +1,7 @@
 ﻿using KFHRBackEnd.Models.Entites;
-using KFHRBackEnd.Models.Entites.Request.Employee;
-using System;
+
+
+
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
@@ -31,7 +32,7 @@ public class EditEmployee
 
     public int? PositionId { get; set; }
 
-    public int? DepartmentId { get; set; }
+    public Department? DepartmentId { get; set; }
 
     public int? PointEarned { get; set; }
 }
