@@ -2,7 +2,7 @@
 
 @using KFHRFrontEnd.Components
 
-
+@inject NavigationManager Navigation
 
 <div class="header">
     <div class="greeting">
@@ -13,7 +13,9 @@
             <NavLink href="/counter" class="center">
                 <img src="notification.png" />
             </NavLink>
-        <img src="leasie-watson.jpg" alt="Profile Picture" class="center" />
+             <NavLink href="/profile" class="center">
+        <img src="leasie-watson.jpg"  alt="Profile Picture" class="center" />
+            </NavLink>
         <div>
             <h2>Robert Allen</h2>
             <p>HR Manager</p>
@@ -96,6 +98,12 @@
         </tbody>
     </table>
 </div>
+
+@code{
+    public void NavProf(){
+        Navigation.NavigateTo("/profile");
+    }
+}
 
 <style>
     p {

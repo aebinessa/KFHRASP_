@@ -1,5 +1,5 @@
 ﻿@page "/recommendations"
-
+@inject NavigationManager Navigation
 <div class="header">
     <div class="info">
         <h1>Recommendations</h1>
@@ -19,6 +19,14 @@
 <div class="body">
     <div class="form-container">
         <form id="certificate-form">
+            <div class="form-row">
+                <div class="form-group file-input">
+                    <input type="file" id="profile-picture" name="profile-picture" accept="image/*">
+                    <label for="profile-picture" class="file-label">
+                        <img src="camera-icon.png" alt="Upload">
+                    </label>
+                </div>
+            </div>
             <div class="form-section horizontal-fields">
                 <input type="text" id="name-of-certificate" placeholder="Name of Certificate">
                 <input type="text" id="organization" placeholder="Organization">
@@ -29,17 +37,20 @@
             <div class="form-section">
                 <textarea id="certification-detail" placeholder="Certification Detail"></textarea>
             </div>
-            <div class="form-section">
-                <input type="date" id="date-completed" placeholder="Date Completed">
-            </div>
             <div class="form-buttons">
-                <button type="button" id="cancel-button">Cancel</button>
+                <button type="button" @onclick="NavDash" id="cancel-button">Cancel</button>
                 <button type="submit" id="save-button">Save</button>
             </div>
         </form>
     </div>
 </div>
 
+
+@code{
+    public void NavDash(){
+        Navigation.NavigateTo("/dashboard");
+    }
+}
 <style>
 
     .header {
@@ -112,6 +123,56 @@
         display: flex;
         flex-direction: column;
     }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+        flex-basis: 48%;
+    }
+
+    .file-input {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100px;
+        max-width: 100px;
+        max-height: 100px;
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        background-color: #f8f8f8;
+        cursor: pointer;
+        overflow: hidden;
+    }
+
+        .file-input input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-input .file-label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+            .file-input .file-label img {
+                width: 24px;
+                height: 24px;
+            }
 
     .form-section {
         margin-bottom: 15px;

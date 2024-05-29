@@ -1,0 +1,15 @@
+﻿@page "/platform-specific"
+@inject PlatformSpecificService PlatformService
+
+<h3>Platform-Specific Operation</h3>
+<button @onclick="ExecuteOperation">Execute Operation</button>
+<p>@result</p>
+
+@code {
+    private string result;
+
+    private async Task ExecuteOperation()
+    {
+        result = await PlatformService.PerformOperationAsync();
+    }
+}
