@@ -2,13 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using KFHRBackEnd.Models.Entites;
-using KFHRBackEnd.Migrations;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using KFHRBackEnd.Models.Entites.Request.Department;
 
 namespace KFHRBackEnd.Controllers
 {
-    [Authorize(Roles ="Admin")]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -20,196 +18,6 @@ namespace KFHRBackEnd.Controllers
             _context = context;
         }
 
-        [HttpPost("idResponse")]
-        [ProducesResponseType(typeof(IActionResult), 201)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult CheckInEmployee(EmployeeIdResponse employeeIdResponse)
-        {
-            try
-            {
-                var checkInEmployee = new Attendance()
-                {
-                    EmployeeId = employeeIdResponse.EmployeeId,
-                    CheckInTime = DateTime.Now
-                };
-                if (checkInEmployee.CheckInTime == DateTime.Today.AddHours(8))
-                {
-                    checkInEmployee.CheckInTime = DateTime.Now;
-                }
-                if (checkInEmployee.CheckOutTime == DateTime.Today.AddHours(16))
-                {
-                    checkInEmployee.CheckOutTime = DateTime.Now;
-                }
-                else
-                {
-                    return BadRequest("The Employee Didn't Attend");
-                }
-                _context.Attendances.Add(checkInEmployee);
-                _context.SaveChanges();
-                return Created(nameof(CheckInEmployee), new { Id = employeeIdResponse.EmployeeId });
-            }
-            catch (Exception ex)
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, ex);
-            }
-        }
-
-
-        [HttpPost("leavesResponse")]
-        [ProducesResponseType(typeof(IActionResult), 201)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult LeavesResponse(Leave leavesResponse)
-        {
-            try
-            {
-                var leavesResponses = new Leave()
-                {
-                    ID = leavesResponse.ID,
-                   EmployeeId = leavesResponse.EmployeeId,
-                   LeaveType = leavesResponse.LeaveType,
-                   StartDate = leavesResponse.StartDate,
-                   EndDate = leavesResponse.EndDate,
-                   Notes = leavesResponse.Notes,
-                   Status = leavesResponse.Status
-                };
-                _context.Leaves.Add(leavesResponses);
-                _context.SaveChanges();
-                return Created(nameof(CheckInEmployee), new { Id = leavesResponse.EmployeeId });
-            }
-            catch (Exception ex)
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, ex);
-            }
-        }
-
-
-
-        [HttpGet("getAttendance")]
-        [ProducesResponseType(typeof(IEnumerable<Attendance>), 200)]
-        [ProducesResponseType(500)]
-        public async Task<IActionResult> GetAttendance()
-        {
-            try
-            {
-                var attendances = await _context.Attendances.ToListAsync();
-                return Ok(attendances);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpGet("getLeave")]
-        [ProducesResponseType(typeof(IEnumerable<Leave>), 200)]
-        [ProducesResponseType(500)]
-        public async Task<IActionResult> GetLeave()
-        {
-            try
-            {
-                var leaves = await _context.Leaves.ToListAsync();
-                return Ok(leaves);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-
-
-        // edit (Put)
-        [HttpPut("EditAttendance")]
-        [ProducesResponseType(typeof(Attendance), 200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
-        public async Task<IActionResult> EditAttendance([FromBody] Attendance attendanceEdit)
-        {
-            if (attendanceEdit == null)
-            {
-                return BadRequest("nothing to edit");
-            }
-
-            try
-            {
-                var existingAttendance = await _context.Attendances.FindAsync(attendanceEdit.ID);
-                if (existingAttendance == null)
-                {
-                    return NotFound("Attenadnce not found.");
-                }
-
-                existingAttendance.EmployeeId = attendanceEdit.EmployeeId;
-                existingAttendance.CheckInTime = attendanceEdit.CheckInTime;
-                existingAttendance.CheckOutTime = attendanceEdit.CheckOutTime;
-
-                _context.Attendances.Update(existingAttendance);
-                await _context.SaveChangesAsync();
-                return Ok(existingAttendance);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-
-        // edit (Put)
-        [HttpPut("EditLeave")]
-        [ProducesResponseType(typeof(Leave), 200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
-        public async Task<IActionResult> EditLeave([FromBody] Leave leaveEdit)
-        {
-            if (leaveEdit == null)
-            {
-                return BadRequest("nothing to edit");
-            }
-
-            try
-            {
-                var existingLeave = await _context.Leaves.FindAsync(leaveEdit.ID);
-                if (existingLeave == null)
-                {
-                    return NotFound("Leave not found.");
-                }
-
-                existingLeave.StartDate = leaveEdit.StartDate;
-                existingLeave.EndDate = leaveEdit.EndDate;
-                existingLeave.LeaveType = leaveEdit.LeaveType;
-                existingLeave.Status = leaveEdit.Status;
-                existingLeave.EmployeeId = leaveEdit.EmployeeId;
-
-                _context.Leaves.Update(existingLeave);
-                await _context.SaveChangesAsync();
-                return Ok(existingLeave);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-
-        // GET: api/Admin/Employees
-        [AllowAnonymous]
-        [HttpGet("Employees")]
-        [ProducesResponseType(typeof(IEnumerable<Employee>), 200)]
-        [ProducesResponseType(500)]
-        public async Task<IActionResult> GetEmployees()
-        {
-            try
-            {
-                var employees = await _context.Employees.ToListAsync();
-                return Ok(employees);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-        // post 
         [HttpPost("AddEmployee")]
         [ProducesResponseType(typeof(Employee), 200)]
         [ProducesResponseType(400)]
@@ -230,7 +38,7 @@ namespace KFHRBackEnd.Controllers
                 {
                     Name = employeeDto.Name,
                     Email = employeeDto.Email,
-                    Password = hashedPassword, // Set the hashed default password
+                    Password = hashedPassword,
                     DOB = employeeDto.DOB,
                     Gender = employeeDto.Gender,
                     ProfilePicURL = employeeDto.ProfilePicURL,
@@ -238,7 +46,7 @@ namespace KFHRBackEnd.Controllers
                     PositionId = employeeDto.PositionId,
                     DepartmentId = employeeDto.DepartmentId,
                     PointEarned = employeeDto.PointEarned,
-                    IsAdmin = false // Ensure IsAdmin is not set during add operation
+                   // Allow the admin to specify if the new employee is an admin
                 };
 
                 await _context.Employees.AddAsync(employee);
@@ -251,8 +59,6 @@ namespace KFHRBackEnd.Controllers
             }
         }
 
-
-        // edit (Put)
         [HttpPut("EditEmployee")]
         [ProducesResponseType(typeof(Employee), 200)]
         [ProducesResponseType(400)]
@@ -279,6 +85,8 @@ namespace KFHRBackEnd.Controllers
                 existingEmployee.Gender = employeeDto.Gender;
                 existingEmployee.ProfilePicURL = employeeDto.ProfilePicURL;
                 existingEmployee.NFCIdNumber = employeeDto.NFCIdNumber;
+                existingEmployee.PositionId = employeeDto.PositionId;
+                existingEmployee.DepartmentId = employeeDto.DepartmentId;
                 existingEmployee.PointEarned = employeeDto.PointEarned;
 
                 _context.Employees.Update(existingEmployee);
@@ -291,8 +99,6 @@ namespace KFHRBackEnd.Controllers
             }
         }
 
-
-        // DELETE: api/Admin/DeleteEmployee/5
         [HttpDelete("DeleteEmployee/{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
@@ -316,7 +122,7 @@ namespace KFHRBackEnd.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [AllowAnonymous]
+
         [HttpGet("GetDepartments")]
         [ProducesResponseType(typeof(IEnumerable<Department>), 200)]
         [ProducesResponseType(500)]
@@ -359,7 +165,7 @@ namespace KFHRBackEnd.Controllers
             }
         }
 
-        [HttpPost("add-department")]
+        [HttpPost("AddDepartment")]
         [ProducesResponseType(typeof(IActionResult), 201)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult AddDepartment(DepartmentRequest addDepartmentRequest)
@@ -379,6 +185,7 @@ namespace KFHRBackEnd.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, ex);
             }
         }
+
         [HttpDelete("DeleteDepartment/{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
@@ -396,6 +203,22 @@ namespace KFHRBackEnd.Controllers
                 _context.Departments.Remove(department);
                 await _context.SaveChangesAsync();
                 return Ok("Department deleted.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("Employees")]
+        [ProducesResponseType(typeof(IEnumerable<Employee>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetEmployees()
+        {
+            try
+            {
+                var employees = await _context.Employees.ToListAsync();
+                return Ok(employees);
             }
             catch (Exception ex)
             {

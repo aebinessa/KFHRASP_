@@ -18,5 +18,7 @@ namespace KFHRBackEnd.Models.Entites
         public string Status { get; set; }
         [Required]
         public string Notes { get; set; }
+
+     
     }
 }
