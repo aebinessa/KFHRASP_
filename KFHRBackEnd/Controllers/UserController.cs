@@ -21,6 +21,16 @@ namespace KFHRBackEnd.Controllers
             _context = context;
         }
 
+
+        [HttpGet("[action]/{id}")]
+        [ProducesResponseType(typeof(IActionResult), 200)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<Employee> GetProfile(int id)
+        {
+            return _context.Employees.Find(id);
+        }
+
         [HttpPost("CheckInEmployee")]
         [ProducesResponseType(typeof(IActionResult), 201)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
