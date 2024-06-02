@@ -1,56 +1,9 @@
 ﻿@page "/allemployees"
 @using KFHRFrontEnd.Models
+@using System.Net.Http.Json
+@inject HttpClient Http
 @inject NavigationManager Navigation
-
-@code {
-    private List<AllEmployee> Employees = new List<AllEmployee>
-    {
-        new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-        new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Greg Robinson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Frank Gibson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-    new AllEmployee { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Department = "Design", Position = "Graphic Designer"},
-
-    };
-
-    private int currentPage = 1;
-    private int pageSize = 10;
-    private int totalPages => (int)Math.Ceiling((double)Employees.Count / pageSize);
-
-    private IEnumerable<AllEmployee> PaginatedEmployees => Employees.Skip((currentPage - 1) * pageSize).Take(pageSize);
-
-    private void NavigateToPage(int pageNumber)
-    {
-        if (pageNumber > 0 && pageNumber <= totalPages)
-        {
-            currentPage = pageNumber;
-        }
-    }
-
-}
+@inject GlobalAppState AppState
 
 <div class="header">
     <div class="info">
@@ -83,7 +36,7 @@
             <img src="addemployee.png" alt="Add" class="icon" />
         </NavLink>
         <NavLink href="/counter" class="center">
-            <img src="export.png" alt="Add" class="icon" />
+            <img src="export.png" alt="Export" class="icon" />
         </NavLink>
     </div>
 </section>
@@ -103,14 +56,14 @@
             @foreach (var employee in PaginatedEmployees)
             {
                 <tr>
-                    <td><img src="leasie-watson.jpg" alt="Profile Picture" class="center" />@employee.EmployeeName</td>
-                    <td>@employee.EmployeeID</td>
-                    <td>@employee.Position</td>
-                    <td>@employee.Department</td>
+                    <td><img src="@employee.ProfilePicURL" alt="Profile Picture" class="center" />@employee.Name</td>
+                    <td>@employee.Id</td>
+                    <td>@employee.DepartmentId</td>
+                    <td>@employee.PositionId</td>
                     <td>
-                        <button class="view-btn" @onclick="ViewEmployee">👁️</button>
-                        <button class="edit-btn" @onclick="EditEmployee">✏️</button>
-                        <button class="delete-btn">🗑️</button>
+                        <button class="view-btn" @onclick="() => ViewEmployee(employee.Id)">👁️</button>
+                        <button class="edit-btn" @onclick="() => EditEmployee(employee.Id)">✏️</button>
+                        <button class="delete-btn" @onclick="() => DeleteEmployee(employee.Id)">🗑️</button>
                     </td>
                 </tr>
             }
@@ -119,7 +72,7 @@
 </section>
 
 <div>
-    Showing @((currentPage - 1) * pageSize + 1) to @(Math.Min(currentPage * pageSize, Employees.Count)) out of @Employees.Count records
+    Showing @((currentPage - 1) * pageSize + 1) to @(Math.Min(currentPage * pageSize, employees.Count)) out of @employees.Count records
 </div>
 <nav>
     <ul class="pagination">
@@ -140,6 +93,61 @@
         </li>
     </ul>
 </nav>
+
+@code {
+    private List<AllEmployee> employees = new List<AllEmployee>();
+    private int currentPage = 1;
+    private int pageSize = 10;
+    private int totalPages => (int)Math.Ceiling((double)employees.Count / pageSize);
+    private IEnumerable<AllEmployee> PaginatedEmployees => employees.Skip((currentPage - 1) * pageSize).Take(pageSize);
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var client = new HttpClient();
+            if (AppState != null)
+            {
+
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
+
+                employees = await client.GetFromJsonAsync<List<AllEmployee>>("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/Employees");
+
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching employees: {ex.Message}");
+        }
+    }
+
+    private void NavigateToPage(int pageNumber)
+    {
+        if (pageNumber > 0 && pageNumber <= totalPages)
+        {
+            currentPage = pageNumber;
+        }
+    }
+
+    private void ViewEmployee(int employeeId)
+    {
+        Navigation.NavigateTo($"/employeedetails/{employeeId}");
+    }
+
+    private void EditEmployee(int employeeId)
+    {
+        Navigation.NavigateTo($"/editemployee/{employeeId}");
+    }
+
+    private async Task DeleteEmployee(int employeeId)
+    {
+
+        var response = await Http.DeleteAsync($"/api/Admin/DeleteEmployee/{employeeId}");
+        employees.RemoveAll(e => e.Id == employeeId);
+        StateHasChanged();
+        
+    }
+}
 
 <style>
     .header {

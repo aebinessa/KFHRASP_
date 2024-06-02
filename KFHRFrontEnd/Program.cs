@@ -6,11 +6,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddScoped<GlobalAppState>();
+builder.Services.AddHttpClient();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://kfhrbackend20240528002909.azurewebsites.net/") });
 
 
-    builder.Services.AddScoped<GlobalAppState>();
-    builder.Services.AddHttpClient();
+    
     // other services
 
 
