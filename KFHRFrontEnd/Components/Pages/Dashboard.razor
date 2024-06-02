@@ -1,8 +1,38 @@
 ﻿@page "/dashboard"
 
 @using KFHRFrontEnd.Components
+@using KFHRFrontEnd.Models
+@using System.Net.Http
+@using System.Net.Http.Json
 
+
+@inject HttpClient Http
 @inject NavigationManager Navigation
+@inject GlobalAppState AppState
+
+@code {
+    private List<AllEmployee> employees = new List<AllEmployee>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var client = new HttpClient();
+            if (AppState != null)
+            {
+
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
+
+               employees = await client.GetFromJsonAsync<List<AllEmployee>>("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/Employees");
+                
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching employees: {ex.Message}");
+        }
+    }
+}
 
 <div class="header">
     <div class="greeting">
@@ -27,7 +57,7 @@
     <div class="stats-card">
         <i class="bi bi-people-fill"></i>
         <div class="stats-info">
-            <p>Total Employees: <span>560</span></p>
+            <p>Total Employees: <span>@employees.Count</span></p>
         </div>
     </div>
     <div class="stats-card">
@@ -56,45 +86,27 @@
             <tr>
                 <th>Employee Name</th>
                 <th>Position</th>
-                <th>Check In Time</th>
+                <th>Check In</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td><img src="leasie-watson.jpg"/> Leasie Watson</td>
-                <td>Team Lead - Design</td>
-                <td>07:09 AM</td>
-            </tr>
-            <tr>
-                <td><img src="leasie-watson.jpg" /> Darlene Robertson</td>
-                <td>Web Designer</td>
-                <td>07:10 AM</td>
-            </tr>
-            <tr>
-                <td><img src="leasie-watson.jpg" /> Jacob Jones</td>
-                <td>Medical Assistant</td>
-                <td>07:12 AM</td>
-            </tr>
-            <tr>
-                <td><img src="leasie-watson.jpg" /> Kathryn Murphy</td>
-                <td>Marketing Coordinator</td>
-                <td>07:15 AM</td>
-            </tr>
-            <tr>
-                <td><img src="leasie-watson.jpg" /> Leslie Alexander</td>
-                <td>Data Analyst</td>
-                <td>07:15 AM</td>
-            </tr>
-            <tr>
-                <td><img src="leasie-watson.jpg" /> Ronald Richards</td>
-                <td>Phyton Developer</td>
-                <td>07:19 AM</td>
-            </tr>
-            <tr>
-                <td><img src="leasie-watson.jpg" /> Jenny Wilson</td>
-                <td>React JS Developer</td>
-                <td>07:24 AM</td>
-            </tr>
+            @if (employees != null && employees.Count > 0)
+            {
+                foreach (var employee in employees)
+                {
+                    <tr>
+                        <td><img src="@employee.ProfilePicURL"/> @employee.Name</td>
+                        <td>@employee.PositionId</td>
+                        <td>7:01</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3">No employees found.</td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>
