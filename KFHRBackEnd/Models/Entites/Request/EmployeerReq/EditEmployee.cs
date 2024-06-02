@@ -25,7 +25,7 @@ public class EditEmployee
 
 
     [Url]
-    [AllowNull]
+ 
     public string? ProfilePicURL { get; set; }
 
     public int? NFCIdNumber { get; set; }
