@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using KFHRBackEnd.Models.Entites;
 using KFHRBackEnd.Models.Entites.Request.Department;
+using KFHRBackEnd.Models.Entites.Request;
 
 namespace KFHRBackEnd.Controllers
 {
@@ -16,6 +17,62 @@ namespace KFHRBackEnd.Controllers
         public AdminController(DBContextApp context)
         {
             _context = context;
+        }
+
+        [HttpPost("GivePoints")]
+        [ProducesResponseType(typeof(Employee), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GivePoints([FromBody] GivePointsRequest request)
+        {
+            if (request == null || request.Points < 0)
+            {
+                return BadRequest("Invalid points request.");
+            }
+
+            try
+            {
+                var existingEmployee = await _context.Employees.FindAsync(request.EmployeeId);
+                if (existingEmployee == null)
+                {
+                    return NotFound("Employee not found.");
+                }
+
+                existingEmployee.PointEarned = (existingEmployee.PointEarned ?? 0) + request.Points;
+
+                _context.Employees.Update(existingEmployee);
+                await _context.SaveChangesAsync();
+                return Ok(existingEmployee);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        [HttpPost("AddCertificate")]
+        [ProducesResponseType(typeof(RecommendedCertificate), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> AddCertificate([FromBody] RecommendedCertificate certificate)
+        {
+            if (certificate == null)
+            {
+                return BadRequest("Certificate data is null.");
+            }
+
+            try
+            {
+                await _context.RecommendedCertificates.AddAsync(certificate);
+                await _context.SaveChangesAsync();
+                return Ok(certificate);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost("AddEmployee")]
@@ -46,7 +103,7 @@ namespace KFHRBackEnd.Controllers
                     PositionId = employeeDto.PositionId,
                     DepartmentId = employeeDto.DepartmentId,
                     PointEarned = employeeDto.PointEarned,
-                   // Allow the admin to specify if the new employee is an admin
+                    // Allow the admin to specify if the new employee is an admin
                 };
 
                 await _context.Employees.AddAsync(employee);
@@ -59,12 +116,12 @@ namespace KFHRBackEnd.Controllers
             }
         }
 
-        [HttpPut("EditEmployee")]
+        [HttpPut("EditEmployee/{id}")]
         [ProducesResponseType(typeof(Employee), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> EditEmployee([FromBody] EditEmployee employeeDto)
+        public async Task<IActionResult> EditEmployee(int id, [FromBody] EditEmployee employeeDto)
         {
             if (employeeDto == null)
             {
@@ -73,7 +130,7 @@ namespace KFHRBackEnd.Controllers
 
             try
             {
-                var existingEmployee = await _context.Employees.FindAsync(employeeDto.Id);
+                var existingEmployee = await _context.Employees.FindAsync(id);
                 if (existingEmployee == null)
                 {
                     return NotFound("Employee not found.");
@@ -83,7 +140,12 @@ namespace KFHRBackEnd.Controllers
                 existingEmployee.Email = employeeDto.Email;
                 existingEmployee.DOB = employeeDto.DOB;
                 existingEmployee.Gender = employeeDto.Gender;
-                existingEmployee.ProfilePicURL = employeeDto.ProfilePicURL;
+
+                if (!string.IsNullOrEmpty(employeeDto.ProfilePicURL))
+                {
+                    existingEmployee.ProfilePicURL = employeeDto.ProfilePicURL;
+                }
+
                 existingEmployee.NFCIdNumber = employeeDto.NFCIdNumber;
                 existingEmployee.PositionId = employeeDto.PositionId;
                 existingEmployee.DepartmentId = employeeDto.DepartmentId;

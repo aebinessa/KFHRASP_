@@ -21,6 +21,48 @@ namespace KFHRBackEnd.Controllers
             _context = context;
         }
 
+        [HttpGet("GetPoints")]
+        [ProducesResponseType(typeof(int), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetPoints()
+        {
+            try
+            {
+                var employeeId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (employeeId == null)
+                {
+                    return Unauthorized();
+                }
+
+                var existingEmployee = await _context.Employees.FindAsync(int.Parse(employeeId));
+                if (existingEmployee == null)
+                {
+                    return NotFound("Employee not found.");
+                }
+
+                return Ok(existingEmployee.PointEarned ?? 0);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("GetCertificates")]
+        [ProducesResponseType(typeof(IEnumerable<RecommendedCertificate>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetCertificates()
+        {
+            try
+            {
+                var certificates = await _context.RecommendedCertificates.ToListAsync();
+                return Ok(certificates);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         [HttpGet("[action]/{id}")]
         [ProducesResponseType(typeof(IActionResult), 200)]

@@ -20,7 +20,7 @@ public class AddEmployee
         [Required]
         public Gender Gender { get; set; }
 
-        [AllowNull]
+   
         [Url]
         public string? ProfilePicURL { get; set; }
 
