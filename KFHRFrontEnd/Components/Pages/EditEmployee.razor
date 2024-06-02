@@ -1,5 +1,11 @@
-﻿@page "/editemployee"
+﻿@page "/editemployee/{id}"
+@using System.Net.Http
+@using System.Net.Http.Json
+@using KFHRFrontEnd.Models
+@inject HttpClient Http
+@inject GlobalAppState AppState
 @inject NavigationManager Navigation
+
 <div class="header">
     <div class="info">
         <h1>All Employees</h1>
@@ -19,100 +25,113 @@
     </div>
 </div>
 
-<body>
-    <div class="container">
-        <form action="#" method="post">
-            <!-- Form Row for Image Upload -->
-            <div class="form-row">
-                <div class="form-group file-input">
-                    <input type="file" id="profile-picture" name="profile-picture" accept="image/*">
-                    <label for="profile-picture" class="file-label">
-                        <img src="camera-icon.png" alt="Upload">
-                    </label>
-                </div>
+<div class="container">
+    <EditForm Model="@employee" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <!-- Form Row for Image Upload -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="name">Picture URL</label>
+                <InputText id="name" @bind-Value="employee.ProfilePicURL" placeholder="Picture URL" />
             </div>
-            <!-- Form Row for First and Last Name -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="first-name">First Name</label>
-                    <input type="text" id="first-name" name="first-name" placeholder="First Name" value="John">
-                </div>
-                <div class="form-group">
-                    <label for="last-name">Last Name</label>
-                    <input type="text" id="last-name" name="last-name" placeholder="Last Name" value="Doe">
-                </div>
+        </div>
+        <!-- Form Row for First and Last Name -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <InputText id="name" @bind-Value="employee.Name" placeholder="Name" />
             </div>
-            <!-- Form Row for Mobile Number and Email Address -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="mobile-number">Mobile Number</label>
-                    <input type="text" id="mobile-number" name="mobile-number" placeholder="Mobile Number" value="1234567890">
-                </div>
-                <div class="form-group">
-                    <label for="email-address">Email Address</label>
-                    <input type="email" id="email-address" name="email-address" placeholder="Email Address" value="john.doe@example.com">
-                </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <InputText id="email" @bind-Value="employee.Email" placeholder="Email Address" />
             </div>
-            <!-- Form Row for Date of Birth and Marital Status -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="date-of-birth">Date of Birth</label>
-                    <input type="date" id="date-of-birth" name="date-of-birth" value="1990-01-01">
-                </div>
-                <div class="form-group">
-                    <label for="marital-status">Marital Status</label>
-                    <select id="marital-status" name="marital-status">
-                        <option value="">Marital Status</option>
-                        <option value="single" selected>Single</option>
-                        <option value="married">Married</option>
-                    </select>
-                </div>
+        </div>
+        <!-- Form Row for Date of Birth and Marital Status -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <InputDate id="dob" @bind-Value="employee.DOB" />
             </div>
-            <!-- Form Row for Gender and Nationality -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="gender">Gender</label>
-                    <select id="gender" name="gender">
-                        <option value="">Gender</option>
-                        <option value="male" selected>Male</option>
-                        <option value="female">Female</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="nationality">Nationality</label>
-                    <input type="text" id="nationality" name="nationality" placeholder="Nationality" value="American">
-                </div>
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <InputSelect id="gender" @bind-Value="employee.Gender">
+                    <option value="">Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </InputSelect>
             </div>
-            <!-- Form Row for Employee ID and Department -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="employee-id">Employee ID</label>
-                    <input type="text" id="employee-id" name="employee-id" placeholder="Employee ID" value="EMP001">
-                </div>
-                <div class="form-group">
-                    <label for="department">Department</label>
-                    <input type="text" id="department" name="department" placeholder="Department" value="HR">
-                </div>
+        </div>
+        <!-- Form Row for Employee ID and Department -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="nfcIdNumber">NFC ID Number</label>
+                <InputText id="nfcIdNumber" @bind-Value="employee.NFCIdNumber" placeholder="NFC ID Number" />
             </div>
-            <!-- Form Row for Position -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="position">Position</label>
-                    <input type="text" id="position" name="position" placeholder="Position" value="Manager">
-                </div>
+            <div class="form-group">
+                <label for="departmentId">Department</label>
+                <InputNumber id="departmentId" @bind-Value="employee.DepartmentId" placeholder="Department" />
             </div>
-            <!-- Form Actions for Cancel and Save Buttons -->
-            <div class="form-actions">
-                <button type="button" @onclick="NavEmp" class="cancel-button">Cancel</button>
-                <button type="submit" class="save-button">Save</button>
+        </div>
+        <!-- Form Row for Position -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="positionId">Position</label>
+                <InputNumber id="positionId" @bind-Value="employee.PositionId" placeholder="Position" />
             </div>
-        </form>
-    </div>
-    <script src="scripts.js"></script>
-</body>
+        </div>
+        <!-- Form Actions for Cancel and Save Buttons -->
+        <div class="form-actions">
+            <button type="button" @onclick="NavEmp" class="cancel-button">Cancel</button>
+            <button type="submit" class="save-button">Save</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private EditEmployeeRequest employee = new EditEmployeeRequest();
+
+    protected override async Task OnInitializedAsync()
+    {
+       
+
+    }
+        
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            var requestMessage = new HttpRequestMessage(HttpMethod.Put, "/api/Admin/EditEmployee")
+                {
+                    Content = JsonContent.Create(employee)
+                };
+            requestMessage.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
+            var response = await Http.SendAsync(requestMessage);
+            response.EnsureSuccessStatusCode();
+            Navigation.NavigateTo("/allemployees");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error updating employee: {ex.Message}");
+        }
+    }
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        // Handle file upload
+    }
+
+    public void NavEmp()
+    {
+        Navigation.NavigateTo("/allemployees");
+    }
+}
 
 <style>
-
     .header {
         display: flex;
         justify-content: space-between;
@@ -134,10 +153,10 @@
             display: flex;
             align-items: center;
             margin: 1px;
-            border: 1px solid #4B995C; /* Add border */
-            border-radius: 10px; /* Optional: Add rounded corners */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow */
-            padding: 10px; /* Add padding to keep content away from borders */
+            border: 1px solid #4B995C;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
             font-size: 24px;
             background-color: #e9f2eb;
         }
@@ -202,19 +221,17 @@
         margin-bottom: 20px;
     }
 
-    /* Flexbox container for form rows */
     .form-row {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
     }
 
-    /* Styling for form groups */
     .form-group {
         display: flex;
         flex-direction: column;
         margin-bottom: 15px;
-        flex-basis: 48%; /* Adjusted to take up roughly half the container */
+        flex-basis: 48%;
     }
 
         .form-group label {
@@ -236,7 +253,6 @@
                 color: #aaa;
             }
 
-    /* Styling for file input */
     .file-input {
         position: relative;
         display: flex;
@@ -274,14 +290,12 @@
                 height: 24px;
             }
 
-    /* Styling for form actions */
     .form-actions {
         display: flex;
         justify-content: flex-end;
         margin-top: 20px;
     }
 
-    /* Styling for buttons */
     .cancel-button,
     .save-button {
         padding: 10px 20px;
@@ -301,21 +315,4 @@
         background-color: #28a745;
         color: #fff;
     }
-
 </style>
-
-
-<script>
-
-    document.querySelector('.cancel-button').addEventListener('click', function () {
-        document.querySelector('form').reset();
-    });
-
-</script>
-
-@code {
-    public void NavEmp()
-    {
-        Navigation.NavigateTo("/allemployees");
-    }
-}

@@ -1,5 +1,10 @@
 ﻿@page "/addemployee"
+@using System.ComponentModel.DataAnnotations
+@inject HttpClient Http
+@inject GlobalAppState AppState
 @inject NavigationManager Navigation
+@using KFHRBackEnd.Models.Entites.Request
+
 <div class="header">
     <div class="info">
         <h1>All Employees</h1>
@@ -19,104 +24,121 @@
     </div>
 </div>
 
-<body>
-    <div class="container">
-        <form action="#" method="post">
-            <!-- Form Row for Image Upload -->
-            <div class="form-row">
-                <div class="form-group file-input">
-                    <input type="file" id="profile-picture" name="profile-picture" accept="image/*">
-                    <label for="profile-picture" class="file-label">
-                        <img src="camera-icon.png" alt="Upload">
-                    </label>
-                </div>
+<div class="container">
+    <EditForm Model="@employee" OnValidSubmit="@HandleValidSubmit">
+        <!--<DataAnnotationsValidator />-->
+        <!--<ValidationSummary />-->
+        <!-- Form Row for Image Upload -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="name">Picture URL</label>
+                <InputText id="picture" @bind-Value="employee.ProfilePicURL" placeholder="Picture URL" />
+                <ValidationMessage For="@(() => employee.ProfilePicURL)" />
             </div>
-            <!-- Form Row for First and Last Name -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="first-name">First Name</label>
-                    <input type="text" id="first-name" name="first-name" placeholder="First Name">
-                </div>
-                <div class="form-group">
-                    <label for="last-name">Last Name</label>
-                    <input type="text" id="last-name" name="last-name" placeholder="Last Name">
-                </div>
+        </div>
+        <!-- Form Row for Name and Email -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <InputText id="name" @bind-Value="employee.Name" placeholder="Name" />
+                <ValidationMessage For="@(() => employee.Name)" />
             </div>
-            <!-- Form Row for Mobile Number and Email Address -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="mobile-number">Mobile Number</label>
-                    <input type="text" id="mobile-number" name="mobile-number" placeholder="Mobile Number">
-                </div>
-                <div class="form-group">
-                    <label for="email-address">Email Address</label>
-                    <input type="email" id="email-address" name="email-address" placeholder="Email Address">
-                </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <InputText id="email" @bind-Value="employee.Email" placeholder="Email Address" />
+                <ValidationMessage For="@(() => employee.Email)" />
             </div>
-            <!-- Form Row for Date of Birth and Marital Status -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="date-of-birth">Date of Birth</label>
-                    <input type="date" id="date-of-birth" name="date-of-birth">
-                </div>
-                <div class="form-group">
-                    <label for="marital-status">Marital Status</label>
-                    <select id="marital-status" name="marital-status">
-                        <option value="">Marital Status</option>
-                        <option value="single">Single</option>
-                        <option value="married">Married</option>
-                    </select>
-                </div>
+        </div>
+        <!-- Form Row for DOB and Gender -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <InputDate id="dob" @bind-Value="employee.DOB" />
+                <ValidationMessage For="@(() => employee.DOB)" />
             </div>
-            <!-- Form Row for Gender and Nationality -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="gender">Gender</label>
-                    <select id="gender" name="gender">
-                        <option value="">Gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="nationality">Nationality</label>
-                    <input type="text" id="nationality" name="nationality" placeholder="Nationality">
-                </div>
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <InputSelect id="gender" @bind-Value="employee.Gender">
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => employee.Gender)" />
             </div>
-            <!-- Form Row for Employee ID and Department -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="employee-id">Employee ID</label>
-                    <input type="text" id="employee-id" name="employee-id" placeholder="Employee ID">
-                </div>
-                <div class="form-group">
-                    <label for="department">Department</label>
-                    <input type="text" id="department" name="department" placeholder="Department">
-                </div>
+        </div>
+        <!-- Form Row for Position ID and Department ID -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="positionId">Position ID</label>
+                <InputNumber id="positionId" @bind-Value="employee.PositionId" placeholder="Position ID" />
+                <ValidationMessage For="@(() => employee.PositionId)" />
             </div>
-            <!-- Form Row for Position -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="position">Position</label>
-                    <input type="text" id="position" name="position" placeholder="Position">
-                </div>
+            <div class="form-group">
+                <label for="departmentId">Department ID</label>
+                <InputNumber id="departmentId" @bind-Value="employee.DepartmentId" placeholder="Department ID" />
+                <ValidationMessage For="@(() => employee.DepartmentId)" />
             </div>
-            <!-- Form Actions for Cancel and Save Buttons -->
-            <div class="form-actions">
-                <button type="button" @onclick="NavEmp" class="cancel-button">Cancel</button>
-                <button type="submit" class="save-button">Save</button>
-            </div>
-        </form>
-    </div>
-    <script src="scripts.js"></script>
-</body>
+        </div>
+        <!-- Form Actions for Cancel and Save Buttons -->
+        <div class="form-actions">
+            <button type="button" @onclick="NavEmp" class="cancel-button">Cancel</button>
+            <button type="submit" class="save-button">Save</button>
+        </div>
+    </EditForm>
+</div>
 
 @code {
+    private AddEmployeeRequest employee = new AddEmployeeRequest();
 
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            if (AppState != null && !string.IsNullOrEmpty(AppState.AuthToken))
+            {
+                Console.WriteLine($"AuthToken: {AppState.AuthToken}");
+
+                Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
+
+                var response = await Http.PostAsJsonAsync("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/AddEmployee", new { employeeDto = employee });
+
+                Console.WriteLine("HTTP response received");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Employee added successfully");
+                    Navigation.NavigateTo("/allemployees");
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Error adding employee: {response.ReasonPhrase}, Content: {errorContent}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("AppState is null or AuthToken is missing");
+            }
+        }
+        catch (HttpRequestException httpEx)
+        {
+            Console.WriteLine($"HTTP error adding employee: {httpEx.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"General error adding employee: {ex.Message}");
+        }
+    }
+
+    public void NavEmp()
+    {
+        Console.WriteLine("NavEmp called");
+        Navigation.NavigateTo("/allemployees");
+    }
 }
 
+
 <style>
-    /* Existing styles */
     .header {
         display: flex;
         justify-content: space-between;
@@ -203,13 +225,6 @@
 
     .h1 {
         font-size: 24px;
-        margin-bottom: 20px;
-    }
-
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
         margin-bottom: 20px;
     }
 
@@ -307,16 +322,12 @@
         background-color: #28a745;
         color: #fff;
     }
-</style>
 
-<script>
-    document.querySelector('.cancel-button').addEventListener('click', function () {
-        document.querySelector('form').reset();
-    });
-</script>
-@code {
-    public void NavEmp()
-    {
-        Navigation.NavigateTo("/allemployees");
+    .invalid {
+        border-color: red;
     }
-}
+
+    .validation-message {
+        color: red;
+    }
+</style>
