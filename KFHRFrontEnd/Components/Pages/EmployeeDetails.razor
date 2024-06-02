@@ -257,49 +257,9 @@
             </section>
         </main>
     </div>
-    <script>
-        function showSection(sectionId) {
-            // Hide all sections
-            var sections = document.querySelectorAll('.section');
-            sections.forEach(function (section) {
-                section.style.display = 'none';
-            });
-
-            // Remove active class from all buttons
-            var buttons = document.querySelectorAll('.profile-button');
-            buttons.forEach(function (button) {
-                button.classList.remove('active');
-            });
-
-            // Show the selected section
-            document.getElementById(sectionId).style.display = 'block';
-
-            // Add active class to the clicked button
-            event.target.classList.add('active');
-        }
-
-        function updateStatus(selectElement) {
-            const selectedOption = selectElement.options[selectElement.selectedIndex];
-            const statusClass = selectedOption.className.split(' ')[1];
-            selectElement.className = 'status-dropdown ' + statusClass;
-        }
-
-        function editName() {
-            alert('Edit name functionality goes here');
-        }
-
-        // Initialize status dropdowns on page load
-        document.addEventListener('DOMContentLoaded', function () {
-            const statusDropdowns = document.querySelectorAll('.status-dropdown');
-            statusDropdowns.forEach(function (dropdown) {
-                updateStatus(dropdown);
-            });
-
-            // Set Profile tab as active by default
-            showSection('profile');
-        });
-    </script>
 </body>
+
+
 
 @code {
     private void EditEmployee()
@@ -307,6 +267,49 @@
         Navigation.NavigateTo("/editemployee");
     }
 }
+
+<script>
+    function showSection(sectionId) {
+        // Hide all sections
+        var sections = document.querySelectorAll('.section');
+        sections.forEach(function (section) {
+            section.style.display = 'none';
+        });
+
+        // Remove active class from all buttons
+        var buttons = document.querySelectorAll('.profile-button');
+        buttons.forEach(function (button) {
+            button.classList.remove('active');
+        });
+
+        // Show the selected section
+        document.getElementById(sectionId).style.display = 'block';
+
+        // Add active class to the clicked button
+        event.target.classList.add('active');
+    }
+
+    function updateStatus(selectElement) {
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        const statusClass = selectedOption.className.split(' ')[1];
+        selectElement.className = 'status-dropdown ' + statusClass;
+    }
+
+    function editName() {
+        alert('Edit name functionality goes here');
+    }
+
+    // Initialize status dropdowns on page load
+    document.addEventListener('DOMContentLoaded', function () {
+        const statusDropdowns = document.querySelectorAll('.status-dropdown');
+        statusDropdowns.forEach(function (dropdown) {
+            updateStatus(dropdown);
+        });
+
+        // Set Profile tab as active by default
+        showSection('profile');
+    });
+</script>
 
 <style>
     .container {

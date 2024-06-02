@@ -1,4 +1,4 @@
-﻿@page "/editemployee/{id}"
+﻿@page "/editemployee/{Id:int}"
 @using System.Net.Http
 @using System.Net.Http.Json
 @using KFHRFrontEnd.Models
@@ -96,7 +96,7 @@
     protected override async Task OnInitializedAsync()
     {
        
-
+        employee = await Http.GetFromJsonAsync<EditEmployeeRequest>($"/api/Admin/EditEmployee/{Id}");
     }
         
 
