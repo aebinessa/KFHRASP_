@@ -34,7 +34,7 @@ namespace KFHRBackEnd.Models.Entites
 
 
         [AllowNull]
-        public Position? PositionId { get; set; }
+        public string? PositionName { get; set; }
 
         [AllowNull]
         public Department? DepartmentId { get; set; }

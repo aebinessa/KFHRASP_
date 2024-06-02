@@ -14,5 +14,7 @@ namespace KFHRBackEnd.Models.Entites
         public string OrganizationWebsite { get; set; }
         [Required]
         public string CertificatePicture { get; set; }
+        [Required]
+        public int RewardPoints { get; set; }
     }
 }

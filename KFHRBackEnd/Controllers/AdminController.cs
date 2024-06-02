@@ -90,6 +90,7 @@ namespace KFHRBackEnd.Controllers
             {
                 var defaultPassword = "123";
                 var hashedPassword = BCrypt.Net.BCrypt.HashPassword(defaultPassword);
+                var department = _context.Departments.FirstOrDefault(d => d.ID == employeeDto.DepartmentId);
 
                 var employee = new Employee
                 {
@@ -100,8 +101,8 @@ namespace KFHRBackEnd.Controllers
                     Gender = employeeDto.Gender,
                     ProfilePicURL = employeeDto.ProfilePicURL,
                     NFCIdNumber = employeeDto.NFCIdNumber,
-                    PositionId = employeeDto.PositionId,
-                    DepartmentId = employeeDto.DepartmentId,
+                    PositionName = employeeDto.PositionName,
+                    DepartmentId = department,
                     PointEarned = employeeDto.PointEarned,
                     // Allow the admin to specify if the new employee is an admin
                 };
@@ -147,7 +148,7 @@ namespace KFHRBackEnd.Controllers
                 }
 
                 existingEmployee.NFCIdNumber = employeeDto.NFCIdNumber;
-                existingEmployee.PositionId = employeeDto.PositionId;
+                existingEmployee.PositionName = employeeDto.PositionName;
                 existingEmployee.DepartmentId = employeeDto.DepartmentId;
                 existingEmployee.PointEarned = employeeDto.PointEarned;
 
