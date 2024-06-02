@@ -26,9 +26,9 @@ public class AddEmployee
 
         public int? NFCIdNumber { get; set; }
 
-        public Position? PositionId { get; set; }
+        public string? PositionName { get; set; }
 
-        public Department? DepartmentId { get; set; }
+        public int? DepartmentId { get; set; }
 
         public int? PointEarned { get; set; }
     }
