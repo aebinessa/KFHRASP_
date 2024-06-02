@@ -18,8 +18,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
-  <ItemGroup>
+   <ItemGroup>
     <ProjectReference Include="..\KFHRFrontEnd\KFHRFrontEnd.csproj" />
-  </ItemGroup>
+  </ItemGroup> 
 
 </Project>

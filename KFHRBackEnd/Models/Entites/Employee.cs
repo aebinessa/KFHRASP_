@@ -27,7 +27,7 @@ namespace KFHRBackEnd.Models.Entites
 
         [Required]
         [Url]
-        public string ProfilePicURL { get; set; }
+        public string ? ProfilePicURL { get; set; }
 
         [AllowNull]
         public int? NFCIdNumber { get; set; }
