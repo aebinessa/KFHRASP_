@@ -141,6 +141,7 @@ namespace KFHRBackEnd.Controllers
                 existingEmployee.Email = employeeDto.Email;
                 existingEmployee.DOB = employeeDto.DOB;
                 existingEmployee.Gender = employeeDto.Gender;
+                var department = _context.Departments.FirstOrDefault(d => d.ID == employeeDto.DepartmentId);
 
                 if (!string.IsNullOrEmpty(employeeDto.ProfilePicURL))
                 {
@@ -149,7 +150,7 @@ namespace KFHRBackEnd.Controllers
 
                 existingEmployee.NFCIdNumber = employeeDto.NFCIdNumber;
                 existingEmployee.PositionName = employeeDto.PositionName;
-                existingEmployee.DepartmentId = employeeDto.DepartmentId;
+                existingEmployee.DepartmentId = department;
                 existingEmployee.PointEarned = employeeDto.PointEarned;
 
                 _context.Employees.Update(existingEmployee);

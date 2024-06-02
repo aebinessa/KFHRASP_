@@ -32,7 +32,7 @@ public class EditEmployee
 
     public string? PositionName { get; set; }
 
-    public Department? DepartmentId { get; set; }
+    public int? DepartmentId { get; set; }
 
     public int? PointEarned { get; set; }
 }
