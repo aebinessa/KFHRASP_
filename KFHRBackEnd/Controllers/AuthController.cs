@@ -65,7 +65,15 @@ public class AuthenticationController : ControllerBase
             return Unauthorized("Invalid credentials.");
         }
 
-        return Ok(new { Token = token });
+        return Ok(new { Token = token,
+            employeeId = employee.Id,
+            employeeName = employee.Name,
+            employeePic=employee.ProfilePicURL,
+            employeeNfc=employee.NFCIdNumber,
+            employeeDepartmentId = employee.DepartmentId,
+          
+
+        } );
     }
 
 }
