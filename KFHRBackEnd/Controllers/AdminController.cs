@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using KFHRBackEnd.Models.Entites;
 using KFHRBackEnd.Models.Entites.Request.Department;
 using KFHRBackEnd.Models.Entites.Request;
+using System.Security.Claims;
 
 namespace KFHRBackEnd.Controllers
 {
@@ -283,6 +284,31 @@ namespace KFHRBackEnd.Controllers
             {
                 var employees = await _context.Employees.ToListAsync();
                 return Ok(employees);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        [HttpGet("GetAttendance")]
+        [ProducesResponseType(typeof(IEnumerable<Attendance>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetAttendance()
+        {
+            try
+            {
+                var employeeId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (employeeId == null)
+                {
+                    return Unauthorized();
+                }
+
+                var attendances = await _context.Attendances
+                    .Where(a => a.EmployeeId == int.Parse(employeeId))
+                    .ToListAsync();
+                return Ok(attendances);
             }
             catch (Exception ex)
             {

@@ -102,7 +102,7 @@ namespace KFHRBackEnd.Controllers
             }
         }
 
-        [HttpPost("LeavesResponse")]
+        [HttpPost("Leave")]
         [ProducesResponseType(typeof(IActionResult), 201)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult LeavesResponse(LeaveRequest leavesResponse)
@@ -158,7 +158,7 @@ namespace KFHRBackEnd.Controllers
             }
         }
 
-        [HttpGet("GetLeave")]
+        [HttpGet("Leave")]
         [ProducesResponseType(typeof(IEnumerable<Leave>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetLeave()
