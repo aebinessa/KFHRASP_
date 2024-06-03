@@ -37,7 +37,7 @@
                             @employee.Name <!-- Change Brooklyn Simmons to employee Name -->
                             <img src="edit-icon.png" alt="Edit" class="edit-icon" @onclick="EditEmployee"> 
                         </h1>
-                        <p>@employee.PositionId</p>  <!-- Change Project Manager to employee.Position -->
+                        <p>@employee.PositionName</p>  <!-- Change Project Manager to employee.Position -->
                         <p>@employee.Email</p> <!-- Change the email to employee.Email -->
                     </div>
                 </div>
@@ -64,9 +64,9 @@
                             </tr>
                             <tr>
                                 <th>Position</th>
-                                <td>@employee.PositionId</td> <!-- Change position to employee.Position -->
+                                <td>@employee.PositionName</td> <!-- Change position to employee.Position -->
                                 <th>Department</th>
-                                <td>@employee.DepartmentId</td> <!-- Change IT to employee.DepartmentName -->
+                                <td>@employee.DepartmentName</td> <!-- Change IT to employee.DepartmentName -->
                             </tr>
                         </table>
                     </div>
