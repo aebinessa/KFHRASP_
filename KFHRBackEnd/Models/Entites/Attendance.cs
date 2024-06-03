@@ -10,7 +10,7 @@ namespace KFHRBackEnd.Models.Entites
         public int EmployeeId { get; set; }
         [Required]
         public DateTime CheckInTime { get; set; }
-        [Required]
-        public DateTime CheckOutTime { get; set; }
+ 
+        public DateTime? CheckOutTime { get; set; }
     }
 }
