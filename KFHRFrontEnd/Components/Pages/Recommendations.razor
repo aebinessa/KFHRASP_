@@ -1,6 +1,9 @@
 ﻿@page "/recommendations"
 @inject NavigationManager Navigation
 @using KFHRFrontEnd.Models
+
+
+
 <div class="header">
     <div class="info">
         <h1>Recommendations</h1>
@@ -16,6 +19,8 @@
         </div>
     </div>
 </div>
+
+
 
 <div class="body">
     <div class="form-container">
@@ -48,10 +53,13 @@
 
 
 @code{
+
+    <!-- Insert logic code for fetching  -->
     public void NavDash(){
         Navigation.NavigateTo("/dashboard");
     }
 }
+
 <style>
 
     .header {

@@ -119,20 +119,14 @@
                 // Verify payload
                 var payload = new
                 {
-
                     name = employee.Name,
                     email = employee.Email,
                     profilePicURL = employee.ProfilePicURL,
                     dob = employee.DOB,
                     gender = employee.Gender,
                     positionName = employee.Name,
-                    DepartmentId = new
-                    {
-                        id = employee.DepartmentId,
-                        departmentName = "gjh"
-                    },
+                    departmentId = employee.DepartmentId, // Send departmentId as a single integer
                     pointsEarned = 10
-
                 };
 
                 Console.WriteLine($"Payload: {System.Text.Json.JsonSerializer.Serialize(payload)}");
