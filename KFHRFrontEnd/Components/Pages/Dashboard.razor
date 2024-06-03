@@ -20,17 +20,19 @@
             var client = new HttpClient();
             if (AppState != null)
             {
-
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
-
-               employees = await client.GetFromJsonAsync<List<AllEmployee>>("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/Employees");
-                
+                employees = await client.GetFromJsonAsync<List<AllEmployee>>("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/Employees");
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error fetching employees: {ex.Message}");
         }
+    }
+
+    public void NavProf()
+    {
+        Navigation.NavigateTo("/profile");
     }
 }
 
@@ -96,7 +98,7 @@
                 {
                     <tr>
                         <td><img src="@employee.ProfilePicURL"/> @employee.Name</td>
-                        <td>@employee.PositionId</td>
+                        <td>@employee.PositionName</td>
                         <td>7:01</td>
                     </tr>
                 }
@@ -110,12 +112,6 @@
         </tbody>
     </table>
 </div>
-
-@code{
-    public void NavProf(){
-        Navigation.NavigateTo("/profile");
-    }
-}
 
 <style>
     p {
