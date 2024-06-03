@@ -1,4 +1,10 @@
-﻿@page "/employeedetails/{id}"
+﻿@page "/employeedetails"
+<!-- /{employeeId:int} -->
+@using System.Net.Http
+@using System.Net.Http.Json
+@using KFHRFrontEnd.Models
+@inject HttpClient Http
+@inject GlobalAppState AppState
 @inject NavigationManager Navigation
 
 <body>
@@ -7,7 +13,7 @@
         <main class="main-content">
             <header class="header">
                 <div class="breadcrumb">
-                    <a href="allemployees" class="breadcrumb-link">All Employees</a> &gt; <span class="breadcrumb-current">Brooklyn Simmons</span>
+                    <a href="allemployees" class="breadcrumb-link">All Employees</a> &gt; <span class="breadcrumb-current">Brooklyn Simmons</span> 
                 </div>
                 <div class="user-info">
                     <NavLink href="/counter" class="center">
@@ -15,8 +21,8 @@
                     </NavLink>
                     <img src="leasie-watson.jpg" alt="Profile Picture" class="center" />
                     <div>
-                        <h2>Robert Allen</h2>
-                        <p>HR Manager</p>
+                        <h2>Robert Allen</h2> <!-- Change Robert Allen to HR employee.Name -->
+                        <p>HR Manager</p> <!-- Change HR Nanager to HR employee.Name -->
                     </div>
                 </div>
             </header>
@@ -24,15 +30,15 @@
             <section class="profile-section">
                 <div class="profile-header">
                     <div class="profile-picture">
-                        <img src="profile-picture.jpg" alt="Brooklyn Simmons">
+                        <img src="profile-picture.jpg" alt="Brooklyn Simmons"> <!-- Change Brooklyn Simmons to employee.Name -->
                     </div>
                     <div class="profile-details">
                         <h1>
-                            Brooklyn Simmons
-                            <img src="edit-icon.png" alt="Edit" class="edit-icon" @onclick="EditEmployee">
+                            Brooklyn Simmons <!-- Change Brooklyn Simmons to employee Name -->
+                            <img src="edit-icon.png" alt="Edit" class="edit-icon" @onclick="EditEmployee"> 
                         </h1>
-                        <p>Project Manager</p>
-                        <p>brooklyns@example.com</p>
+                        <p>Project Manager</p>  <!-- Change Project Manager to employee.Position -->
+                        <p>brooklyns@example.com</p> <!-- Change the email to employee.Email -->
                     </div>
                 </div>
                 <div class="profile-actions">
@@ -45,34 +51,22 @@
                     <div class="table-container">
                         <table class="styled-table profile-table">
                             <tr>
-                                <th>First Name</th>
-                                <td>Brooklyn</td>
-                                <th>Last Name</th>
-                                <td>Simmons</td>
-                            </tr>
-                            <tr>
-                                <th>Mobile Number</th>
-                                <td>(702) 555-0122</td>
+                                <th>Name</th>
+                                <td>Brooklyn Simmons</td> <!-- Change Brooklyn Simmons to employee Name -->
                                 <th>Email Address</th>
-                                <td>brooklyn.s@example.com</td>
+                                <td>brooklyn.s@example.com</td> <!-- Change the email to employee.Email -->
                             </tr>
                             <tr>
                                 <th>Date of Birth</th>
-                                <td>July 14, 1995</td>
-                                <th>Marital Status</th>
-                                <td>Married</td>
-                            </tr>
-                            <tr>
+                                <td>July 14, 1995</td> <!-- Change the dob to employee.DOB -->
                                 <th>Gender</th>
-                                <td>Female</td>
-                                <th>Nationality</th>
-                                <td>American</td>
+                                <td>Female</td> <!-- Change Female to employee.Gender -->
                             </tr>
                             <tr>
                                 <th>Position</th>
-                                <td>Team Lead</td>
+                                <td>Team Lead</td> <!-- Change position to employee.Position -->
                                 <th>Department</th>
-                                <td>IT</td>
+                                <td>IT</td> <!-- Change IT to employee.DepartmentName -->
                             </tr>
                         </table>
                     </div>
@@ -88,16 +82,10 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>July 01, 2023</td>
-                                <td>07:08 AM</td>
-                                <td>03:00 PM</td>
+                                <td>July 01, 2023</td> <!-- Change the date to employee date of checking in -->
+                                <td>07:08 AM</td> <!-- Change the time to employee time of checking in -->
+                                <td>03:00 PM</td> <!-- Change the time to employee time of checking out -->
                             </tr>
-                            <tr>
-                                <td>July 02, 2023</td>
-                                <td>07:10 AM</td>
-                                <td>03:05 PM</td>
-                            </tr>
-                            <!-- More records -->
                         </tbody>
                     </table>
                 </div>
@@ -114,51 +102,9 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Certificate #1</td>
-                                    <td>12/4/2023</td>
-                                    <td>URL HERE</td>
-                                    <td><button class="delete-button">🗑️</button></td>
-                                </tr>
-                                <tr>
-                                    <td>Certificate #2</td>
-                                    <td>22/4/2023</td>
-                                    <td>URL HERE</td>
-                                    <td><button class="delete-button">🗑️</button></td>
-                                </tr>
-                                <tr>
-                                    <td>Certificate #3</td>
-                                    <td>12/7/2023</td>
-                                    <td>URL HERE</td>
-                                    <td><button class="delete-button">🗑️</button></td>
-                                </tr>
-                                <tr>
-                                    <td>Certificate #4</td>
-                                    <td>02/9/2023</td>
-                                    <td>URL HERE</td>
-                                    <td><button class="delete-button">🗑️</button></td>
-                                </tr>
-                                <tr>
-                                    <td>Certificate #5</td>
-                                    <td>4/10/2023</td>
-                                    <td>URL HERE</td>
-                                    <td><button class="delete-button">🗑️</button></td>
-                                </tr>
-                                <tr>
-                                    <td>Certificate #6</td>
-                                    <td>10/12/2023</td>
-                                    <td>URL HERE</td>
-                                    <td><button class="delete-button">🗑️</button></td>
-                                </tr>
-                                <tr>
-                                    <td>Certificate #7</td>
-                                    <td>15/6/2023</td>
-                                    <td>URL HERE</td>
-                                    <td><button class="delete-button">🗑️</button></td>
-                                </tr>
-                                <tr>
-                                    <td>Certificate #8</td>
-                                    <td>25/5/2023</td>
-                                    <td>URL HERE</td>
+                                    <td>Certificate #1</td> <!-- Change the certificate to employee certificate name -->
+                                    <td>12/4/2023</td> <!-- Change the certificate date to employee certificate date -->
+                                    <td>URL HERE</td> <!-- Change the certificate URL to employee certificate URL -->
                                     <td><button class="delete-button">🗑️</button></td>
                                 </tr>
                             </tbody>
@@ -168,7 +114,7 @@
                         <input type="text" placeholder="Certificate Name" />
                         <input type="text" placeholder="Date Completed" />
                         <input type="text" placeholder="Verification URL" />
-                        <button class="save-button">Save</button>
+                        <button class="save-button">Save</button> <!-- insert a POST method to send a certificate to the user through the backend -->
                     </div>
                 </div>
                 <div id="leave" class="profile-info section" style="display:none;">
@@ -180,71 +126,17 @@
                                     <th>Date</th>
                                     <th>Duration</th>
                                     <th>Days</th>
-                                    <th>Reporting Manager</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>July 01, 2023</td>
-                                    <td>July 05 - July 08</td>
-                                    <td>3 Days</td>
-                                    <td>Mark Williams</td>
+                                    <td>July 01, 2023</td> <!-- Change the date to when employee submitted the leave -->
+                                    <td>July 05 - July 08</td> <!-- Change the dates to when employee set the leave for -->
+                                    <td>3 Days</td> <!-- Change the date to length of the leave -->
                                     <td>
-                                        <select class="status-dropdown" onchange="updateStatus(this)">
-                                            <option value="pending" class="status pending">Pending</option>
-                                            <option value="approved" class="status approved">Approved</option>
-                                            <option value="rejected" class="status rejected">Rejected</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Apr 05, 2023</td>
-                                    <td>Apr 06 - Apr 10</td>
-                                    <td>4 Days</td>
-                                    <td>Mark Williams</td>
-                                    <td>
-                                        <select class="status-dropdown" onchange="updateStatus(this)">
-                                            <option value="pending" class="status pending">Pending</option>
-                                            <option value="approved" class="status approved">Approved</option>
-                                            <option value="rejected" class="status rejected">Rejected</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Mar 12, 2023</td>
-                                    <td>Mar 14 - Mar 16</td>
-                                    <td>2 Days</td>
-                                    <td>Mark Williams</td>
-                                    <td>
-                                        <select class="status-dropdown" onchange="updateStatus(this)">
-                                            <option value="pending" class="status pending">Pending</option>
-                                            <option value="approved" class="status approved">Approved</option>
-                                            <option value="rejected" class="status rejected">Rejected</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Feb 01, 2023</td>
-                                    <td>Feb 02 - Feb 10</td>
-                                    <td>8 Days</td>
-                                    <td>Mark Williams</td>
-                                    <td>
-                                        <select class="status-dropdown" onchange="updateStatus(this)">
-                                            <option value="pending" class="status pending">Pending</option>
-                                            <option value="approved" class="status approved">Approved</option>
-                                            <option value="rejected" class="status rejected">Rejected</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Jan 01, 2023</td>
-                                    <td>Jan 16 - Jan 19</td>
-                                    <td>3 Days</td>
-                                    <td>Mark Williams</td>
-                                    <td>
-                                        <select class="status-dropdown" onchange="updateStatus(this)">
-                                            <option value="pending" class="status pending">Pending</option>
+                                        <select class="status-dropdown" onchange="updateStatus(this)"> <!-- Make the function updateStatus able to change the status of a leave in the Backend  -->
+                                            <option value="pending" class="status pending">Pending</option> 
                                             <option value="approved" class="status approved">Approved</option>
                                             <option value="rejected" class="status rejected">Rejected</option>
                                         </select>
@@ -257,56 +149,63 @@
             </section>
         </main>
     </div>
-    <script>
-        function showSection(sectionId) {
-            // Hide all sections
-            var sections = document.querySelectorAll('.section');
-            sections.forEach(function (section) {
-                section.style.display = 'none';
-            });
-
-            // Remove active class from all buttons
-            var buttons = document.querySelectorAll('.profile-button');
-            buttons.forEach(function (button) {
-                button.classList.remove('active');
-            });
-
-            // Show the selected section
-            document.getElementById(sectionId).style.display = 'block';
-
-            // Add active class to the clicked button
-            event.target.classList.add('active');
-        }
-
-        function updateStatus(selectElement) {
-            const selectedOption = selectElement.options[selectElement.selectedIndex];
-            const statusClass = selectedOption.className.split(' ')[1];
-            selectElement.className = 'status-dropdown ' + statusClass;
-        }
-
-        function editName() {
-            alert('Edit name functionality goes here');
-        }
-
-        // Initialize status dropdowns on page load
-        document.addEventListener('DOMContentLoaded', function () {
-            const statusDropdowns = document.querySelectorAll('.status-dropdown');
-            statusDropdowns.forEach(function (dropdown) {
-                updateStatus(dropdown);
-            });
-
-            // Set Profile tab as active by default
-            showSection('profile');
-        });
-    </script>
 </body>
 
+
+
 @code {
+    [Parameter] public int employeeId { get; set; }
+
+    <!-- Make the logic for integrating with the backend -->
+
     private void EditEmployee()
     {
         Navigation.NavigateTo("/editemployee");
     }
 }
+
+<script>
+    function showSection(sectionId) {
+        // Hide all sections
+        var sections = document.querySelectorAll('.section');
+        sections.forEach(function (section) {
+            section.style.display = 'none';
+        });
+
+        // Remove active class from all buttons
+        var buttons = document.querySelectorAll('.profile-button');
+        buttons.forEach(function (button) {
+            button.classList.remove('active');
+        });
+
+        // Show the selected section
+        document.getElementById(sectionId).style.display = 'block';
+
+        // Add active class to the clicked button
+        event.target.classList.add('active');
+    }
+
+    function updateStatus(selectElement) {
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        const statusClass = selectedOption.className.split(' ')[1];
+        selectElement.className = 'status-dropdown ' + statusClass;
+    }
+
+    function editName() {
+        alert('Edit name functionality goes here');
+    }
+
+    // Initialize status dropdowns on page load
+    document.addEventListener('DOMContentLoaded', function () {
+        const statusDropdowns = document.querySelectorAll('.status-dropdown');
+        statusDropdowns.forEach(function (dropdown) {
+            updateStatus(dropdown);
+        });
+
+        // Set Profile tab as active by default
+        showSection('profile');
+    });
+</script>
 
 <style>
     .container {
