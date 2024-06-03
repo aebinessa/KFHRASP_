@@ -20,7 +20,114 @@ namespace KFHRBackEnd.Controllers
             _context = context;
         }
 
-        [HttpPost("GivePoints")]
+        [HttpPost("AddCertificate")]
+        [ProducesResponseType(typeof(Certificate), 201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> AddCertificate([FromBody] Certificate certificateDto)
+        {
+            if (certificateDto == null)
+            {
+                return BadRequest("Certificate data is null.");
+            }
+
+            try
+            {
+                var certificate = new Certificate
+                {
+                    EmployeeId = certificateDto.EmployeeId, // Admin can specify the EmployeeId
+                    CertificateName = certificateDto.CertificateName,
+                    IssueDate = certificateDto.IssueDate,
+                    ExpirationDate = certificateDto.ExpirationDate,
+                    VerificationURL = certificateDto.VerificationURL
+                };
+
+                await _context.Certificates.AddAsync(certificate);
+                await _context.SaveChangesAsync();
+                return Created(nameof(AddCertificate), new { Id = certificate.ID });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpGet("GetCertificates")]
+        [ProducesResponseType(typeof(IEnumerable<Certificate>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetCertificates()
+        {
+            try
+            {
+                var certificates = await _context.Certificates.ToListAsync();
+                return Ok(certificates);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpPut("UpdateCertificate/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdateCertificate(int id, [FromBody] AddCertificate certificateDto)
+        {
+            if (certificateDto == null)
+            {
+                return BadRequest("Certificate data is null.");
+            }
+
+            try
+            {
+                var existingCertificate = await _context.Certificates.FindAsync(id);
+                if (existingCertificate == null)
+                {
+                    return NotFound("Certificate not found.");
+                }
+
+                existingCertificate.CertificateName = certificateDto.CertificateName;
+                existingCertificate.IssueDate = certificateDto.IssueDate;
+                existingCertificate.ExpirationDate = certificateDto.ExpirationDate;
+                existingCertificate.VerificationURL = certificateDto.VerificationURL;
+
+                _context.Certificates.Update(existingCertificate);
+                await _context.SaveChangesAsync();
+                return Ok(existingCertificate);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("DeleteCertificate/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteCertificate(int id)
+        {
+            try
+            {
+                var existingCertificate = await _context.Certificates.FindAsync(id);
+                if (existingCertificate == null)
+                {
+                    return NotFound("Certificate not found.");
+                }
+
+                _context.Certificates.Remove(existingCertificate);
+                await _context.SaveChangesAsync();
+                return Ok("Certificate deleted.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            }
+        }
+    
+
+    [HttpPost("GivePoints")]
         [ProducesResponseType(typeof(Employee), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
@@ -53,7 +160,7 @@ namespace KFHRBackEnd.Controllers
         }
 
 
-        [HttpPost("AddCertificate")]
+        [HttpPost("AddRecommendedCertificate")]
         [ProducesResponseType(typeof(RecommendedCertificate), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
@@ -327,4 +434,5 @@ namespace KFHRBackEnd.Controllers
             }
         }
     }
+
 }
