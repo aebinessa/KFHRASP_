@@ -459,7 +459,7 @@ namespace KFHRBackEnd.Controllers
             {
                 if (employeeId.HasValue)
                 {
-                    var employee = await _context.Employees.FindAsync(employeeId.Value);
+                    var employee = await _context.Employees.Include(x=>x.DepartmentId).FirstOrDefaultAsync(x => x.Id == employeeId.Value);
                     if (employee == null)
                     {
                         return NotFound("Employee not found.");
