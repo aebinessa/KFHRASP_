@@ -4,6 +4,7 @@ using KFHRBackEnd.Models.Entites;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KFHRBackEnd.Migrations
 {
     [DbContext(typeof(DBContextApp))]
-    partial class DBContextAppModelSnapshot : ModelSnapshot
+    [Migration("20240604111446_newwwwdb")]
+    partial class newwwwdb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -176,15 +179,11 @@ namespace KFHRBackEnd.Migrations
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("MinutesLeft")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Month")
                         .HasColumnType("datetime2");
 
-                    b.Property<TimeOnly?>("Time")
-                        .IsRequired()
-                        .HasColumnType("time");
+                    b.Property<int>("Time")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 

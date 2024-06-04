@@ -74,6 +74,34 @@ namespace KFHRBackEnd.Controllers
             return _context.Employees.Find(id);
         }
 
+        [HttpGet("GetLateMinutes")]
+        [ProducesResponseType(typeof(LateMinutesLeft), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetLateMinutes()
+        {
+            try
+            {
+                var employeeId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (employeeId == null)
+                {
+                    return Unauthorized();
+                }
+
+                var currentMonth = DateTime.Now.Month;
+                var currentYear = DateTime.Now.Year;
+
+                var lateMinutes = await _context.LateMinutesLeft
+                    .FirstOrDefaultAsync(l => l.EmployeeId == int.Parse(employeeId) && l.Month.Month == currentMonth && l.Month.Year == currentYear);
+
+                return Ok(lateMinutes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+
         [HttpPost("CheckInEmployee")]
         [ProducesResponseType(typeof(IActionResult), 201)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -87,22 +115,65 @@ namespace KFHRBackEnd.Controllers
                     return Unauthorized();
                 }
 
-                var checkInEmployee = new Attendance()
+                var today = DateTime.Now;
+                var todayAttendance = new Attendance()
                 {
                     EmployeeId = int.Parse(employeeId), // get employee ID from token 
-                    CheckInTime = DateTime.Now
+                    CheckInTime = today
                 };
 
-                await _context.Attendances.AddAsync(checkInEmployee);
-                await _context.SaveChangesAsync();
-                return Created(nameof(CheckInEmployee), new { Id = checkInEmployee.ID , Massege = "You have checked in"});
+                await _context.Attendances.AddAsync(todayAttendance);
 
+                var scheduledStartTime = new TimeOnly(5, 0); //9:00 AM 
+                int lateMinutes = 0;
+                // if the user is late 
+                if (today.TimeOfDay > scheduledStartTime.ToTimeSpan())
+                {
+                    lateMinutes = (int)((today.TimeOfDay  - scheduledStartTime.ToTimeSpan()).TotalMinutes);
+
+                }
+
+                var currentMonth = today.Month;
+                var currentYear = today.Year;
+
+                var lateMinutesRecord = await _context.LateMinutesLeft
+                        .FirstOrDefaultAsync(l => l.EmployeeId == int.Parse(employeeId) && l.Month.Month == currentMonth && l.Month.Year == currentYear);
+
+                if (lateMinutesRecord == null)
+                {
+                    lateMinutesRecord = new LateMinutesLeft
+                    {
+                        EmployeeId = int.Parse(employeeId),
+                        MinutesLeft = 30 - lateMinutes,
+                        Time = new TimeOnly(),
+                        Month = new DateTime(currentYear, currentMonth, 1)
+                    };
+                    
+                    await _context.LateMinutesLeft.AddAsync(lateMinutesRecord);
+                    await _context.SaveChangesAsync();
+
+                }
+                else
+                {
+                    lateMinutesRecord.MinutesLeft -= lateMinutes;
+                }
+
+                if (lateMinutesRecord.MinutesLeft < 0)
+                {
+                    lateMinutesRecord.MinutesLeft = 0;
+                }
+                _context.LateMinutesLeft.Update(lateMinutesRecord);
+              
+                await _context.SaveChangesAsync();
+
+                return Created(nameof(GetLateMinutes), lateMinutesRecord);
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
             }
         }
+
 
         [HttpPost("CheckOutEmployee")]
         [ProducesResponseType(typeof(IActionResult), 201)]
@@ -122,8 +193,7 @@ namespace KFHRBackEnd.Controllers
                     .FirstOrDefaultAsync(attendance =>
                         attendance.EmployeeId == int.Parse(employeeId) &&
                         attendance.CheckInTime.Date == date.Date &&
-                        attendance.CheckOutTime == null
-                    );
+                        attendance.CheckOutTime == null);
 
                 if (todayAttendance == null)
                 {
@@ -134,16 +204,15 @@ namespace KFHRBackEnd.Controllers
 
                 _context.Attendances.Update(todayAttendance);
                 await _context.SaveChangesAsync();
-                return Ok(new { Id = todayAttendance.ID, Massege = "You have checked out" });
+                return Ok(new { Id = todayAttendance.ID });
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
             }
         }
-    
 
-    [HttpPost("Leave")]
+        [HttpPost("Leave")]
         [ProducesResponseType(typeof(IActionResult), 201)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult LeavesResponse(LeaveRequest leavesResponse)
@@ -199,9 +268,6 @@ namespace KFHRBackEnd.Controllers
             }
         }
 
-
-        
-
         [HttpGet("Leave")]
         [ProducesResponseType(typeof(IEnumerable<Leave>), 200)]
         [ProducesResponseType(500)]
@@ -227,20 +293,40 @@ namespace KFHRBackEnd.Controllers
         }
 
         [HttpGet("Employees")]
-        [ProducesResponseType(typeof(IEnumerable<Employee>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<EmployeeRes>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetEmployees()
         {
             try
             {
-                var employees = await _context.Employees.ToListAsync();
-                return Ok(employees);
+                var employees = await _context.Employees
+                    .Include(e => e.DepartmentId)
+                    .ToListAsync();
+
+                var employeeResponses = employees.Select(e => new EmployeeRes
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Email = e.Email,
+                    DOB = e.DOB,
+                    Gender = e.Gender.ToString(),
+                    ProfilePicURL = e.ProfilePicURL,
+                    NFCIdNumber = e.NFCIdNumber,
+                    PositionName = e.PositionName,
+                    DepartmentName = e.DepartmentId != null ? new Department { ID = e.DepartmentId.ID, DepartmentName = e.DepartmentId.DepartmentName } : null,
+                    PointEarned = e.PointEarned,
+                    IsAdmin = e.IsAdmin
+                }).ToList();
+
+                return Ok(employeeResponses);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
         }
+
+
         [HttpPost("AddCertificate")]
         [ProducesResponseType(typeof(Certificate), 201)]
         [ProducesResponseType(400)]
@@ -280,4 +366,3 @@ namespace KFHRBackEnd.Controllers
         }
     }
 }
-
