@@ -468,7 +468,7 @@ namespace KFHRBackEnd.Controllers
                 }
                 else
                 {
-                    var employees = await _context.Employees.ToListAsync();
+                    var employees = await _context.Employees.Include(x => x.DepartmentId).ToListAsync();
                     return Ok(employees);
                 }
             }

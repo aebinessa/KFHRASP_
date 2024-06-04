@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace KFHRBackEnd.Models.Entites
 {
@@ -6,11 +7,19 @@ namespace KFHRBackEnd.Models.Entites
     {
         [Key]
         public int ID { get; set; }
+
         [Required]
         public int EmployeeId { get; set; }
+
         [Required]
-        public TimeOnly Time { get; set; }
+        [AllowNull]
+        public TimeOnly? Time { get; set; }
+
+        [Required]
+        public int MinutesLeft { get; set; }
+
         [Required]
         public DateTime Month { get; set; }
+       
     }
 }
