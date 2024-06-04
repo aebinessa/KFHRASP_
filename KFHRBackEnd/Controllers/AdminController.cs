@@ -5,6 +5,7 @@ using KFHRBackEnd.Models.Entites;
 using KFHRBackEnd.Models.Entites.Request.Department;
 using KFHRBackEnd.Models.Entites.Request;
 using System.Security.Claims;
+using KFHRBackEnd.Models;
 
 namespace KFHRBackEnd.Controllers
 {
@@ -20,7 +21,74 @@ namespace KFHRBackEnd.Controllers
             _context = context;
         }
 
-        [HttpPost("AddCertificate")]
+        // Get all employee attendances
+        [HttpGet("GetAttendances")]
+        [ProducesResponseType(typeof(IEnumerable<Attendance>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetAttendances()
+        {
+            try
+            {
+                var attendances = await _context.Attendances.ToListAsync();
+                return Ok(attendances);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        // Get all leave requests
+        [HttpGet("GetLeaves")]
+        [ProducesResponseType(typeof(IEnumerable<Leave>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetLeaves()
+        {
+            try
+            {
+                var leaves = await _context.Leaves.ToListAsync();
+                return Ok(leaves);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        // Update leave status
+        [HttpPut("UpdateLeaveStatus/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdateLeaveStatus(int id, [FromBody] UpdateLeaveStatus leaveStatusDto)
+        {
+            if (leaveStatusDto == null)
+            {
+                return BadRequest("Leave status data is null.");
+            }
+
+            try
+            {
+                var existingLeave = await _context.Leaves.FindAsync(id);
+                if (existingLeave == null)
+                {
+                    return NotFound("Leave not found.");
+                }
+
+                existingLeave.Status = leaveStatusDto.Status;
+
+                _context.Leaves.Update(existingLeave);
+                await _context.SaveChangesAsync();
+                return Ok(existingLeave);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+    
+
+    [HttpPost("AddCertificate")]
         [ProducesResponseType(typeof(Certificate), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
