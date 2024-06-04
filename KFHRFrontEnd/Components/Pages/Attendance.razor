@@ -16,7 +16,7 @@
     {
         try
         {
-            Attendances = await Http.GetFromJsonAsync<List<Attendancee>>("api/Admin/GetAttendance")  new List<Attendancee>();
+            Attendances = await Http.GetFromJsonAsync<List<Attendancee>>("api/Admin/GetAttendance") ?? new List<Attendancee>();
         }
         catch (Exception ex)
         {
