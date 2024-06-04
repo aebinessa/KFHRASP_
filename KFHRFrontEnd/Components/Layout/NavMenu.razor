@@ -1,48 +1,50 @@
 ﻿<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">KFHR</a>
+        <a class="navbar-brand" href="">
+            <img src="logo.jpg" alt="Logo" class="logo" />
+            KFHR
+        </a>
     </div>
 </div>
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+<div class="nav-scrollable">
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="dashboard" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill" aria-hidden="true"></span> Dashboard
+                <span class="bi bi-house-door-fill" aria-hidden="true"></span> <span class="nav-text">Dashboard</span>
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="allemployees">
-                <span class="bi bi-people" aria-hidden="true"></span> All Employees
+                <span class="bi bi-people" aria-hidden="true"></span> <span class="nav-text">All Employees</span>
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-building" aria-hidden="true"></span> All Departments
+            <NavLink class="nav-link" href="alldepartments">
+                <span class="bi bi-building" aria-hidden="true"></span> <span class="nav-text">All Departments</span>
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Attendance">
-                <span class="bi bi-calendar-check" aria-hidden="true"></span> Attendance
+                <span class="bi bi-calendar-check" aria-hidden="true"></span> <span class="nav-text">Attendance</span>
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="leaves">
-                <span class="bi bi-card-list" aria-hidden="true"></span> Leaves
+                <span class="bi bi-card-list" aria-hidden="true"></span> <span class="nav-text">Leaves</span>
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="recommendations">
-                <span class="bi bi-journal" aria-hidden="true"></span> Recommondations
+                <span class="bi bi-journal" aria-hidden="true"></span> <span class="nav-text">Recommendations</span>
             </NavLink>
         </div>
     </nav>
 </div>
-

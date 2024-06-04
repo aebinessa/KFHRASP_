@@ -11,9 +11,9 @@
     background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") no-repeat center/1.75rem rgba(255, 255, 255, 0.1);
 }
 
-.navbar-toggler:checked {
-    background-color: rgb(0, 0, 0);
-}
+    .navbar-toggler:checked {
+        background-color: rgb(0, 0, 0);
+    }
 
 .top-row {
     height: 3.5rem;
@@ -22,19 +22,29 @@
 
 .navbar-brand {
     font-size: 1.1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar:hover .navbar-brand {
+    opacity: 1;
+}
+
+.logo {
+    width: 30px;
+    height: 30px;
+    margin-right: 0.5rem;
 }
 
 .bi {
     display: inline-block;
-    position: relative;
     width: 1.25rem;
     height: 1.25rem;
-    margin-right: 0.75rem;
-    top: -15px;
     background-size: cover;
+    margin-right: 1rem;
 }
-
-
 
 .nav-item {
     font-size: 0.9rem;
@@ -57,19 +67,37 @@
         height: 3rem;
         display: flex;
         align-items: center;
-        line-height: 3rem;
+        justify-content: flex-start;
         width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        position: relative;
+        transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-.nav-item ::deep a.active {
-    background-color: rgba(255,255,255,0.37);
-    color: white;
-}
+    .nav-item ::deep .nav-text {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
 
-.nav-item ::deep .nav-link:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: white;
-}
+    .nav-item ::deep a.active {
+        background-color: rgba(255,255,255,0.37);
+        color: white;
+        justify-content: flex-start;
+    }
+
+        .nav-item ::deep a.active .bi {
+            margin-right: 1rem;
+        }
+
+    .nav-item ::deep .nav-link:hover {
+        background-color: rgba(255,255,255,0.1);
+        color: white;
+    }
+
+        .nav-item ::deep .nav-link:hover .nav-text {
+            opacity: 1;
+        }
 
 .nav-scrollable {
     display: none;
@@ -87,9 +115,16 @@
     .nav-scrollable {
         /* Never collapse the sidebar for wide screens */
         display: block;
-
         /* Allow sidebar to scroll for tall menus */
         height: calc(100vh - 3.5rem);
         overflow-y: auto;
+    }
+
+    .nav-item ::deep .nav-link {
+        justify-content: flex-start;
+    }
+
+    .sidebar:hover .nav-item ::deep .nav-link .nav-text {
+        opacity: 1;
     }
 }

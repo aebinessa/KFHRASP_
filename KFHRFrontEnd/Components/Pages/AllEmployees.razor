@@ -58,8 +58,8 @@
                 <tr>
                     <td><img src="@employee.ProfilePicURL" alt="Profile Picture" class="center" />@employee.Name</td>
                     <td>@employee.Id</td>
-                    <td>@employee.DepartmentId</td>
-                    <td>@employee.PositionId</td>
+                    <td>@employee.DepartmentName</td>
+                    <td>@employee.PositionName</td>
                     <td>
                         <button class="view-btn" @onclick="() => ViewEmployee(employee.Id)">👁️</button>
                         <button class="edit-btn" @onclick="() => EditEmployee(employee.Id)">✏️</button>
@@ -313,15 +313,3 @@
             border-color: #ddd;
         }
 </style>
-
-@code {
-    private void ViewEmployee()
-    {
-        Navigation.NavigateTo("/employeedetails");
-    }
-
-    private void EditEmployee()
-    {
-        Navigation.NavigateTo("/editemployee");
-    }
-}

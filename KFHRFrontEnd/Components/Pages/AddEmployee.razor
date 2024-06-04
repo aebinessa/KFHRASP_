@@ -4,6 +4,7 @@
 @inject GlobalAppState AppState
 @inject NavigationManager Navigation
 @using KFHRBackEnd.Models.Entites.Request
+@using KFHRFrontEnd.Models
 
 <div class="header">
     <div class="info">
@@ -26,16 +27,18 @@
 
 <div class="container">
     <EditForm Model="@employee" OnValidSubmit="@HandleValidSubmit">
-        <!--<DataAnnotationsValidator />-->
-        <!--<ValidationSummary />-->
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
         <!-- Form Row for Image Upload -->
         <div class="form-row">
             <div class="form-group">
-                <label for="name">Picture URL</label>
+                <label for="picture">Picture URL</label>
                 <InputText id="picture" @bind-Value="employee.ProfilePicURL" placeholder="Picture URL" />
                 <ValidationMessage For="@(() => employee.ProfilePicURL)" />
             </div>
         </div>
+
         <!-- Form Row for Name and Email -->
         <div class="form-row">
             <div class="form-group">
@@ -49,6 +52,7 @@
                 <ValidationMessage For="@(() => employee.Email)" />
             </div>
         </div>
+
         <!-- Form Row for DOB and Gender -->
         <div class="form-row">
             <div class="form-group">
@@ -60,12 +64,13 @@
                 <label for="gender">Gender</label>
                 <InputSelect id="gender" @bind-Value="employee.Gender">
                     <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
                 </InputSelect>
                 <ValidationMessage For="@(() => employee.Gender)" />
             </div>
         </div>
+
         <!-- Form Row for Position ID and Department ID -->
         <div class="form-row">
             <div class="form-group">
@@ -79,16 +84,27 @@
                 <ValidationMessage For="@(() => employee.DepartmentId)" />
             </div>
         </div>
+
         <!-- Form Actions for Cancel and Save Buttons -->
         <div class="form-actions">
             <button type="button" @onclick="NavEmp" class="cancel-button">Cancel</button>
             <button type="submit" class="save-button">Save</button>
         </div>
     </EditForm>
+
 </div>
 
 @code {
-    private AddEmployeeRequest employee = new AddEmployeeRequest();
+    private AddEmployeeRequest employee = new AddEmployeeRequest
+        {
+            Name = "Test Name",
+            Email = "test@example.com",
+            ProfilePicURL = "http://example.com/pic.jpg",
+            DOB = new DateTime(1990, 1, 1),
+            Gender = Gender.Male,
+            PositionId = 1,
+            DepartmentId = 1
+        };
 
     private async Task HandleValidSubmit()
     {
@@ -97,10 +113,27 @@
             if (AppState != null && !string.IsNullOrEmpty(AppState.AuthToken))
             {
                 Console.WriteLine($"AuthToken: {AppState.AuthToken}");
+                Console.WriteLine($"Employee Name: {employee.Name}");
+                Console.WriteLine($"Employee Email: {employee.Email}");
+
+                // Verify payload
+                var payload = new
+                {
+                    name = employee.Name,
+                    email = employee.Email,
+                    profilePicURL = employee.ProfilePicURL,
+                    dob = employee.DOB,
+                    gender = employee.Gender,
+                    positionName = employee.Name,
+                    departmentId = employee.DepartmentId, // Send departmentId as a single integer
+                    pointsEarned = 10
+                };
+
+                Console.WriteLine($"Payload: {System.Text.Json.JsonSerializer.Serialize(payload)}");
 
                 Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
 
-                var response = await Http.PostAsJsonAsync("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/AddEmployee", new { employeeDto = employee });
+                var response = await Http.PostAsJsonAsync("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/AddEmployee", payload);
 
                 Console.WriteLine("HTTP response received");
 
@@ -136,6 +169,9 @@
         Navigation.NavigateTo("/allemployees");
     }
 }
+
+
+
 
 
 <style>

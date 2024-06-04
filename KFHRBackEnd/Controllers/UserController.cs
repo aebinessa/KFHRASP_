@@ -6,6 +6,7 @@ using KFHRBackEnd.Models.Entites.Request.LeaveReq;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using KFHRBackEnd.Models.Entites.Request;
 
 namespace KFHRBackEnd.Controllers
 {
@@ -76,7 +77,7 @@ namespace KFHRBackEnd.Controllers
         [HttpPost("CheckInEmployee")]
         [ProducesResponseType(typeof(IActionResult), 201)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult CheckInEmployee()
+        public async Task<IActionResult> CheckInEmployee()
         {
             try
             {
@@ -92,17 +93,57 @@ namespace KFHRBackEnd.Controllers
                     CheckInTime = DateTime.Now
                 };
 
-                _context.Attendances.Add(checkInEmployee);
-                _context.SaveChanges();
-                return Created(nameof(CheckInEmployee), new { Id = checkInEmployee.ID });
+                await _context.Attendances.AddAsync(checkInEmployee);
+                await _context.SaveChangesAsync();
+                return Created(nameof(CheckInEmployee), new { Id = checkInEmployee.ID , Massege = "You have checked in"});
+
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
             }
         }
 
-        [HttpPost("LeavesResponse")]
+        [HttpPost("CheckOutEmployee")]
+        [ProducesResponseType(typeof(IActionResult), 201)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CheckOutEmployee()
+        {
+            try
+            {
+                var employeeId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (employeeId == null)
+                {
+                    return Unauthorized();
+                }
+
+                var date = DateTime.Now;
+                var todayAttendance = await _context.Attendances
+                    .FirstOrDefaultAsync(attendance =>
+                        attendance.EmployeeId == int.Parse(employeeId) &&
+                        attendance.CheckInTime.Date == date.Date &&
+                        attendance.CheckOutTime == null
+                    );
+
+                if (todayAttendance == null)
+                {
+                    return BadRequest("No check-in record found for today.");
+                }
+
+                todayAttendance.CheckOutTime = date;
+
+                _context.Attendances.Update(todayAttendance);
+                await _context.SaveChangesAsync();
+                return Ok(new { Id = todayAttendance.ID, Massege = "You have checked out" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            }
+        }
+    
+
+    [HttpPost("Leave")]
         [ProducesResponseType(typeof(IActionResult), 201)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult LeavesResponse(LeaveRequest leavesResponse)
@@ -158,7 +199,10 @@ namespace KFHRBackEnd.Controllers
             }
         }
 
-        [HttpGet("GetLeave")]
+
+        
+
+        [HttpGet("Leave")]
         [ProducesResponseType(typeof(IEnumerable<Leave>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetLeave()
@@ -197,5 +241,43 @@ namespace KFHRBackEnd.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [HttpPost("AddCertificate")]
+        [ProducesResponseType(typeof(Certificate), 201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> AddCertificate([FromBody] AddCertificate certificateDto)
+        {
+            if (certificateDto == null)
+            {
+                return BadRequest("Certificate data is null.");
+            }
+
+            try
+            {
+                var employeeId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (employeeId == null)
+                {
+                    return Unauthorized();
+                }
+
+                var certificate = new Certificate
+                {
+                    EmployeeId = int.Parse(employeeId),
+                    CertificateName = certificateDto.CertificateName,
+                    IssueDate = certificateDto.IssueDate,
+                    ExpirationDate = certificateDto.ExpirationDate,
+                    VerificationURL = certificateDto.VerificationURL
+                };
+
+                await _context.Certificates.AddAsync(certificate);
+                await _context.SaveChangesAsync();
+                return Created(nameof(AddCertificate), new { Id = certificate.ID });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            }
+        }
     }
 }
+

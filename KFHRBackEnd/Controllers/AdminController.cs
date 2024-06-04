@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using KFHRBackEnd.Models.Entites;
 using KFHRBackEnd.Models.Entites.Request.Department;
 using KFHRBackEnd.Models.Entites.Request;
+using System.Security.Claims;
+using KFHRBackEnd.Models;
 
 namespace KFHRBackEnd.Controllers
 {
@@ -19,7 +21,181 @@ namespace KFHRBackEnd.Controllers
             _context = context;
         }
 
-        [HttpPost("GivePoints")]
+        // Get all employee attendances
+        [HttpGet("GetAttendances")]
+        [ProducesResponseType(typeof(IEnumerable<Attendance>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetAttendances()
+        {
+            try
+            {
+                var attendances = await _context.Attendances.ToListAsync();
+                return Ok(attendances);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        // Get all leave requests
+        [HttpGet("GetLeaves")]
+        [ProducesResponseType(typeof(IEnumerable<Leave>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetLeaves()
+        {
+            try
+            {
+                var leaves = await _context.Leaves.ToListAsync();
+                return Ok(leaves);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        // Update leave status
+        [HttpPut("UpdateLeaveStatus/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdateLeaveStatus(int id, [FromBody] UpdateLeaveStatus leaveStatusDto)
+        {
+            if (leaveStatusDto == null)
+            {
+                return BadRequest("Leave status data is null.");
+            }
+
+            try
+            {
+                var existingLeave = await _context.Leaves.FindAsync(id);
+                if (existingLeave == null)
+                {
+                    return NotFound("Leave not found.");
+                }
+
+                existingLeave.Status = leaveStatusDto.Status;
+
+                _context.Leaves.Update(existingLeave);
+                await _context.SaveChangesAsync();
+                return Ok(existingLeave);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+    
+
+    [HttpPost("AddCertificate")]
+        [ProducesResponseType(typeof(Certificate), 201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> AddCertificate([FromBody] Certificate certificateDto)
+        {
+            if (certificateDto == null)
+            {
+                return BadRequest("Certificate data is null.");
+            }
+
+            try
+            {
+                var certificate = new Certificate
+                {
+                    EmployeeId = certificateDto.EmployeeId, // Admin can specify the EmployeeId
+                    CertificateName = certificateDto.CertificateName,
+                    IssueDate = certificateDto.IssueDate,
+                    ExpirationDate = certificateDto.ExpirationDate,
+                    VerificationURL = certificateDto.VerificationURL
+                };
+
+                await _context.Certificates.AddAsync(certificate);
+                await _context.SaveChangesAsync();
+                return Created(nameof(AddCertificate), new { Id = certificate.ID });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpGet("GetCertificates")]
+        [ProducesResponseType(typeof(IEnumerable<Certificate>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetCertificates()
+        {
+            try
+            {
+                var certificates = await _context.Certificates.ToListAsync();
+                return Ok(certificates);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpPut("UpdateCertificate/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdateCertificate(int id, [FromBody] AddCertificate certificateDto)
+        {
+            if (certificateDto == null)
+            {
+                return BadRequest("Certificate data is null.");
+            }
+
+            try
+            {
+                var existingCertificate = await _context.Certificates.FindAsync(id);
+                if (existingCertificate == null)
+                {
+                    return NotFound("Certificate not found.");
+                }
+
+                existingCertificate.CertificateName = certificateDto.CertificateName;
+                existingCertificate.IssueDate = certificateDto.IssueDate;
+                existingCertificate.ExpirationDate = certificateDto.ExpirationDate;
+                existingCertificate.VerificationURL = certificateDto.VerificationURL;
+
+                _context.Certificates.Update(existingCertificate);
+                await _context.SaveChangesAsync();
+                return Ok(existingCertificate);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("DeleteCertificate/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteCertificate(int id)
+        {
+            try
+            {
+                var existingCertificate = await _context.Certificates.FindAsync(id);
+                if (existingCertificate == null)
+                {
+                    return NotFound("Certificate not found.");
+                }
+
+                _context.Certificates.Remove(existingCertificate);
+                await _context.SaveChangesAsync();
+                return Ok("Certificate deleted.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            }
+        }
+    
+
+    [HttpPost("GivePoints")]
         [ProducesResponseType(typeof(Employee), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
@@ -52,7 +228,7 @@ namespace KFHRBackEnd.Controllers
         }
 
 
-        [HttpPost("AddCertificate")]
+        [HttpPost("AddRecommendedCertificate")]
         [ProducesResponseType(typeof(RecommendedCertificate), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
@@ -277,12 +453,48 @@ namespace KFHRBackEnd.Controllers
         [HttpGet("Employees")]
         [ProducesResponseType(typeof(IEnumerable<Employee>), 200)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> GetEmployees()
+        public async Task<IActionResult> GetEmployees(int? employeeId = null)
         {
             try
             {
-                var employees = await _context.Employees.ToListAsync();
-                return Ok(employees);
+                if (employeeId.HasValue)
+                {
+                    var employee = await _context.Employees.FindAsync(employeeId.Value);
+                    if (employee == null)
+                    {
+                        return NotFound("Employee not found.");
+                    }
+                    return Ok(employee);
+                }
+                else
+                {
+                    var employees = await _context.Employees.ToListAsync();
+                    return Ok(employees);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("GetAttendance")]
+        [ProducesResponseType(typeof(IEnumerable<Attendance>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetAttendance()
+        {
+            try
+            {
+                var employeeId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (employeeId == null)
+                {
+                    return Unauthorized();
+                }
+
+                var attendances = await _context.Attendances
+                    .Where(a => a.EmployeeId == int.Parse(employeeId))
+                    .ToListAsync();
+                return Ok(attendances);
             }
             catch (Exception ex)
             {
@@ -290,4 +502,5 @@ namespace KFHRBackEnd.Controllers
             }
         }
     }
+
 }
