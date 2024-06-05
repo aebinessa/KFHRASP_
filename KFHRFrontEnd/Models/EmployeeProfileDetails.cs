@@ -33,7 +33,7 @@ namespace KFHRFrontEnd.Models
 
         public string? PositionName { get; set; }
 
-        public Department? DepartmentName { get; set; }
+        public Department? DepartmentId { get; set; }
 
 
       

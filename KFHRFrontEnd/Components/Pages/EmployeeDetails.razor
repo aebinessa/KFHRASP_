@@ -66,7 +66,7 @@
                                 <th>Position</th>
                                 <td>@employee.PositionName</td> <!-- Change position to employee.Position -->
                                 <th>Department</th>
-                                <td>@employee.DepartmentName</td> <!-- Change IT to employee.DepartmentName -->
+                                <td>@employee.DepartmentId?.DepartmentName</td> <!-- Change IT to employee.DepartmentName -->
                             </tr>
                         </table>
                     </div>
@@ -82,9 +82,9 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>July 01, 2023</td> <!-- Change the date to employee date of checking in -->
-                                <td>07:08 AM</td> <!-- Change the time to employee time of checking in -->
-                                <td>03:00 PM</td> <!-- Change the time to employee time of checking out -->
+                                <td>@employeeAttendance.CheckInTime.Date</td> <!-- Change the date to employee date of checking in -->
+                                <td>@employeeAttendance.CheckInTime.TimeOfDay</td> <!-- Change the time to employee time of checking in -->
+                                <td>@employeeAttendance.CheckOutTime.TimeOfDay</td> <!-- Change the time to employee time of checking out -->
                             </tr>
                         </tbody>
                     </table>
@@ -95,16 +95,16 @@
                             <thead>
                                 <tr>
                                     <th>Certificate Name</th>
-                                    <th>Date Completed</th>
-                                    <th>Verification URL</th>
+                                    <th>Issuing Organization</th>
+                                    <th>Organiztion Website</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Certificate #1</td> <!-- Change the certificate to employee certificate name -->
-                                    <td>12/4/2023</td> <!-- Change the certificate date to employee certificate date -->
-                                    <td>URL HERE</td> <!-- Change the certificate URL to employee certificate URL -->
+                                    <td>@employeeCertificate.CertificateName</td> <!-- Change the certificate to employee certificate name -->
+                                    <td>@employeeCertificate.IssuingOrganization</td> <!-- Change the certificate date to employee certificate date -->
+                                    <td>@employeeCertificate.OrganizationWebsite</td> <!-- Change the certificate URL to employee certificate URL -->
                                     <td><button class="delete-button">🗑️</button></td>
                                 </tr>
                             </tbody>
@@ -154,10 +154,12 @@
 
 
 @code {
-  
+
     [Parameter] public int employeeId { get; set; }
     private EmployeeProfileDetails employee = new EmployeeProfileDetails();
-   
+    private EmployeeAttendance employeeAttendance = new EmployeeAttendance();
+    private EmployeeCertificate employeeCertificate = new EmployeeCertificate();
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -172,11 +174,48 @@
         {
             Console.WriteLine($"Error fetching employee: {ex.Message}");
         }
+
+
+        try
+        {
+            if (AppState != null)
+            {
+                Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
+                employeeCertificate = await Http.GetFromJsonAsync<EmployeeCertificate>($"https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/GetAttendancesByEmployee?employeeId={employeeId}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching employee certificates: {ex.Message}");
+        }
+
+        try
+        {
+            if (AppState != null)
+            {
+                Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
+                employeeAttendance = await Http.GetFromJsonAsync<EmployeeAttendance>($"https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/GetCertificatesByEmployee?employeeId={employeeId}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching employee attendances: {ex.Message}");
+        }
+
     }
 
     private void EditEmployee()
     {
         Navigation.NavigateTo($"/editemployee/{employeeId}");
+    }
+
+    private async Task DeleteCertificate(int employeeId)
+    {
+
+        var response = await Http.DeleteAsync($"/api/Admin/DeleteCertificate/{employeeId}");
+        //employeeCertificate.RemoveAll(e => e.Id == employeeId);
+        StateHasChanged();
+
     }
 }
 
@@ -222,6 +261,7 @@
         showSection('profile');
     });
 </script>
+
 
 <style>
     .container {

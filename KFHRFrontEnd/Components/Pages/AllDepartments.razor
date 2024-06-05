@@ -1,61 +1,8 @@
 ﻿@page "/alldepartments"
 
 @code {
-    private List<Department> Departments = new List<Department>
-    {
-        new Department
-        {
-            Name = "Design Department",
-            MemberCount = 20,
-            Employees = new List<Employee>
-            {
-                new Employee { Name = "Dianne Russell", Position = "Lead UI/UX Designer", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" },
-                new Employee { Name = "Arlene McCoy", Position = "Sr. UI/UX Designer", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" },
-                new Employee { Name = "Cody Fisher", Position = "Sr. UI/UX Designer", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" },
-                new Employee { Name = "Theresa Webb", Position = "UI/UX Designer", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" },
-                new Employee { Name = "Ronald Richards", Position = "UI/UX Designer", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" }
-            }
-        },
-        new Department
-        {
-            Name = "Sales Department",
-            MemberCount = 14,
-            Employees = new List<Employee>
-            {
-                new Employee { Name = "Darrell Steward", Position = "Sr. Sales Manager", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" },
-                new Employee { Name = "Kristin Watson", Position = "Sr. Sales Manager", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" },
-                new Employee { Name = "Courtney Henry", Position = "BDM", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" },
-                new Employee { Name = "Kathryn Murphy", Position = "BDE", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" },
-                new Employee { Name = "Albert Flores", Position = "Sales", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" }
-            }
-        },
-        new Department
-        {
-            Name = "Project Manager Department",
-            MemberCount = 18,
-            Employees = new List<Employee>
-            {
-                new Employee { Name = "Leslie Alexander", Position = "Sr. Project Manager", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" },
-                new Employee { Name = "Ronald Richards", Position = "Sr. Project Manager", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" },
-                new Employee { Name = "Savannah Nguyen", Position = "Project Manager", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" },
-                new Employee { Name = "Eleanor Pena", Position = "Project Manager", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" },
-                new Employee { Name = "Esther Howard", Position = "Project Manager", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" }
-            }
-        },
-        new Department
-        {
-            Name = "Marketing Department",
-            MemberCount = 10,
-            Employees = new List<Employee>
-            {
-                new Employee { Name = "Wade Warren", Position = "Sr. Marketing Manager", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" },
-                new Employee { Name = "Brooklyn Simmons", Position = "Sr. Marketing Manager", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" },
-                new Employee { Name = "Kristin Watson", Position = "Marketing Coordinator", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" },
-                new Employee { Name = "Jacob Jones", Position = "Marketing Coordinator", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" },
-                new Employee { Name = "Cody Fisher", Position = "Marketing", ImageUrl = "https://th.bing.com/th/id/R.561c59facb184e4846bccfc487ff8bb8?rik=kE2GLLieSOiK6w&pid=ImgRaw&r=0" }
-            }
-        }
-    };
+    private List<Department> Departments = new List<Department> { };
+
 }
 
 <div class="container-fluid">
@@ -89,22 +36,13 @@
                         <div class="col-md-6 mb-4">
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5>@department.Name</h5>
+                                    <h5>@department</h5>
                                     <a href="#">View All</a>
                                 </div>
                                 <div class="card-body">
-                                    <p>@department.MemberCount Members</p>
+                                    <p>@department Members</p>
                                     <ul class="list-group list-group-flush">
-                                        @foreach (var employee in department.Employees)
-                                        {
-                                            <li class="list-group-item d-flex align-items-center">
-                                                <img src="@employee.ImageUrl" alt="Employee Image" class="rounded-circle" width="40" height="40" />
-                                                <div class="ml-2">
-                                                    <span>@employee.Name</span><br />
-                                                    <span class="text-muted">@employee.Position</span>
-                                                </div>
-                                            </li>
-                                        }
+                                       
                                     </ul>
                                 </div>
                             </div>

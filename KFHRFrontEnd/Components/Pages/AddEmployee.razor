@@ -71,16 +71,25 @@
             </div>
         </div>
 
-        <!-- Form Row for Position ID and Department ID -->
+        <!-- Form Row for Position Name and Department -->
         <div class="form-row">
             <div class="form-group">
-                <label for="positionId">Position ID</label>
-                <InputNumber id="positionId" @bind-Value="employee.PositionId" placeholder="Position ID" />
-                <ValidationMessage For="@(() => employee.PositionId)" />
+                <label for="positionName">Position Name</label>
+                <InputText id="positionName" @bind-Value="employee.PositionName" placeholder="Position Name" />
+                <ValidationMessage For="@(() => employee.PositionName)" />
             </div>
             <div class="form-group">
-                <label for="departmentId">Department ID</label>
-                <InputNumber id="departmentId" @bind-Value="employee.DepartmentId" placeholder="Department ID" />
+                <label for="departmentId">Department Name</label>
+                <InputSelect id="departmentId" @bind-Value="employee.DepartmentId">
+                    <option value="">Select Department</option>
+                    @if (departments != null)
+                    {
+                        @foreach (var department in departments)
+                        {
+                            <option value="@department.Id">@department.DepartmentName</option>
+                        }
+                    }
+                </InputSelect>
                 <ValidationMessage For="@(() => employee.DepartmentId)" />
             </div>
         </div>
@@ -91,20 +100,47 @@
             <button type="submit" class="save-button">Save</button>
         </div>
     </EditForm>
-
 </div>
 
 @code {
-    private AddEmployeeRequest employee = new AddEmployeeRequest
+    private AddEmployeeRequest employee = new AddEmployeeRequest();
+
+    private List<Department> departments = new List<Department>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
         {
-            Name = "Test Name",
-            Email = "test@example.com",
-            ProfilePicURL = "http://example.com/pic.jpg",
-            DOB = new DateTime(1990, 1, 1),
-            Gender = Gender.Male,
-            PositionId = 1,
-            DepartmentId = 1
-        };
+            if (AppState != null && !string.IsNullOrEmpty(AppState.AuthToken))
+            {
+                Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
+                var response = await Http.GetAsync("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/GetDepartments");
+                if (response.IsSuccessStatusCode)
+                {
+                    departments = await response.Content.ReadFromJsonAsync<List<Department>>();
+                }
+                else
+                {
+                    Console.WriteLine("Failed to fetch departments.");
+                    departments = new List<Department>(); // Initialize to avoid null reference
+                }
+            }
+            else
+            {
+                Console.WriteLine("AppState is null or AuthToken is missing");
+            }
+        }
+        catch (HttpRequestException httpEx)
+        {
+            Console.WriteLine($"HTTP error fetching departments: {httpEx.Message}");
+            departments = new List<Department>(); // Initialize to avoid null reference
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"General error fetching departments: {ex.Message}");
+            departments = new List<Department>(); // Initialize to avoid null reference
+        }
+    }
 
     private async Task HandleValidSubmit()
     {
@@ -116,7 +152,6 @@
                 Console.WriteLine($"Employee Name: {employee.Name}");
                 Console.WriteLine($"Employee Email: {employee.Email}");
 
-                // Verify payload
                 var payload = new
                 {
                     name = employee.Name,
@@ -124,8 +159,8 @@
                     profilePicURL = employee.ProfilePicURL,
                     dob = employee.DOB,
                     gender = employee.Gender,
-                    positionName = employee.Name,
-                    departmentId = employee.DepartmentId, // Send departmentId as a single integer
+                    positionName = employee.PositionName,
+                    departmentId = employee.DepartmentId,
                     pointsEarned = 10
                 };
 
@@ -169,10 +204,6 @@
         Navigation.NavigateTo("/allemployees");
     }
 }
-
-
-
-
 
 <style>
     .header {
@@ -345,25 +376,25 @@
         font-size: 14px;
         border: none;
         border-radius: 4px;
-        cursor: pointer;
+        cursor: pointer.
     }
 
     .cancel-button {
         background-color: #fff;
         border: 1px solid #ddd;
-        margin-right: 10px;
+        margin-right: 10px.
     }
 
     .save-button {
         background-color: #28a745;
-        color: #fff;
+        color: #fff.
     }
 
     .invalid {
-        border-color: red;
+        border-color: red.
     }
 
     .validation-message {
-        color: red;
+        color: red.
     }
 </style>

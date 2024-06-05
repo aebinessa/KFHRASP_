@@ -58,7 +58,7 @@
                 <tr>
                     <td><img src="@employee.ProfilePicURL" alt="Profile Picture" class="center" />@employee.Name</td>
                     <td>@employee.Id</td>
-                    <td>@employee.DepartmentName</td>
+                    <td>@employee.DepartmentId?.DepartmentName</td>
                     <td>@employee.PositionName</td>
                     <td>
                         <button class="view-btn" @onclick="() => ViewEmployee(employee.Id)">👁️</button>
