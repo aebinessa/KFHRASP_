@@ -22,6 +22,31 @@ namespace KFHRBackEnd.Controllers
             _context = context;
         }
 
+        [HttpGet("GetCertificates")]
+        [ProducesResponseType(typeof(IEnumerable<Certificate>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetCertificates()
+        {
+            try
+            {
+                var employeeId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (employeeId == null)
+                {
+                    return Unauthorized();
+                }
+
+                var certificates = await _context.Certificates
+                    .Where(c => c.EmployeeId == int.Parse(employeeId))
+                    .ToListAsync();
+
+                return Ok(certificates);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
         [HttpGet("GetPoints")]
         [ProducesResponseType(typeof(int), 200)]
         [ProducesResponseType(500)]
@@ -49,10 +74,10 @@ namespace KFHRBackEnd.Controllers
             }
         }
 
-        [HttpGet("GetCertificates")]
+        [HttpGet("GetRecommendedCertificates")]
         [ProducesResponseType(typeof(IEnumerable<RecommendedCertificate>), 200)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> GetCertificates()
+        public async Task<IActionResult> GetRecommendedCertificates()
         {
             try
             {
@@ -363,6 +388,9 @@ namespace KFHRBackEnd.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
             }
+
         }
     }
+
+
 }
