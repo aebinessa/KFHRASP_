@@ -46,7 +46,7 @@ namespace KFHRBackEnd.Models.Services
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddHours(24.0),
                 signingCredentials: credentials);
             var generatedToken = new JwtSecurityTokenHandler().WriteToken(token);
             return (true, generatedToken);
