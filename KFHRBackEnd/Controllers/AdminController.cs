@@ -37,9 +37,47 @@ namespace KFHRBackEnd.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+        [HttpGet("GetAttendance/{id}")]
+        [ProducesResponseType(typeof(Attendance), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetAttendance(int id)
+        {
+            try
+            {
+                var attendance = await _context.Attendances.FindAsync(id);
+                if (attendance == null)
+                {
+                    return NotFound("Attendance record not found.");
+                }
+                return Ok(attendance);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        [HttpGet("GetAttendancesByEmployee/{employeeId}")]
+        [ProducesResponseType(typeof(IEnumerable<Attendance>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetAttendancesByEmployee(int employeeId)
+        {
+            try
+            {
+                var attendances = await _context.Attendances
+                    .Where(a => a.EmployeeId == employeeId)
+                    .ToListAsync();
+                return Ok(attendances);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+    
 
-        // Get all leave requests
-        [HttpGet("GetLeaves")]
+    // Get all leave requests
+    [HttpGet("GetLeaves")]
         [ProducesResponseType(typeof(IEnumerable<Leave>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetLeaves()
