@@ -268,6 +268,32 @@ namespace KFHRBackEnd.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, ex);
             }
         }
+        [HttpGet("GetTodayAttendance")]
+        [ProducesResponseType(typeof(IEnumerable<Attendance>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetTodayAttendance()
+        {
+            try
+            {
+                var employeeId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (employeeId == null)
+                {
+                    return Unauthorized();
+                }
+
+                var today = DateTime.Now.Date;
+
+                var todayAttendances = await _context.Attendances
+                    .Where(a => a.EmployeeId == int.Parse(employeeId) && a.CheckInTime.Date == today)
+                    .ToListAsync();
+
+                return Ok(todayAttendances);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         [HttpGet("GetAttendance")]
         [ProducesResponseType(typeof(IEnumerable<Attendance>), 200)]

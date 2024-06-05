@@ -173,6 +173,23 @@ namespace KFHRBackEnd.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
             }
         }
+        [HttpGet("GetCertificatesByEmployee/{employeeId}")]
+        [ProducesResponseType(typeof(IEnumerable<Certificate>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetCertificatesByEmployee(int employeeId)
+        {
+            try
+            {
+                var certificates = await _context.Certificates
+                    .Where(c => c.EmployeeId == employeeId)
+                    .ToListAsync();
+                return Ok(certificates);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
+            }
+        }
 
         [HttpPut("UpdateCertificate/{id}")]
         [ProducesResponseType(200)]
