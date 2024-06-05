@@ -64,21 +64,25 @@
             </div>
         </div>
         <!-- Form Row for Employee ID and Department -->
-        <div class="form-row">
-            <div class="form-group">
-                <label for="nfcIdNumber">NFC ID Number</label>
-                <InputText id="nfcIdNumber" @bind-Value="employee.NFCIdNumber" placeholder="NFC ID Number" />
-            </div>
-            <div class="form-group">
-                <label for="departmentId">Department</label>
-                <InputNumber id="departmentId" @bind-Value="employee.DepartmentId" placeholder="Department" />
-            </div>
+        <div class="form-group">
+            <label for="departmentId">Department Name</label>
+            <InputSelect id="departmentId" @bind-Value="employee.DepartmentId">
+                <option value="">Select Department</option>
+                @if (departments != null)
+                {
+                    @foreach (var department in departments)
+                    {
+                        <option value="@department.Id">@department.DepartmentName</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => employee.DepartmentId)" />
         </div>
         <!-- Form Row for Position -->
         <div class="form-row">
             <div class="form-group">
-                <label for="positionId">Position</label>
-                <InputNumber id="positionId" @bind-Value="employee.PositionId" placeholder="Position" />
+                <label for="positionName">Position Name</label>
+                <InputText id="positionName" @bind-Value="employee.PositionName" placeholder="Position Name" />
             </div>
         </div>
         <!-- Form Actions for Cancel and Save Buttons -->
@@ -92,26 +96,60 @@
 @code {
     [Parameter] public int employeeId { get; set; }
     private EditEmployeeRequest employee { get; set; }
-    
-    protected override Task OnInitializedAsync()
+    private List<Department> departments = new List<Department>();
+
+
+    protected override async Task OnInitializedAsync()
     {
         employee = new EditEmployeeRequest
+            {
+
+                Name = "New Name",
+                Email = "New Email",
+                ProfilePicURL = "http://example.com/pic.jpg",
+                DOB = new DateTime(1990, 1, 1),
+                Gender = Gender.Male,
+                PositionName = "",
+                DepartmentId = 1
+            };
+
+        try
         {
-            Id = employeeId,
-            Name = "Test Name",
-            Email = "test@example.com",
-            ProfilePicURL = "http://example.com/pic.jpg",
-            DOB = new DateTime(1990, 1, 1),
-            Gender = GenderE.Male,
-            PositionId = 1,
-            DepartmentId = 1
-        };
-    return base.OnInitializedAsync();
+            if (AppState != null && !string.IsNullOrEmpty(AppState.AuthToken))
+            {
+                Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
+                var response = await Http.GetAsync("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/GetDepartments");
+                if (response.IsSuccessStatusCode)
+                {
+                    departments = await response.Content.ReadFromJsonAsync<List<Department>>();
+                }
+                else
+                {
+                    Console.WriteLine("Failed to fetch departments.");
+                    departments = new List<Department>(); // Initialize to avoid null reference
+                }
+            }
+            else
+            {
+                Console.WriteLine("AppState is null or AuthToken is missing");
+            }
+        }
+        catch (HttpRequestException httpEx)
+        {
+            Console.WriteLine($"HTTP error fetching departments: {httpEx.Message}");
+            departments = new List<Department>(); // Initialize to avoid null reference
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"General error fetching departments: {ex.Message}");
+            departments = new List<Department>(); // Initialize to avoid null reference
+        }
     }
     
 
     private async Task HandleValidSubmit()
     {
+
         try
         {
             if (AppState != null && !string.IsNullOrEmpty(AppState.AuthToken))
@@ -128,7 +166,7 @@
                     profilePicURL = employee.ProfilePicURL,
                     dob = employee.DOB,
                     gender = employee.Gender,
-                    positionName = employee.Name,
+                    positionName = employee.PositionName,
                     departmentId = employee.DepartmentId, // Send departmentId as a single integer
                     pointsEarned = 10
                 };

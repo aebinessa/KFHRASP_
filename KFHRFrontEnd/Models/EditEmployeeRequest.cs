@@ -2,21 +2,14 @@
 {
     public class EditEmployeeRequest
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        public DateTime DOB { get; set; }
-        public GenderE Gender { get; set; }
+        public DateTime? DOB { get; set; }
+        public Gender Gender { get; set; }
         public string ProfilePicURL { get; set; }
-        public string NFCIdNumber { get; set; }
-        public int PositionId { get; set; }
-        public int DepartmentId { get; set; }
+        public string? PositionName { get; set; }
+        public int? DepartmentId { get; set; }
         public int PointEarned { get; set; }
     }
 
-    public enum GenderE
-    {
-        Male,
-        Female
-    }
 }

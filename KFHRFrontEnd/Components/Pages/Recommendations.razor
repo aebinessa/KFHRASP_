@@ -1,67 +1,124 @@
 ﻿@page "/recommendations"
-@inject NavigationManager Navigation
+
 @using KFHRFrontEnd.Models
+@using KFHRBackEnd.Models.Entites.Request
+@using KFHRBackEnd.Models.Services
+@using System.Net.Http.Json
+@using System.IdentityModel.Tokens.Jwt
+@using System.Security.Claims
+@using KFHRFrontEnd.Models.Responses
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject GlobalAppState AppState
 
+<EditForm Model="cert" OnValidSubmit="HandleValidSubmit">
 
+    <DataAnnotationsValidator />
 
-<div class="header">
-    <div class="info">
-        <h1>Recommendations</h1>
-    </div>
-    <div class="user-info">
-        <NavLink href="/counter" class="center">
-            <img src="notification.png" />
-        </NavLink>
-        <img src="leasie-watson.jpg" alt="Profile Picture" class="center" />
-        <div>
-            <h2>Robert Allen</h2>
-            <p>HR Manager</p>
+    <ValidationSummary />
+
+    <div class="header">
+        <div class="info">
+            <h1>Recommendations</h1>
+        </div>
+        <div class="user-info">
+            <NavLink href="/counter" class="center">
+                <img src="notification.png" />
+            </NavLink>
+            <img src="leasie-watson.jpg" alt="Profile Picture" class="center" />
+            <div>
+                <h2>Robert Allen</h2>
+                <p>HR Manager</p>
+            </div>
         </div>
     </div>
-</div>
 
-
-
-<div class="body">
-    <div class="form-container">
-        <form id="certificate-form">
-            <div class="form-row">
-                <div class="form-group file-input">
-                    <input type="file" id="profile-picture" name="profile-picture" accept="image/*">
-                    <label for="profile-picture" class="file-label">
-                        <img src="camera-icon.png" alt="Upload">
-                    </label>
-                </div>
-            </div>
+    <div class="body">
+        <div class="form-container">
             <div class="form-section horizontal-fields">
-                <input type="text" id="name-of-certificate" placeholder="Name of Certificate">
-                <input type="text" id="organization" placeholder="Organization">
+                <InputText id="name-of-certificate" @bind-Value="cert.CertificateName" placeholder="Name of Certificate" class="form-control" />
+                <InputText id="organization" @bind-Value="cert.IssuingOrganization" placeholder="Organization" class="form-control" />
             </div>
             <div class="form-section">
-                <input type="text" id="verification-url" placeholder="Verification URL">
+                <InputText id="verification-url" @bind-Value="cert.CertificatePicture" placeholder="Verification URL" class="form-control" />
             </div>
             <div class="form-section">
-                <textarea id="certification-detail" placeholder="Certification Detail"></textarea>
+                <InputNumber id="reward-points" @bind-Value="cert.RewardPoints" placeholder="Reward Points" class="form-control" />
+                <InputText id="certification-detail" @bind-Value="cert.OrganizationWebsite" placeholder="Certification Detail" class="form-control" />
             </div>
             <div class="form-buttons">
                 <button type="button" @onclick="NavDash" id="cancel-button">Cancel</button>
                 <button type="submit" id="save-button">Save</button>
             </div>
-        </form>
+        </div>
     </div>
-</div>
+</EditForm>
 
 
-@code{
+@code {
 
-    <!-- Insert logic code for fetching  -->
-    public void NavDash(){
+    private RecommendedCertificate cert = new RecommendedCertificate();
+    private string errorMessage;
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            if (AppState != null && !string.IsNullOrEmpty(AppState.AuthToken))
+            {
+                Console.WriteLine($"AuthToken: {AppState.AuthToken}");
+               
+
+                var payload = new
+                {
+                    CertificateName = cert.CertificateName,
+                    IssuingOrganization = cert.IssuingOrganization,
+                    CertificatePicture = cert.CertificatePicture,
+                    RewardPoints = cert.RewardPoints,
+                    OrganizationWebsite = cert.OrganizationWebsite
+                };
+
+                Console.WriteLine($"Payload: {System.Text.Json.JsonSerializer.Serialize(payload)}");
+
+                Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
+
+                var response = await Http.PostAsJsonAsync("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/AddRecommendedCertificate", payload);
+
+                Console.WriteLine("HTTP response received");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Certificate added successfully");
+                    Navigation.NavigateTo("/dashboard");
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Error adding certificate: {response.ReasonPhrase}, Content: {errorContent}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("AppState is null or AuthToken is missing");
+            }
+        }
+        catch (HttpRequestException httpEx)
+        {
+            Console.WriteLine($"HTTP error adding certificate: {httpEx.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"General error adding certificate: {ex.Message}");
+        }
+    }
+
+    public void NavDash()
+    {
         Navigation.NavigateTo("/dashboard");
     }
 }
-
+}
 <style>
-
     .header {
         display: flex;
         justify-content: space-between;
@@ -268,31 +325,8 @@
         #save-button:hover {
             background-color: #45a049;
         }
+
+    .error-message {
+        color: red;
+    }
 </style>
-
-<script>
-
-    document.getElementById('certificate-form').addEventListener('submit', function (event) {
-        event.preventDefault();
-
-        // Form validation
-        const nameOfCertificate = document.getElementById('name-of-certificate').value;
-        const organization = document.getElementById('organization').value;
-        const verificationUrl = document.getElementById('verification-url').value;
-        const certificationDetail = document.getElementById('certification-detail').value;
-        const dateCompleted = document.getElementById('date-completed').value;
-
-        if (!nameOfCertificate || !organization || !verificationUrl || !certificationDetail || !dateCompleted) {
-            alert('Please fill out all fields.');
-            return;
-        }
-
-        // Form submission logic
-        alert('Form submitted successfully!');
-
-        // Clear the form
-        document.getElementById('certificate-form').reset();
-    });
-
-</script>
-
