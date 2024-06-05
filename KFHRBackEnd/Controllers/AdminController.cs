@@ -74,17 +74,35 @@ namespace KFHRBackEnd.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
-    
 
-    // Get all leave requests
-    [HttpGet("GetLeaves")]
-        [ProducesResponseType(typeof(IEnumerable<Leave>), 200)]
+
+        // Get all leave requests
+        [HttpGet("GetLeaves")]
+        [ProducesResponseType(typeof(IEnumerable<LeaveRes>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetLeaves()
         {
             try
             {
-                var leaves = await _context.Leaves.ToListAsync();
+                var leaves = await _context.Leaves
+                    .Join(
+                        _context.Employees,
+                        leave => leave.EmployeeId,
+                        employee => employee.Id,
+                        (leave, employee) => new LeaveRes
+                        {
+                            ID = leave.ID,
+                            EmployeeId = leave.EmployeeId,
+                            EmployeeName = employee.Name,
+                            LeaveType = leave.LeaveType,
+                            StartDate = leave.StartDate,
+                            EndDate = leave.EndDate,
+                            Notes = leave.Notes,
+                            Status = leave.Status
+                        }
+                    )
+                    .ToListAsync();
+
                 return Ok(leaves);
             }
             catch (Exception ex)
@@ -124,9 +142,9 @@ namespace KFHRBackEnd.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
-    
 
-    [HttpPost("AddCertificate")]
+
+        [HttpPost("AddCertificate")]
         [ProducesResponseType(typeof(Certificate), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
@@ -248,9 +266,9 @@ namespace KFHRBackEnd.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
             }
         }
-    
 
-    [HttpPost("GivePoints")]
+
+        [HttpPost("GivePoints")]
         [ProducesResponseType(typeof(Employee), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
@@ -514,7 +532,7 @@ namespace KFHRBackEnd.Controllers
             {
                 if (employeeId.HasValue)
                 {
-                    var employee = await _context.Employees.Include(x=>x.DepartmentId).FirstOrDefaultAsync(x => x.Id == employeeId.Value);
+                    var employee = await _context.Employees.Include(x => x.DepartmentId).FirstOrDefaultAsync(x => x.Id == employeeId.Value);
                     if (employee == null)
                     {
                         return NotFound("Employee not found.");
@@ -534,21 +552,28 @@ namespace KFHRBackEnd.Controllers
         }
 
         [HttpGet("GetAttendance")]
-        [ProducesResponseType(typeof(IEnumerable<Attendance>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<AttendanceRes>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAttendance()
         {
             try
             {
-                var employeeId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                if (employeeId == null)
-                {
-                    return Unauthorized();
-                }
-
                 var attendances = await _context.Attendances
-                    .Where(a => a.EmployeeId == int.Parse(employeeId))
+                    .Join(
+                        _context.Employees,
+                        attendance => attendance.EmployeeId,
+                        employee => employee.Id,
+                        (attendance, employee) => new AttendanceRes
+                        {
+                            ID = attendance.ID,
+                            EmployeeId = attendance.EmployeeId,
+                            EmployeeName = employee.Name,
+                            CheckInTime = attendance.CheckInTime,
+                            CheckOutTime = attendance.CheckOutTime
+                        }
+                    )
                     .ToListAsync();
+
                 return Ok(attendances);
             }
             catch (Exception ex)
@@ -556,6 +581,6 @@ namespace KFHRBackEnd.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-    }
 
+    }
 }
