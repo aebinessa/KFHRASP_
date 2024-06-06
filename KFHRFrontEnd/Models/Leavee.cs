@@ -1,0 +1,20 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace KFHRFrontEnd.Models
+{
+    public class Leavee
+    {
+
+        public int ID { get; set; }
+        public int EmployeeId { get; set; }
+        public string LeaveType { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public string Status { get; set; }
+        public string Notes { get; set; }
+
+    }
+
+
+
+}

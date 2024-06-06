@@ -1,65 +1,46 @@
 ﻿@page "/leaves"
+@using KFHRFrontEnd.Components
+@using KFHRFrontEnd.Models
+@using System.Net.Http
+@using System.Net.Http.Json
+@using KFHRBackEnd.Models
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject GlobalAppState AppState
 
 @code {
-    private List<EmployeeLeave> Leaves = new List<EmployeeLeave>
-{
-    new EmployeeLeave { EmployeeName = "Alice Johnson", EmployeeID = "123456789", Position = "Graphic Designer", DateRange = "From 10/6/2024 To 14/6/2024", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Bob Smith", EmployeeID = "987654321", Position = "Software Engineer", DateRange = "From 5/7/2024 To 15/7/2024", Status = "Maternity Leave", Duration = "11 Working Days" },
-    new EmployeeLeave { EmployeeName = "Charlie Brown", EmployeeID = "456789123", Position = "Marketing Manager", DateRange = "From 20/6/2024 To 22/6/2024", Status = "Sick Leave", Duration = "3 Working Days" },
-    new EmployeeLeave { EmployeeName = "David Lee", EmployeeID = "135792468", Position = "Data Analyst", DateRange = "From 8/8/2024 To 10/8/2024", Status = "Business Trip", Duration = "3 Working Days" },
-    new EmployeeLeave { EmployeeName = "Eva Martinez", EmployeeID = "246813579", Position = "HR Coordinator", DateRange = "From 25/7/2024 To 29/7/2024", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Frank White", EmployeeID = "112233445", Position = "Customer Support", DateRange = "From 12/9/2024 To 14/9/2024", Status = "Training", Duration = "3 Working Days" },
-    new EmployeeLeave { EmployeeName = "Grace Davis", EmployeeID = "554433221", Position = "Accountant", DateRange = "From 3/10/2024 To 7/10/2024", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Henry Adams", EmployeeID = "998877665", Position = "Project Manager", DateRange = "From 20/11/2024 To 24/11/2024", Status = "Sick Leave", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Ivy Taylor", EmployeeID = "667788990", Position = "Sales Representative", DateRange = "From 15/12/2024 To 19/12/2024", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Jackie Robinson", EmployeeID = "112233445", Position = "Operations Manager", DateRange = "From 2/1/2025 To 6/1/2025", Status = "Conference", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Karen Scott", EmployeeID = "887766554", Position = "Legal Counsel", DateRange = "From 8/2/2025 To 10/2/2025", Status = "Sick Leave", Duration = "3 Working Days" },
-    new EmployeeLeave { EmployeeName = "Larry Thompson", EmployeeID = "332211445", Position = "UI/UX Designer", DateRange = "From 17/3/2025 To 21/3/2025", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Mia Clark", EmployeeID = "223344556", Position = "Quality Assurance", DateRange = "From 22/4/2025 To 26/4/2025", Status = "Training", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Nathan Evans", EmployeeID = "445566778", Position = "Financial Analyst", DateRange = "From 7/5/2025 To 11/5/2025", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Olivia Harris", EmployeeID = "556677889", Position = "Content Writer", DateRange = "From 19/6/2025 To 23/6/2025", Status = "Sick Leave", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Peter Wilson", EmployeeID = "778899001", Position = "Customer Success Manager", DateRange = "From 24/7/2025 To 28/7/2025", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Quinn Murphy", EmployeeID = "990011223", Position = "Product Manager", DateRange = "From 8/8/2025 To 12/8/2025", Status = "Training", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Rachel Turner", EmployeeID = "112233445", Position = "HR Manager", DateRange = "From 19/9/2025 To 23/9/2025", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Samuel Baker", EmployeeID = "334455667", Position = "IT Administrator", DateRange = "From 3/10/2025 To 7/10/2025", Status = "Sick Leave", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Tina Reed", EmployeeID = "556677889", Position = "Marketing Coordinator", DateRange = "From 22/11/2025 To 26/11/2025", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Ursula King", EmployeeID = "778899001", Position = "Software Developer", DateRange = "From 17/12/2025 To 21/12/2025", Status = "Training", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Victor Scott", EmployeeID = "334455667", Position = "Business Analyst", DateRange = "From 7/1/2026 To 11/1/2026", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Wendy Hall", EmployeeID = "990011223", Position = "Project Coordinator", DateRange = "From 16/2/2026 To 20/2/2026", Status = "Sick Leave", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Xavier Patel", EmployeeID = "112233445", Position = "Technical Support", DateRange = "From 8/3/2026 To 12/3/2026", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Yvonne Rivera", EmployeeID = "556677889", Position = "Operations Analyst", DateRange = "From 27/4/2026 To 1/5/2026", Status = "Training", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Zack Thomas", EmployeeID = "778899001", Position = "Customer Service Representative", DateRange = "From 14/5/2026 To 18/5/2026", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Alexa Williams", EmployeeID = "334455667", Position = "Digital Marketing Specialist", DateRange = "From 26/6/2026 To 30/6/2026", Status = "Sick Leave", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Brian Martinez", EmployeeID = "990011223", Position = "Finance Manager", DateRange = "From 18/7/2026 To 22/7/2026", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Catherine Scott", EmployeeID = "112233445", Position = "Content Strategist", DateRange = "From 15/8/2026 To 19/8/2026", Status = "Training", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Daniel Rodriguez", EmployeeID = "556677889", Position = "Sales Manager", DateRange = "From 21/9/2026 To 25/9/2026", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Emily White", EmployeeID = "778899001", Position = "UI/UX Designer", DateRange = "From 12/10/2026 To 16/10/2026", Status = "Sick Leave", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Fernando Garcia", EmployeeID = "334455667", Position = "Technical Writer", DateRange = "From 6/11/2026 To 10/11/2026", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Gina Hernandez", EmployeeID = "990011223", Position = "HR Generalist", DateRange = "From 25/12/2026 To 29/12/2026", Status = "Training", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Henry Adams", EmployeeID = "112233445", Position = "Data Scientist", DateRange = "From 21/1/2027 To 25/1/2027", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Isabel Martinez", EmployeeID = "556677889", Position = "Marketing Specialist", DateRange = "From 15/2/2027 To 19/2/2027", Status = "Sick Leave", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "James Taylor", EmployeeID = "778899001", Position = "Product Owner", DateRange = "From 21/3/2027 To 25/3/2027", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Katherine Lewis", EmployeeID = "334455667", Position = "Business Development Manager", DateRange = "From 11/4/2027 To 15/4/2027", Status = "Training", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Luis Rodriguez", EmployeeID = "990011223", Position = "Technical Lead", DateRange = "From 23/5/2027 To 27/5/2027", Status = "Vacation", Duration = "5 Working Days" },
-    new EmployeeLeave { EmployeeName = "Megan Cooper", EmployeeID = "112233445", Position = "Operations Coordinator", DateRange = "From 15/6/2027 To 19/6/2027", Status = "Sick Leave", Duration = "5 Working Days" }
-};
-
-
+    private List<Leavee> leaves { get; set; } = new List<Leavee>();
     private int currentPage = 1;
     private int pageSize = 10;
-    private int totalPages => (int)Math.Ceiling((double)Leaves.Count / pageSize);
+    private int totalPages => (int)Math.Ceiling((double)leaves.Count / pageSize);
 
-    private IEnumerable<EmployeeLeave> PaginatedLeaves => Leaves.Skip((currentPage - 1) * pageSize).Take(pageSize);
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var client = new HttpClient();
+            if (AppState != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
+                leaves = await client.GetFromJsonAsync<List<Leavee>>("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/GetLeaves");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching leaves: {ex}");
+        }
+    }
+
+    private IEnumerable<Leavee> PaginatedLeaves => leaves.Skip((currentPage - 1) * pageSize).Take(pageSize);
 
     private string GetStatusClass(string status)
     {
         return status switch
         {
-            "Sick Leave" => "badge badge-danger",
-            "Vacation" => "badge badge-success",
-            "Requested Permission" => "badge badge-warning",
-            "Emergency Leave" => "badge badge-danger",
-            _ => ""
+            "Emergency Leave" => "badge badge-red",
+            "Sick Leave" => "badge badge-yellow",
+            "Pending" => "badge badge-grey",
+            _ => "badge badge-secondary"
         };
     }
 
@@ -68,7 +49,6 @@
         if (pageNumber > 0 && pageNumber <= totalPages)
         {
             currentPage = pageNumber;
-
         }
     }
 }
@@ -81,11 +61,14 @@
                     <h1>Leaves</h1>
                     <p>All Employee Leaves</p>
                 </div>
-                <div class="d-flex align-items-center">
-                    <img src="https://i.pinimg.com/originals/e3/af/9d/e3af9df93a2df76ccddec9e2ba129b31.jpg" alt="User" class="rounded-circle" width="40" height="40" />
-                    <div class="ml-2">
-                        <span>Robert Allen</span><br />
-                        <span class="text-muted">HR Manager</span>
+                <div class="user-info">
+                    <NavLink href="/counter" class="center">
+                        <img src="notification.png" />
+                    </NavLink>
+                    <img src="leasie-watson.jpg" alt="Profile Picture" class="center" />
+                    <div>
+                        <h2>Robert Allen</h2>
+                        <p>HR Manager</p>
                     </div>
                 </div>
             </header>
@@ -93,24 +76,24 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Employee Name</th>
                             <th>Employee ID</th>
-                            <th>Position</th>
-                            <th>Date</th>
+                            <th>Leave Type</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
                             <th>Status</th>
-                            <th>Duration</th>
+                            <th>Notes</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var leave in PaginatedLeaves)
                         {
                             <tr>
-                                <td>@leave.EmployeeName</td>
-                                <td>@leave.EmployeeID</td>
-                                <td>@leave.Position</td>
-                                <td>@leave.DateRange</td>
+                                <td>@leave.EmployeeId</td>
+                                <td>@leave.LeaveType</td>
+                                <td>@leave.StartDate.ToShortDateString()</td>
+                                <td>@leave.EndDate.ToShortDateString()</td>
                                 <td><span class="@GetStatusClass(leave.Status)">@leave.Status</span></td>
-                                <td>@leave.Duration</td>
+                                <td>@leave.Notes</td>
                             </tr>
                         }
                     </tbody>
@@ -118,15 +101,13 @@
             </div>
             <div class="d-flex justify-content-between">
                 <div>
-                    Showing @((currentPage - 1) * pageSize + 1) to @(Math.Min(currentPage * pageSize, Leaves.Count)) out of @Leaves.Count records
+                    Showing @((currentPage - 1) * pageSize + 1) to @(Math.Min(currentPage * pageSize, leaves.Count)) out of @leaves.Count records
                 </div>
                 <nav>
                     <ul class="pagination">
                         <li class="page-item @(currentPage == 1 ? "disabled" : "")">
                             <button class="page-link" @onclick="() => NavigateToPage(currentPage - 1)">Previous</button>
                         </li>
-
-
                         @for (int i = 1; i <= totalPages; i++)
                         {
                             var pageIndex = i;
@@ -134,10 +115,6 @@
                                 <button class="page-link" @onclick="@(() => NavigateToPage(pageIndex))">@pageIndex</button>
                             </li>
                         }
-
-
-
-
                         <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
                             <button class="page-link" @onclick="() => NavigateToPage(currentPage + 1)">Next</button>
                         </li>
@@ -149,7 +126,6 @@
 </div>
 
 <style>
-    /* wwwroot/css/site.css */
     .container-fluid {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
@@ -216,6 +192,21 @@
         background-color: #ffc107;
     }
 
+    .badge-red {
+        color: #fff;
+        background-color: red;
+    }
+
+    .badge-yellow {
+        color: #212529;
+        background-color: yellow;
+    }
+
+    .badge-grey {
+        color: #fff;
+        background-color: grey;
+    }
+
     .pagination {
         list-style: none;
         padding: 0;
@@ -235,5 +226,34 @@
         .page-item.active .page-link {
             font-weight: bold;
             color: #0056b3;
+        }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        margin: 1px;
+        border: 1px solid #4B995C;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        font-size: 24px;
+        background-color: #e9f2eb;
+    }
+
+        .user-info h2 {
+            font-size: 24px;
+            margin-bottom: -3px;
+        }
+
+        .user-info p {
+            font-size: 14px;
+            margin-bottom: -3px;
+        }
+
+        .user-info img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
         }
 </style>
