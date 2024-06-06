@@ -285,7 +285,7 @@ namespace KFHRBackEnd.Controllers
 
                 var todayAttendances = await _context.Attendances
                     .Where(a => a.EmployeeId == int.Parse(employeeId) && a.CheckInTime.Date == today)
-                    .ToListAsync();
+                    .FirstOrDefaultAsync();
 
                 return Ok(todayAttendances);
             }
