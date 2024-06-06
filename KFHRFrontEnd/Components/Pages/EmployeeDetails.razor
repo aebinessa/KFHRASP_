@@ -81,11 +81,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>@employeeAttendance.CheckInTime.Date</td> 
-                                <td>@employeeAttendance.CheckInTime.TimeOfDay</td> 
-                                <td>@employeeAttendance.CheckOutTime.TimeOfDay</td> 
-                            </tr>
+                            @foreach (var attendance in employeeAttendance)
+                            {
+                                <tr>
+                                    <td>@attendance.CheckInTime.Date</td>
+                                    <td>@attendance.CheckInTime.TimeOfDay</td>
+                                    <td>@attendance.CheckOutTime.TimeOfDay</td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -101,12 +104,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>@employeeCertificate.CertificateName</td> 
-                                    <td>@employeeCertificate.IssuingOrganization</td> 
-                                    <td>@employeeCertificate.OrganizationWebsite</td> 
-                                    
-                                </tr>
+                                @foreach (var certificate in employeeCertificate)
+                                {
+                                    <tr>
+                                        <td>@certificate.CertificateName</td>
+                                        <td>@certificate.IssuingOrganization</td>
+                                        <td>@certificate.OrganizationWebsite</td>
+                                    </tr>
+                                }
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -124,19 +130,21 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>July 01, 2023</td> <!-- Change the date to when employee submitted the leave -->
-                                    <td>July 05 - July 08</td> <!-- Change the dates to when employee set the leave for -->
-                                    <td>3 Days</td> <!-- Change the date to length of the leave -->
-                                    <td>
-                                        <select class="status-dropdown" onchange="(e) => UpdateLeaveStatus(employeeLeave.ID, e.Value)">
-                                            <!-- Make the function updateStatus able to change the status of a leave in the Backend  -->
-                                            <option value="pending" class="status pending">Pending</option> 
-                                            <option value="approved" class="status approved">Approved</option>
-                                            <option value="rejected" class="status rejected">Rejected</option>
-                                        </select>
-                                    </td>
-                                </tr>
+                                @foreach (var leave in employeeLeaves)
+                                {
+                                    <tr>
+                                        <td>@leave.StartDate</td>
+                                        <td>@leave.StartDate - @leave.EndDate</td>
+                                        <td>@leave.(StartDate - @leave.EndDate).TotalDays</td>
+                                        <td>
+                                            <select class="status-dropdown" @onchange="e => UpdateLeaveStatus(leave.ID, ((ChangeEventArgs)e).Value.ToString())">
+                                                <option value="pending" class="status pending" selected="@leave.Status == " pending"">Pending</option>
+                                                <option value="approved" class="status approved" selected="@leave.Status == " approved"">Approved</option>
+                                                <option value="rejected" class="status rejected" selected="@leave.Status == " rejected"">Rejected</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -152,9 +160,11 @@
 
     [Parameter] public int employeeId { get; set; }
     private EmployeeProfileDetails employee = new EmployeeProfileDetails();
-    private EmployeeAttendance employeeAttendance = new EmployeeAttendance();
-    private EmployeeCertificate employeeCertificate = new EmployeeCertificate();
-    private List<EmployeeLeave> employeeLeaves = new List<EmployeeLeave>();
+    private List<EmployeeAttendance> employeeAttendance = new List<EmployeeAttendance>();
+    private List<EmployeeCertificate> employeeCertificate = new List<EmployeeCertificate>();
+    private List<EmployeeLeaves> employeeLeaves = new List<EmployeeLeaves>();
+    
+    
 
     protected override async Task OnInitializedAsync()
     {
@@ -164,7 +174,7 @@
             {
                 Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
                 employee = await Http.GetFromJsonAsync<EmployeeProfileDetails>($"https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/Employees?employeeId={employeeId}");
-                employeeLeaves = await Http.GetFromJsonAsync<List<EmployeeLeave>>($"https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/GetLeavesByEmployee?employeeId={employeeId}");
+                
             }
         }
         catch (Exception ex)
@@ -178,7 +188,7 @@
             if (AppState != null)
             {
                 Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
-                employeeCertificate = await Http.GetFromJsonAsync<EmployeeCertificate>($"https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/GetAttendancesByEmployee?employeeId={employeeId}");
+                employeeCertificate = await Http.GetFromJsonAsync<List<EmployeeCertificate>>($"https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/GetAttendancesByEmployee?employeeId={employeeId}");
             }
         }
         catch (Exception ex)
@@ -191,12 +201,25 @@
             if (AppState != null)
             {
                 Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
-                employeeAttendance = await Http.GetFromJsonAsync<EmployeeAttendance>($"https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/GetCertificatesByEmployee?employeeId={employeeId}");
+                employeeAttendance = await Http.GetFromJsonAsync<List<EmployeeAttendance>>($"https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/GetCertificatesByEmployee?employeeId={employeeId}");
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error fetching employee attendances: {ex.Message}");
+        }
+
+        try
+        {
+            if (AppState != null)
+            {
+                Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
+                employeeLeaves = await Http.GetFromJsonAsync<List<EmployeeLeaves>>($"https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/GetLeavesByEmployeeId?employeeId={employeeId}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching employee leaves: {ex.Message}");
         }
 
     }
