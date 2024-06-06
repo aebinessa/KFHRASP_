@@ -23,13 +23,28 @@ namespace KFHRBackEnd.Controllers
 
         // Get all employee attendances
         [HttpGet("GetAttendances")]
-        [ProducesResponseType(typeof(IEnumerable<Attendance>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<AttendanceRes>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAttendances()
         {
             try
             {
-                var attendances = await _context.Attendances.ToListAsync();
+                var attendances = await _context.Attendances
+                    .Join(
+                        _context.Employees,
+                        attendance => attendance.EmployeeId,
+                        employee => employee.Id,
+                        (attendance, employee) => new AttendanceRes
+                        {
+                            ID = attendance.ID,
+                            EmployeeId = attendance.EmployeeId,
+                            EmployeeName = employee.Name,
+                            CheckInTime = attendance.CheckInTime,
+                            CheckOutTime = attendance.CheckOutTime
+                        }
+                    )
+                    .ToListAsync();
+
                 return Ok(attendances);
             }
             catch (Exception ex)
@@ -85,6 +100,40 @@ namespace KFHRBackEnd.Controllers
             try
             {
                 var leaves = await _context.Leaves
+                    .Join(
+                        _context.Employees,
+                        leave => leave.EmployeeId,
+                        employee => employee.Id,
+                        (leave, employee) => new LeaveRes
+                        {
+                            ID = leave.ID,
+                            EmployeeId = leave.EmployeeId,
+                            EmployeeName = employee.Name,
+                            LeaveType = leave.LeaveType,
+                            StartDate = leave.StartDate,
+                            EndDate = leave.EndDate,
+                            Notes = leave.Notes,
+                            Status = leave.Status
+                        }
+                    )
+                    .ToListAsync();
+
+                return Ok(leaves);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        [HttpGet("GetLeavesByEmployeeId/{employeeId}")]
+        [ProducesResponseType(typeof(IEnumerable<LeaveRes>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetLeavesByEmployeeId(int employeeId)
+        {
+            try
+            {
+                var leaves = await _context.Leaves
+                    .Where(leave => leave.EmployeeId == employeeId)
                     .Join(
                         _context.Employees,
                         leave => leave.EmployeeId,
