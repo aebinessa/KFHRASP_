@@ -1,39 +1,47 @@
-﻿@page "/Attendance"
+﻿@page "/attendance"
 
-@using KFHRFrontEnd.Components
-@using KFHRFrontEnd.Models
 @using System.Net.Http
 @using System.Net.Http.Json
-@using KFHRBackEnd.Models
+@using KFHRBackEnd.Models.Entites
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject GlobalAppState AppState
 
 @code {
-    public List<Attendancee> Attendances { get; set; } = new List<Attendancee>();
+    public List<Attendancee> attendances = new List<Attendancee>();
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            Attendances = await Http.GetFromJsonAsync<List<Attendancee>>("api/Admin/GetAttendance") ?? new List<Attendancee>();
+            var client = new HttpClient();
+            Console.WriteLine($"{AppState.AuthToken} before if s");
+            if (AppState != null)
+            {
+                Console.WriteLine($"{AppState.AuthToken} inside if s");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
+
+                attendances = await client.GetFromJsonAsync<List<Attendancee>>("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/GetAttendances");
+                Console.WriteLine($"{attendances.Count}");
+
+            }
         }
         catch (Exception ex)
         {
-            // Handle exceptions (e.g., log the error)
-            Attendances = new List<Attendancee>();
+
+            Console.WriteLine($"Error fetching attendance {ex}");
         }
     }
 
     private int currentPage = 1;
     private int pageSize = 10;
-    private int totalPages => (int)Math.Ceiling((double)Attendances.Count / pageSize);
+    private int totalPages => (int)Math.Ceiling((double)attendances.Count / pageSize);
 
-    public IEnumerable<Attendancee> PaginatedAttendences => Attendances?.Skip((currentPage - 1) * pageSize).Take(pageSize) ?? new List<Attendancee>();
+    public IEnumerable<Attendancee> PaginatedAttendences => attendances?.Skip((currentPage - 1) * pageSize).Take(pageSize) ?? new List<Attendancee>();
 
-    public string GetStatusClass(DateTime checkInTime, DateTime checkOutTime)
+    public string GetCheckInClass(DateTime checkInTime)
     {
-        return (checkOutTime - checkInTime).TotalHours > 8 ? "badge badge-success" : "badge badge-danger";
+        return checkInTime.Hour < 8 || (checkInTime.Hour == 8 && checkInTime.Minute == 0) ? "badge badge-success" : checkInTime.Hour > 8 ? "badge badge-danger" : "";
     }
 
     public void NavigateToPage(int pageNumber)
@@ -67,20 +75,20 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
+                            <th>Employee Name</th>
                             <th>Employee ID</th>
                             <th>Check-In Time ⬇</th>
                             <th>Check-Out Time ⬇</th>
-                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var attendance in PaginatedAttendences)
                         {
                             <tr>
+                                <td>@attendance.EmployeeName</td>
                                 <td>@attendance.EmployeeId</td>
-                                <td>@attendance.CheckInTime</td>
-                                <td>@attendance.CheckOutTime</td>
-                                <td><span class="@GetStatusClass(attendance.CheckInTime, attendance.CheckOutTime)">@(attendance.CheckOutTime - attendance.CheckInTime).TotalHours > 8 ? "On Time" : "Late"</span></td>
+                                <td><span class="@GetCheckInClass(attendance.CheckInTime)">@attendance.CheckInTime</span></td>
+                                <td>@(attendance.CheckOutTime.HasValue ? attendance.CheckOutTime.Value.ToString() : "No Checkout")</td>
                             </tr>
                         }
                     </tbody>
@@ -88,7 +96,7 @@
             </div>
             <div class="d-flex justify-content-between">
                 <div>
-                    Showing @((currentPage - 1) * pageSize + 1) to @(Math.Min(currentPage * pageSize, Attendances.Count)) out of @Attendances.Count records
+                    Showing @((currentPage - 1) * pageSize + 1) to @(Math.Min(currentPage * pageSize, attendances.Count)) out of @attendances.Count records
                 </div>
                 <nav>
                     <ul class="pagination">
@@ -113,7 +121,6 @@
 </div>
 
 <style>
-    /* wwwroot/css/site.css */
     .container-fluid {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
@@ -129,10 +136,10 @@
         display: flex;
         align-items: center;
         margin: 1px;
-        border: 1px solid #4B995C; /* Add border */
-        border-radius: 10px; /* Optional: Add rounded corners */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow */
-        padding: 10px; /* Add padding to keep content away from borders */
+        border: 1px solid #4B995C;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 10px;
         font-size: 24px;
         background-color: #e9f2eb;
     }
@@ -217,9 +224,9 @@
         }
 
         .page-item.active .page-link {
-            background-color: gray; /* Change this to your desired color */
-            color: white; /* Change the text color to your desired color */
-            border-color: gray; /* Match the border color if needed */
+            background-color: gray;
+            color: white;
+            border-color: gray;
         }
 
         .page-item.disabled .page-link {
@@ -232,3 +239,8 @@
             border-color: #ddd;
         }
 </style>
+
+
+
+
+
