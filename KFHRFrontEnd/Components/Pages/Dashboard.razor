@@ -1,11 +1,10 @@
 ﻿@page "/dashboard"
 
 @using KFHRFrontEnd.Components
+@using KFHRFrontEnd.Models.Responses
 @using KFHRFrontEnd.Models
 @using System.Net.Http
 @using System.Net.Http.Json
-
-
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject GlobalAppState AppState
@@ -28,6 +27,11 @@
         {
             Console.WriteLine($"Error fetching employees: {ex.Message}");
         }
+
+        if (string.IsNullOrEmpty(AppState.EmployeeName) || string.IsNullOrEmpty(AppState.EmployeePic))
+        {
+            Navigation.NavigateTo("/");
+        }
     }
 
     public void NavProf()
@@ -38,7 +42,7 @@
 
 <div class="header">
     <div class="greeting">
-        <h1>Hello Robert</h1>
+        <h1>Hello @AppState.EmployeeName</h1>
         <p>Good Morning!</p>
     </div>
     <div class="user-info">
@@ -46,10 +50,10 @@
                 <img src="notification.png" />
             </NavLink>
              <NavLink href="/profile" class="center">
-        <img src="leasie-watson.jpg"  alt="Profile Picture" class="center" />
+            <img src="@AppState.EmployeePic" alt="Profile Picture" class="center" />
             </NavLink>
         <div>
-            <h2>Robert Allen</h2>
+            <h2>@AppState.EmployeeName</h2>
             <p>HR Manager</p>
         </div>
     </div>

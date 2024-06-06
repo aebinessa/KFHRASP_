@@ -56,7 +56,10 @@
                     var userRole = jwtSecurityToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value == "Admin";
 
                     if (AppState != null)
+
                     {
+                        AppState.EmployeeName = tokenResponse.EmployeeName;
+                        AppState.EmployeePic = tokenResponse.EmployeePic;
                         AppState.SetAuthData(tokenResponse.Token, username, userId, userRole);
                     }
                     Console.WriteLine($"Login: {AppState.AuthToken}");

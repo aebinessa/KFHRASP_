@@ -19,9 +19,9 @@
                     <NavLink href="/counter" class="center">
                         <img src="notification.png" />
                     </NavLink>
-                    <img src="leasie-watson.jpg" alt="Profile Picture" class="center" />
+                    <img src="@AppState.EmployeePic" alt="Profile Picture" class="center" />
                     <div>
-                        <h2>Robert Allen</h2> <!-- Change Robert Allen to HR employee.Name -->
+                        <h2>@AppState.EmployeeName</h2> <!-- Change Robert Allen to HR employee.Name -->
                         <p>HR Manager</p> <!-- Change HR Nanager to HR employee.Name -->
                     </div>
                 </div>
@@ -52,21 +52,21 @@
                         <table class="styled-table profile-table">
                             <tr>
                                 <th>Name</th>
-                                <td>@employee.Name</td> <!-- Change Brooklyn Simmons to employee Name -->
+                                <td>@employee.Name</td> 
                                 <th>Email Address</th>
-                                <td>@employee.Email</td> <!-- Change the email to employee.Email -->
+                                <td>@employee.Email</td> 
                             </tr>
                             <tr>
                                 <th>Date of Birth</th>
-                                <td>@employee.DOB</td> <!-- Change the dob to employee.DOB -->
+                                <td>@employee.DOB</td> 
                                 <th>Gender</th>
-                                <td>@employee.Gender</td> <!-- Change Female to employee.Gender -->
+                                <td>@employee.Gender</td> 
                             </tr>
                             <tr>
                                 <th>Position</th>
-                                <td>@employee.PositionName</td> <!-- Change position to employee.Position -->
+                                <td>@employee.PositionName</td> 
                                 <th>Department</th>
-                                <td>@employee.DepartmentId?.DepartmentName</td> <!-- Change IT to employee.DepartmentName -->
+                                <td>@employee.DepartmentId?.DepartmentName</td> 
                             </tr>
                         </table>
                     </div>
@@ -82,9 +82,9 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>@employeeAttendance.CheckInTime.Date</td> <!-- Change the date to employee date of checking in -->
-                                <td>@employeeAttendance.CheckInTime.TimeOfDay</td> <!-- Change the time to employee time of checking in -->
-                                <td>@employeeAttendance.CheckOutTime.TimeOfDay</td> <!-- Change the time to employee time of checking out -->
+                                <td>@employeeAttendance.CheckInTime.Date</td> 
+                                <td>@employeeAttendance.CheckInTime.TimeOfDay</td> 
+                                <td>@employeeAttendance.CheckOutTime.TimeOfDay</td> 
                             </tr>
                         </tbody>
                     </table>
@@ -102,19 +102,13 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>@employeeCertificate.CertificateName</td> <!-- Change the certificate to employee certificate name -->
-                                    <td>@employeeCertificate.IssuingOrganization</td> <!-- Change the certificate date to employee certificate date -->
-                                    <td>@employeeCertificate.OrganizationWebsite</td> <!-- Change the certificate URL to employee certificate URL -->
-                                    <td><button class="delete-button">🗑️</button></td>
+                                    <td>@employeeCertificate.CertificateName</td> 
+                                    <td>@employeeCertificate.IssuingOrganization</td> 
+                                    <td>@employeeCertificate.OrganizationWebsite</td> 
+                                    
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-                    <div class="certificate-inputs">
-                        <input type="text" placeholder="Certificate Name" />
-                        <input type="text" placeholder="Date Completed" />
-                        <input type="text" placeholder="Verification URL" />
-                        <button class="save-button">Save</button> <!-- insert a POST method to send a certificate to the user through the backend -->
                     </div>
                 </div>
                 <div id="leave" class="profile-info section" style="display:none;">
@@ -135,7 +129,8 @@
                                     <td>July 05 - July 08</td> <!-- Change the dates to when employee set the leave for -->
                                     <td>3 Days</td> <!-- Change the date to length of the leave -->
                                     <td>
-                                        <select class="status-dropdown" onchange="updateStatus(this)"> <!-- Make the function updateStatus able to change the status of a leave in the Backend  -->
+                                        <select class="status-dropdown" onchange="(e) => UpdateLeaveStatus(employeeLeave.ID, e.Value)">
+                                            <!-- Make the function updateStatus able to change the status of a leave in the Backend  -->
                                             <option value="pending" class="status pending">Pending</option> 
                                             <option value="approved" class="status approved">Approved</option>
                                             <option value="rejected" class="status rejected">Rejected</option>
@@ -159,6 +154,7 @@
     private EmployeeProfileDetails employee = new EmployeeProfileDetails();
     private EmployeeAttendance employeeAttendance = new EmployeeAttendance();
     private EmployeeCertificate employeeCertificate = new EmployeeCertificate();
+    private List<EmployeeLeave> employeeLeaves = new List<EmployeeLeave>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -168,6 +164,7 @@
             {
                 Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
                 employee = await Http.GetFromJsonAsync<EmployeeProfileDetails>($"https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/Employees?employeeId={employeeId}");
+                employeeLeaves = await Http.GetFromJsonAsync<List<EmployeeLeave>>($"https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/GetLeavesByEmployee?employeeId={employeeId}");
             }
         }
         catch (Exception ex)
@@ -209,34 +206,40 @@
         Navigation.NavigateTo($"/editemployee/{employeeId}");
     }
 
-    private async Task DeleteCertificate(int employeeId)
+    private async Task UpdateLeaveStatus(int leaveId, string newStatus)
     {
+        var updateLeaveStatus = new { Status = newStatus };
+        var response = await Http.PutAsJsonAsync($"https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/UpdateLeaveStatus/{leaveId}", updateLeaveStatus);
 
-        var response = await Http.DeleteAsync($"/api/Admin/DeleteCertificate/{employeeId}");
-        //employeeCertificate.RemoveAll(e => e.Id == employeeId);
-        StateHasChanged();
-
+        if (response.IsSuccessStatusCode)
+        {
+            var updatedLeave = await response.Content.ReadFromJsonAsync<EmployeeLeave>();
+            var leave = employeeLeaves.FirstOrDefault(l => l.ID == leaveId);
+            if (leave != null)
+            {
+                leave.Status = updatedLeave.Status;
+            }
+        }
+        else
+        {
+            Console.WriteLine($"Error updating leave status: {response.ReasonPhrase}");
+        }
     }
 }
 
 <script>
     function showSection(sectionId) {
-        // Hide all sections
         var sections = document.querySelectorAll('.section');
         sections.forEach(function (section) {
             section.style.display = 'none';
         });
 
-        // Remove active class from all buttons
         var buttons = document.querySelectorAll('.profile-button');
         buttons.forEach(function (button) {
             button.classList.remove('active');
         });
 
-        // Show the selected section
         document.getElementById(sectionId).style.display = 'block';
-
-        // Add active class to the clicked button
         event.target.classList.add('active');
     }
 
@@ -250,14 +253,12 @@
         alert('Edit name functionality goes here');
     }
 
-    // Initialize status dropdowns on page load
     document.addEventListener('DOMContentLoaded', function () {
         const statusDropdowns = document.querySelectorAll('.status-dropdown');
         statusDropdowns.forEach(function (dropdown) {
             updateStatus(dropdown);
         });
 
-        // Set Profile tab as active by default
         showSection('profile');
     });
 </script>
