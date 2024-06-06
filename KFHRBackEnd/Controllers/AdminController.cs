@@ -621,6 +621,32 @@ namespace KFHRBackEnd.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [HttpGet("GetEmployeesByDepartmentId/{departmentId}")]
+        [ProducesResponseType(typeof(IEnumerable<Employee>), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetEmployeesByDepartmentId(int departmentId)
+        {
+            try
+            {
+                var employees = await _context.Employees
+                    .Include(e => e.DepartmentId)
+                    .Where(e => e.DepartmentId.ID == departmentId)
+                    .ToListAsync();
+
+                if (employees == null || !employees.Any())
+                {
+                    return NotFound($"No employees found for department ID {departmentId}.");
+                }
+
+                return Ok(employees);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
 
         [HttpGet("GetAttendance")]
         [ProducesResponseType(typeof(IEnumerable<AttendanceRes>), 200)]
