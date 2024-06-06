@@ -500,6 +500,28 @@ namespace KFHRBackEnd.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [HttpGet("GetDepartmentById/{id}")]
+        [ProducesResponseType(typeof(Department), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetDepartmentById(int id)
+        {
+            try
+            {
+                var department = await _context.Departments.FindAsync(id);
+
+                if (department == null)
+                {
+                    return NotFound($"Department with ID {id} not found.");
+                }
+
+                return Ok(department);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         [HttpPut("EditDepartment/{id}")]
         [ProducesResponseType(200)]
