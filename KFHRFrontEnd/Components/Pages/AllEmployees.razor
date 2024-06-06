@@ -14,9 +14,9 @@
         <NavLink href="/counter" class="center">
             <img src="notification.png" />
         </NavLink>
-        <img src="leasie-watson.jpg" alt="Profile Picture" class="center" />
+        <img src="@AppState.EmployeePic" alt="Profile Picture" class="center" />
         <div>
-            <h2>Robert Allen</h2>
+            <h2>@AppState.EmployeeName</h2>
             <p>HR Manager</p>
         </div>
     </div>
@@ -26,9 +26,12 @@
     <h2>Overall Performance</h2>
     <div class="performance-list">
         <ol>
-            <li><img src="leasie-watson.jpg" alt="Profile Picture" class="center" />Cody Fisher</li>
-            <li><img src="leasie-watson.jpg" alt="Profile Picture" class="center" />Savannah Nguyen</li>
-            <li><img src="leasie-watson.jpg" alt="Profile Picture" class="center" />Marvin McKinney</li>
+            @foreach (var employee in LatestEmployees)
+            {
+                <li>
+                    <img src="@employee.ProfilePicURL" alt="Profile Picture" class="center" />@employee.Name
+                </li>
+            }
         </ol>
     </div>
     <div class="icons">
@@ -100,6 +103,8 @@
     private int pageSize = 10;
     private int totalPages => (int)Math.Ceiling((double)employees.Count / pageSize);
     private IEnumerable<AllEmployee> PaginatedEmployees => employees.Skip((currentPage - 1) * pageSize).Take(pageSize);
+    private IEnumerable<AllEmployee> LatestEmployees => employees.OrderByDescending(e => e.DOB).Take(3);
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -207,7 +212,7 @@
         }
 
     .performance-list {
-        width: 300px; /* Set a specific width */
+        width: 1200px; /* Set a specific width */
         display: inline-block;
         vertical-align: top;
     }
@@ -224,11 +229,25 @@
             .performance-list ol li {
                 padding: 10px;
                 border-bottom: 1px solid #ddd; /* Border between items */
+                width: 100%
             }
 
                 .performance-list ol li:last-child {
                     border-bottom: none; /* Remove bottom border from the last item */
                 }
+
+    .employee-profile {
+        display: flex;
+        align-items: center;
+    }
+
+    .profile-pic {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+    }
+
 
     .icons {
         display: inline-block;
@@ -236,10 +255,14 @@
         margin-left: 20px;
     }
 
+        .icons .icon-link {
+            display: block;
+            margin-top: 10px;
+        }
+
         .icons img.icon {
             width: 24px;
             height: 24px;
-            margin-right: 10px;
             cursor: pointer;
         }
 

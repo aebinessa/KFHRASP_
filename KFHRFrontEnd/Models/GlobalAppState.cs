@@ -4,6 +4,8 @@
     public string Username { get; set; } = string.Empty;
     public string UserId { get; set; } = string.Empty;
     public bool IsAdmin { get; set; } = false;
+    public string EmployeeName { get; set; }
+    public string EmployeePic { get; set; }
 
     // Method to set all authentication data at once
     public void SetAuthData(string token, string username, bool isAdmin)
