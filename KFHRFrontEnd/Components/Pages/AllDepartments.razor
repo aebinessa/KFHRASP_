@@ -1,8 +1,31 @@
 ﻿@page "/alldepartments"
+@using System.Net.Http
+@using System.Net.Http.Json
+@inject HttpClient Http
+@inject GlobalAppState AppState
 
 @code {
-    private List<Department> Departments = new List<Department> { };
+    private List<Department> Departments = new List<Department>();
 
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var client = new HttpClient();
+            Console.WriteLine($"{AppState.AuthToken} before if s");
+            if (AppState != null)
+            {
+                Console.WriteLine($"{AppState.AuthToken} inside if s");
+
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
+                Departments = await client.GetFromJsonAsync<List<Department>>("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/GetDepartments");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching departments: {ex}");
+        }
+    }
 }
 
 <div class="container-fluid">
@@ -17,15 +40,15 @@
                     <NavLink href="/counter" class="center">
                         <img src="notification.png" />
                     </NavLink>
-                    <img src="leasie-watson.jpg" alt="Profile Picture" class="center" />
+                    <img src="@AppState.EmployeePic" alt="Profile Picture" class="center" />
                     <div>
-                        <h2>Robert Allen</h2>
+                        <h2>@AppState.EmployeeName</h2>
                         <p>HR Manager</p>
                     </div>
                 </div>
             </header>
-            <div class="add-icon">
-                <NavLink href="/addemployee" class="center">
+            <div class="d-flex justify-content-end mb-4">
+                <NavLink href="/adddepartment" class="center add-icon">
                     <img src="plus.png" alt="Add" class="icon" />
                 </NavLink>
             </div>
@@ -36,13 +59,32 @@
                         <div class="col-md-6 mb-4">
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5>@department</h5>
-                                    <a href="#">View All</a>
+                                    <h5>@(department.DepartmentName ?? "Unknown Department")</h5>
                                 </div>
                                 <div class="card-body">
-                                    <p>@department Members</p>
+                                    <p>@(department.Employees?.Count ?? 0) Members</p>
                                     <ul class="list-group list-group-flush">
-                                       
+                                        @if (department.Employees != null)
+                                        {
+                                            @foreach (var employee in department.Employees)
+                                            {
+                                                <li class="list-group-item d-flex align-items-center">
+                                                    <img src="@employee.ImageUrl" alt="Employee Image" class="rounded-circle" width="40" height="40" />
+                                                    <div class="ml-2">
+                                                        <span>@employee.Name</span><br />
+                                                        <span class="text-muted">@employee.Position</span>
+                                                    </div>
+                                                </li>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <li class="list-group-item d-flex align-items-center">
+                                                <div class="ml-2">
+                                                    <span>No employees listed</span>
+                                                </div>
+                                            </li>
+                                        }
                                     </ul>
                                 </div>
                             </div>
@@ -97,8 +139,7 @@
         }
 
     .add-icon {
-        justify-content: center;
-        margin-top: 10px;
+        margin-left: auto;
     }
 
         .add-icon img.icon {
@@ -142,6 +183,4 @@
     .departments-section {
         margin-top: 20px;
     }
-
 </style>
-

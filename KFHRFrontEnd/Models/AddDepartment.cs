@@ -6,13 +6,13 @@ namespace KFHRFrontEnd.Models
     {
         [Required(ErrorMessage = "Department name is required")]
 
-        public string Name { get; set; }
+        public string DepartmentName { get; set; }
 
-        [Required(ErrorMessage = "Department Head is required")]
-        public string Head { get; set; }
+        //[Required(ErrorMessage = "Department Head is required")]
+        //public string Head { get; set; }
 
-        [Required(ErrorMessage = "Department Deatail is required")]
-        public string Detail { get; set; }
+       // [Required(ErrorMessage = "Department Deatail is required")]
+        //public string Detail { get; set; }
 
     }
 
