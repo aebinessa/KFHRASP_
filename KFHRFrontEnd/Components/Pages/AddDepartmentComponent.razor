@@ -1,67 +1,92 @@
 ﻿@page "/adddepartment"
+@using System.ComponentModel.DataAnnotations
+@inject HttpClient Http
+@inject GlobalAppState AppState
 @inject NavigationManager Navigation
 
+<div class="header">
+    <div class="info">
+        <h1>All Departments</h1>
+        <div class="breadcrumb">
+            <a href="/alldepartments" class="breadcrumb-link">All Departments</a> &gt; <span class="breadcrumb-current"> Add Department </span>
+        </div>
+    </div>
+    <div class="user-info">
+        <NavLink href="/counter" class="center">
+            <img src="notification.png" />
+        </NavLink>
+        <img src="@AppState.EmployeePic" alt="Profile Picture" class="center" />
+        <div>
+            <h2>@AppState.EmployeeName</h2>
+            <p>HR Manager</p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <EditForm Model="@department" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="departmentName">Department Name</label>
+                <InputText id="departmentName" @bind-Value="department.DepartmentName" placeholder="Department Name" />
+                <ValidationMessage For="@(() => department.DepartmentName)" />
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" @onclick="Cancel" class="cancel-button">Cancel</button>
+            <button type="submit" class="save-button">Save</button>
+        </div>
+    </EditForm>
+</div>
+
 @code {
-    private AddDepartment newDepartment = new AddDepartment();
+    private AddDepartment department = new AddDepartment();
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            if (AppState != null && !string.IsNullOrEmpty(AppState.AuthToken))
+            {
+                Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
+                var response = await Http.PostAsJsonAsync("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/AddDepartment", department);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Navigation.NavigateTo("/alldepartments");
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Error adding department: {response.ReasonPhrase}, Content: {errorContent}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("AppState is null or AuthToken is missing");
+            }
+        }
+        catch (HttpRequestException httpEx)
+        {
+            Console.WriteLine($"HTTP error adding department: {httpEx.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"General error adding department: {ex.Message}");
+        }
+    }
 
     private void Cancel()
     {
         Navigation.NavigateTo("/alldepartments");
     }
-
-    private void SaveDepartment()
-    {
-
-
-
-        Navigation.NavigateTo("/alldepartments");
-    }
 }
 
-<div class="container-fluid">
-    <div class="row">
-        <main class="col-12 p-3">
-            <header class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h1>Add New Department</h1>
-                    <div class="breadcrumb">
-                        <a href="alldepartments" class="breadcrumb-link">All Departments</a> &gt; <span class="breadcrumb-current"> Add Department </span>
-                    </div>
-                </div>
-                <div class="user-info">
-                    <NavLink href="/counter" class="center">
-                        <img src="notification.png" />
-                    </NavLink>
-                    <img src="leasie-watson.jpg" alt="Profile Picture" class="center" />
-                    <div>
-                        <h2>Robert Allen</h2>
-                        <p>HR Manager</p>
-                    </div>
-                </div>
-            </header>
-            <div class="form-section horizontal-fields">
-                <input type="text" id="name-of-certificate" placeholder="Name of Certificate">
-                <input type="text" id="organization" placeholder="Organization">
-            </div>
-            <div class="form-group">
-                <label for="departmentDetail">Department Detail</label>
-                <textarea id="departmentDetail" class="form-control" @bind="newDepartment.Detail"></textarea>
-            </div>
-
-            <div class="form-group d-flex justify-content-end">
-                <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
-                <button class="btn btn-primary" @onclick="SaveDepartment">Save</button>
-            </div>
-
-        </main>
-    </div>
-</div>
-
 <style>
-    .container-fluid {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
     .header {
         display: flex;
         justify-content: space-between;
@@ -69,97 +94,44 @@
         margin-bottom: 20px;
     }
 
-    .user-info {
-        display: flex;
-        align-items: center;
-        margin: 1px;
-        border: 1px solid #4B995C;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        padding: 10px;
-        font-size: 24px;
-        background-color: #e9f2eb;
-    }
-
-        .user-info h2 {
-            font-size: 24px;
-            margin-bottom: -3px;
+        .header .info h1 {
+            margin: 0;
+            font-size: 34px;
         }
 
-        .user-info p {
+        .header .info p {
             font-size: 14px;
-            margin-bottom: -3px;
+            color: dimgrey;
         }
 
-        .user-info img {
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            margin-right: 10px;
-        }
-
-    .form-group {
-        margin-bottom: 1rem;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: .75rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        color: #495057;
-        background-color: #fff;
-        background-clip: padding-box;
-        border: 1px solid #ced4da;
-        border-radius: .25rem;
-        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    }
-
-    .btn {
-        padding: .5rem 1rem;
-        font-size: 1rem;
-        font-weight: 400;
-        line-height: 1.5;
-        text-align: center;
-        white-space: nowrap;
-        vertical-align: middle;
-        user-select: none;
-        border: 1px solid transparent;
-        border-radius: .25rem;
-        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    }
-
-    .btn-secondary {
-        color: #fff;
-        background-color: grey;
-        border: 1px solid #ddd border-color: #fff;
-    }
-
-    .btn-primary {
-        color: #fff;
-        background-color: #28a745;
-        border-color: #28a745;
-        margin-left: .5rem;
-    }
-
-        .btn-primary :hover {
-            color: yellow;
-        }
-
-
-
-    .horizontal-fields {
-        display: flex;
-        gap: 10px;
-        color: #006400;
-    }
-
-        .horizontal-fields input {
-            flex: 1;
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            margin: 1px;
+            border: 1px solid #4B995C;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 10px;
-            font-size: 16px;
-            box-sizing: border-box;
+            font-size: 24px;
+            background-color: #e9f2eb;
         }
+
+            .header .user-info h2 {
+                font-size: 24px;
+                margin-bottom: -3px;
+            }
+
+            .header .user-info p {
+                font-size: 14px;
+                margin-bottom: -3px;
+            }
+
+            .header .user-info img {
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                margin-right: 10px;
+            }
 
     .breadcrumb {
         font-size: 14px;
@@ -183,4 +155,78 @@
         margin-left: 5px;
     }
 
+    .container {
+        width: 60%;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+        flex-basis: 48%;
+    }
+
+        .form-group label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+
+            .form-group input::placeholder {
+                color: #aaa;
+            }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+    }
+
+    .cancel-button,
+    .save-button {
+        padding: 10px 20px;
+        font-size: 14px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .cancel-button {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        margin-right: 10px;
+    }
+
+    .save-button {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+    .invalid {
+        border-color: red;
+    }
+
+    .validation-message {
+        color: red;
+    }
 </style>
