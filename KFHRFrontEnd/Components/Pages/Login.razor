@@ -58,6 +58,7 @@
                     if (AppState != null)
 
                     {
+                        AppState.AuthToken = tokenResponse.Token;
                         AppState.EmployeeName = tokenResponse.EmployeeName;
                         AppState.EmployeePic = tokenResponse.EmployeePic;
                         AppState.SetAuthData(tokenResponse.Token, username, userId, userRole);

@@ -4,12 +4,12 @@
     {
         public string CertificateName { get; set; }
 
-        public string IssuingOrganization { get; set; }
+        public DateTime issueDate { get; set; }
 
-        public string OrganizationWebsite { get; set; }
+        public DateTime expirationDate { get; set; }
 
-        public string CertificatePicture { get; set; }
+        public string verificationURL { get; set; }
 
-        public int RewardPoints { get; set; }
+        
     }
 }
