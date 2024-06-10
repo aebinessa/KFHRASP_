@@ -22,9 +22,7 @@
             <h1>Recommendations</h1>
         </div>
         <div class="user-info">
-            <NavLink href="/counter" class="center">
                 <img src="notification.png" />
-            </NavLink>
             <img src="@AppState.EmployeePic" alt="Profile Picture" class="center" />
             <div>
                 <h2>@AppState.EmployeeName</h2>
@@ -36,16 +34,32 @@
     <div class="body">
         <div class="form-container">
             <div class="form-section horizontal-fields">
-                <InputText id="name-of-certificate" @bind-Value="cert.CertificateName" placeholder="Name of Certificate" class="form-control" />
-                <InputText id="organization" @bind-Value="cert.IssuingOrganization" placeholder="Organization" class="form-control" />
+                <div class="form-group">
+                    <label for="name-of-certificate">Name of Certificate</label>
+                    <InputText id="name-of-certificate" @bind-Value="cert.CertificateName" placeholder="Name of Certificate" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="organization">Organization</label>
+                    <InputText id="organization" @bind-Value="cert.IssuingOrganization" placeholder="Organization" class="form-control" />
+                </div>
             </div>
             <div class="form-section">
-                <InputText id="verification-url" @bind-Value="cert.CertificatePicture" placeholder="Verification URL" class="form-control" />
+                <div class="form-group">
+                    <label for="verification-url">Verification URL</label>
+                    <InputText id="verification-url" @bind-Value="cert.CertificatePicture" placeholder="Verification URL" class="form-control" />
+                </div>
             </div>
             <div class="form-section">
-                <InputNumber id="reward-points" @bind-Value="cert.RewardPoints" placeholder="Reward Points" class="form-control" />
-                <InputText id="certification-detail" @bind-Value="cert.OrganizationWebsite" placeholder="Certification Detail" class="form-control" />
+                <div class="form-group">
+                    <label for="reward-points">Reward Points</label>
+                    <InputNumber id="reward-points" @bind-Value="cert.RewardPoints" placeholder="Reward Points" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="certification-detail">Certification Detail</label>
+                    <InputText id="certification-detail" @bind-Value="cert.OrganizationWebsite" placeholder="Certification Detail" class="form-control" />
+                </div>
             </div>
+
             <div class="form-buttons">
                 <button type="button" @onclick="NavDash" id="cancel-button">Cancel</button>
                 <button type="submit" id="save-button">Save</button>
@@ -182,10 +196,10 @@
         border: 1px solid #ddd;
         border-radius: 8px;
         padding: 20px;
-        width: 80%;
+        width: auto;
         max-width: 800px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        flex-grow: 1;
+        flex-grow: 0;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -208,7 +222,13 @@
         flex-direction: column;
         margin-bottom: 15px;
         flex-basis: 70%;
+        
     }
+
+        .form-group label {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
 
     .file-input {
         position: relative;

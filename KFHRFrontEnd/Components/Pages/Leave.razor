@@ -62,9 +62,7 @@
                     <p>All Employee Leaves</p>
                 </div>
                 <div class="user-info">
-                    <NavLink href="/counter" class="center">
                         <img src="notification.png" />
-                    </NavLink>
                     <img src="@AppState.EmployeePic" alt="Profile Picture" class="center" />
                     <div>
                         <h2>@AppState.EmployeeName</h2>
@@ -211,6 +209,7 @@
         list-style: none;
         padding: 0;
         display: flex;
+        justify-content: flex-end;
     }
 
     .page-item {
@@ -219,15 +218,28 @@
 
         .page-item .page-link {
             text-decoration: none;
-            color: #007bff;
+            color: dimgray;
             cursor: pointer;
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
 
         .page-item.active .page-link {
-            font-weight: bold;
-            color: #0056b3;
+            background-color: gray; /* Change this to your desired color */
+            color: white; /* Change the text color to your desired color */
+            border-color: gray; /* Match the border color if needed */
         }
 
+        .page-item.disabled .page-link {
+            color: #ccc;
+            pointer-events: none;
+        }
+
+        .page-item .page-link:hover {
+            background-color: #f2f2f2;
+            border-color: #ddd;
+        }
     .user-info {
         display: flex;
         align-items: center;
