@@ -11,6 +11,10 @@
 
 @code {
     private List<AllEmployee> employees = new List<AllEmployee>();
+    private List<Department> departments = new List<Department>();
+    public List<Attendancee> attendances = new List<Attendancee>();
+    private int todaysAttendanceCount = 0;
+    private List<Attendancee> todaysAttendances = new List<Attendancee>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -21,6 +25,13 @@
             {
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
                 employees = await client.GetFromJsonAsync<List<AllEmployee>>("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/Employees");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
+                departments = await client.GetFromJsonAsync<List<Department>>("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/GetDepartments");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppState.AuthToken);
+                attendances = await client.GetFromJsonAsync<List<Attendancee>>("https://kfhrbackend20240528002909.azurewebsites.net/api/Admin/GetAttendances");
+                
+                CalculateTodaysAttendance();
+                FilterTodaysAttendances();
             }
         }
         catch (Exception ex)
@@ -34,9 +45,16 @@
         }
     }
 
-    public void NavProf()
+    private void CalculateTodaysAttendance()
     {
-        Navigation.NavigateTo("/profile");
+        var today = DateTime.Today;
+        todaysAttendanceCount = attendances.Count(a => a.CheckInTime.Date == today);
+    }
+
+    private void FilterTodaysAttendances()
+    {
+        var today = DateTime.Today;
+        todaysAttendances = attendances.Where(a => a.CheckInTime.Date == today).ToList();
     }
 }
 
@@ -66,13 +84,13 @@
     <div class="stats-card">
         <i class="bi bi-calendar-check"></i>
         <div class="stats-info">
-            <p>Today Attendance: <span>512</span></p>
+            <p>Today Attendance: <span>@todaysAttendanceCount</span></p>
         </div>
     </div>
     <div class="stats-card">
         <i class="bi bi-briefcase"></i>
         <div class="stats-info">
-            <p>Total Departments: <span>27</span></p>
+            <p>Total Departments: <span>@departments.Count</span></p>
         </div>
     </div>
 </div>
@@ -83,24 +101,24 @@
 </div>
 
 <div class="attendance-overview">
-    <h2>Attendance Overview</h2>
+    <h2>Today's Attendance</h2>
     <table>
         <thead>
             <tr>
                 <th>Employee Name</th>
-                <th>Position</th>
-                <th>Check In</th>
+                <th>Employee ID</th>
+                <th>Check In Time</th>
             </tr>
         </thead>
         <tbody>
-            @if (employees != null && employees.Count > 0)
+            @if (todaysAttendances != null && todaysAttendances.Count > 0)
             {
-                foreach (var employee in employees)
+                foreach (var attendance in todaysAttendances)
                 {
                     <tr>
-                        <td><img src="@employee.ProfilePicURL"/> @employee.Name</td>
-                        <td>@employee.PositionName</td>
-                        <td>7:01</td>
+                        <td>@attendance.EmployeeName</td>
+                        <td>@attendance.EmployeeId</td>
+                        <td>@attendance.CheckInTime.ToString("hh:mm tt")</td>
                     </tr>
                 }
             }
